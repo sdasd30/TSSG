@@ -433,4 +433,40 @@ public class Hitbox : MonoBehaviour
         m_collidedObjs.Clear();
         m_overlappingControl.Clear();
     }
+
+    public void InitFromHitboxInfo(HitboxInfo hbi, Orientation orient, FactionHolder fh = null)
+    {
+        Vector3 cOff = (orient == null) ? hbi.HitboxOffset : orient.OrientVectorToDirection2D(hbi.HitboxOffset);
+        //Debug.Log("Initial offset is: " + cOff);
+        Vector3 newPos = transform.position + (Vector3)cOff;
+        //Debug.Log("Instantiated at: " + newPos);
+        transform.localPosition = newPos;
+        if (hbi.FollowCharacter)
+        {
+            transform.SetParent(gameObject.transform);
+            transform.localScale = new Vector3(hbi.HitboxScale.x / transform.localScale.x, hbi.HitboxScale.y / transform.localScale.y, hbi.HitboxScale.z / transform.localScale.z);
+        }
+        else
+        {
+            SetScale((orient == null) ? hbi.HitboxScale : orient.OrientVectorToDirection2D(hbi.HitboxScale, false));
+        }
+        Damage = hbi.Damage;
+        OriginSource = hbi.OriginSource;
+
+        FocusDamage = hbi.FocusDamage;
+        Penetration = hbi.Penetration;
+        Duration = hbi.HitboxDuration;
+        Knockback = (orient == null) ? hbi.Knockback : orient.OrientVectorToDirection2D(hbi.Knockback);
+        IsFixedKnockback = hbi.FixedKnockback;
+        Stun = hbi.Stun;
+        FreezeTime = hbi.FreezeTime;
+        AddElement(hbi.Element);
+        Creator = gameObject;
+        if (fh != null)
+            fh.SetFaction(gameObject);
+        IsResetKnockback = hbi.ResetKnockback;
+        if (hbi.FollowCharacter)
+            SetFollow(gameObject, hbi.HitboxOffset);
+        Init();
+    }
 }

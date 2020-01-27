@@ -39,7 +39,7 @@ public class Regenerate : MonoBehaviour
 
     private void Regen()
     {
-        myAttackable.hp += regenRate * Time.deltaTime;
+        myAttackable.DamageObj(-regenRate * Time.deltaTime);
     }
 
     public float getRegen()

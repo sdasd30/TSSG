@@ -24,8 +24,8 @@ public class HPText : MonoBehaviour
 
     private void updateText()
     {
-        currentHP = (int)player.GetComponent<Attackable>().hp;
-        maxHP = (int)player.GetComponent<Attackable>().maxHP;
+        currentHP = (int)player.GetComponent<Attackable>().Health;
+        maxHP = (int)player.GetComponent<Attackable>().MaxHealth;
         if (currentHP <= 0) currentHP = 0;
         me.text = "HP: " + currentHP + "/" + maxHP;
     }

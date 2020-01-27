@@ -34,10 +34,10 @@ public class HPSlider : MonoBehaviour
 
     private void updateSlider()
     {
-        sliderMax = (int)plr.maxHP;
-        sliderCurrent = plr.hp;
+        sliderMax = (int)plr.MaxHealth;
+        sliderCurrent = plr.Health;
         kk.maxValue = sliderMax;
         kk.value = sliderCurrent;
-        fillArea.offsetMax = new Vector2(((plr.maxHP * 64f)), fillArea.offsetMax.y);
+        fillArea.offsetMax = new Vector2(((plr.MaxHealth * 64f)), fillArea.offsetMax.y);
     }
 }

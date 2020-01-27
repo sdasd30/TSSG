@@ -26,7 +26,7 @@ public class HPBoxes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        maxHP = (int)playerAtackable.maxHP;
+        maxHP = (int)playerAtackable.MaxHealth;
         if (player != null && transform.childCount != maxHP) switchBoard(maxHP);
     }
 
