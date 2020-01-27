@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 
 public class InputPacket {
-    public Vector2 movementInput = new Vector2();
+    public Vector3 movementInput = new Vector2();
     public Vector2 MousePointWorld = new Vector2();
     public bool jump = false;
+    public bool jumpDown = false;
     public bool fire1 = false;
     public bool fire1Press = false;
-
+    public bool interact = false;
+    public bool inventory = false;
 
     public void Combine(InputPacket ip)
     {
