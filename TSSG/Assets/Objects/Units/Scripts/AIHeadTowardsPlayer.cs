@@ -16,7 +16,7 @@ public class AIHeadTowardsPlayer : AIBase
     public float TargetTolerance = 0.2f;
 
     public Transform m_targetObj;
-    private BasicMovement m_playerChar;
+    private MovementBase m_playerChar;
     private float m_nextMoveOKTime = 0.0f;
     private float m_nextJumpTime = 0.0f;
     private float m_jumpingHoldTime = 0.0f;

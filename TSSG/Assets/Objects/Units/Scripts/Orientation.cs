@@ -13,27 +13,51 @@ public class Orientation : MonoBehaviour
     //private SpriteRenderer m_sprite;
     public bool FacingLeft = false;
     public Direction CurrentDirection = Direction.DOWN;
-    public SpriteRenderer m_sprite;
 
     // Use this for initialization
     internal void Awake()
     {
-        m_sprite = GetComponent<SpriteRenderer>();
     }
 
     public void SetDirection(Direction d)
     {
         CurrentDirection = d;
-        if (d == Direction.LEFT)
-        {
-            FacingLeft = true;
-            m_sprite.flipX = true;
-        }
+        
         if (d == Direction.RIGHT)
         {
-            FacingLeft = false;
-            m_sprite.flipX = false;
+            transform.rotation = Quaternion.Euler(new Vector3(90f, 0f, 0f));
         }
+        if (d == Direction.UP)
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(90f, -90f, 0f));
+        }
+        if (d == Direction.LEFT)
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(90f, 180f, 0f));
+        }
+        if (d == Direction.DOWN)
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(90f, 90f, 0f));
+        }
+    }
+    public void SetDirection(Vector3 directionVector)
+    {
+        float angle = Mathf.Atan2(directionVector.z, directionVector.x);
+        transform.rotation = Quaternion.Euler(new Vector3(90f, angle, 0f));
+    }
+    public void FacePoint(Vector3 facePoint)
+    {
+        float angle = Mathf.Atan2(transform.position.z - facePoint.z, facePoint.x - transform.position.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(90f, angle, 0f));
+    }
+    public void FaceVector(Vector3 targetVector)
+    {
+        FaceVector(new Vector2(targetVector.x, targetVector.z));
+    }
+    public void FaceVector(Vector2 targetVector)
+    {
+        float angle = Mathf.Atan2(-targetVector.y, targetVector.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(90f, angle, 0f));
     }
     public void SetDirection (bool facingLeft)
     {
@@ -156,6 +180,14 @@ public class Orientation : MonoBehaviour
     public bool FacingPoint2D(Vector3 point, bool left)
     {
         return (point.x < transform.position.x == left);
+    }
+
+    public static Vector3 OrientToVectorZ(Vector3 baseVector, float ZRotation)
+    {
+        float x = baseVector.x * Mathf.Cos(ZRotation) + baseVector.z * Mathf.Sin(ZRotation);
+        float y = baseVector.y;
+        float z = baseVector.x * -Mathf.Sin(ZRotation) + baseVector.z * Mathf.Cos(ZRotation);
+        return new Vector3(x,y,z);
     }
 }
 

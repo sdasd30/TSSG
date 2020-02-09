@@ -5,7 +5,7 @@ using UnityEngine;
 public class Projectile : Hitbox
 {
     public float ProjectileSpeed;
-    public Vector2 AimPoint = new Vector2();
+    public Vector3 AimPoint = new Vector3();
     public int PenetrativePower = 0;
     public bool TravelThroughWalls = false;
     public bool OrientToSpeed = true;
@@ -41,7 +41,7 @@ public class Projectile : Hitbox
             processGravity();
         transform.Translate(m_velocity, Space.World);
         if (OrientToSpeed)
-            orientToSpeed(new Vector2(m_velocity.x, m_velocity.y));
+            orientToSpeed(m_velocity);
     }
     protected override HitResult OnAttackable(Attackable atkObj)
     {
@@ -72,10 +72,10 @@ public class Projectile : Hitbox
             m_remainingDuration = 0f;
         }
     }
-    void orientToSpeed(Vector2 speed)
+    void orientToSpeed(Vector3 speed)
     {
         if (ProjectileSpeed != 0f)
-            transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, Mathf.Rad2Deg * Mathf.Atan2(speed.y, speed.x)));
+            transform.rotation = Quaternion.Euler(new Vector3(90f, 0f, Mathf.Rad2Deg * Mathf.Atan2(speed.z, speed.x)));
     }
 
     private bool JumpThruTag(GameObject obj)
@@ -90,10 +90,10 @@ public class Projectile : Hitbox
         m_numPenetrated = 0;
     }
 
-    public void SetAimPoint(Vector2 ap)
+    public void SetAimPoint(Vector3 ap)
     {
         m_velocity = new Vector3(ProjectileSpeed * Time.fixedDeltaTime * ap.normalized.x,
-            ProjectileSpeed * Time.fixedDeltaTime * ap.normalized.y, 0f);
+            ProjectileSpeed * Time.fixedDeltaTime * ap.normalized.y, ProjectileSpeed * Time.fixedDeltaTime * ap.normalized.z);
         AimPoint = ap;
     }
 
@@ -102,5 +102,31 @@ public class Projectile : Hitbox
         GravityScale = 0f;
         yield return new WaitForSeconds(seconds);
         GravityScale = gravityScale;
+    }
+
+    public void InitFromProjectileInfo(ProjectileInfo pi, GameObject parent,FactionHolder fh = null)
+    {
+        float deg = Mathf.Deg2Rad * parent.transform.rotation.eulerAngles.y;
+        if (pi.AimTowardsTarget)
+        {
+
+        } else
+        {
+            
+            transform.localPosition = transform.position + Orientation.OrientToVectorZ(pi.ProjectileCreatePos,deg);
+        }
+        AimPoint = Orientation.OrientToVectorZ(pi.ProjectileAimDirection,deg);
+        
+        ProjectileSpeed = pi.ProjectileSpeed;
+        SetAimPoint(AimPoint);
+        PenetrativePower = pi.PenetrativePower;
+        Damage = pi.Damage;
+        Stun = pi.Stun;
+        Duration = pi.HitboxDuration;
+        AddElement(pi.Element);
+        Knockback = Orientation.OrientToVectorZ(pi.Knockback, deg);
+        if (fh != null)
+            fh.SetFaction(gameObject);
+        Init();
     }
 }

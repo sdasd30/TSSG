@@ -19,6 +19,8 @@ public class FootstepInfo
 public class MovementBase : MonoBehaviour
 {
     public bool IsPlayerControl = false;
+    private bool m_canMove = true;
+    
     public bool CanJump = true;
     public int MidAirJumps = 0;
 
@@ -71,7 +73,7 @@ public class MovementBase : MonoBehaviour
     private const float MIN_JUMP_INTERVAL = 0.2f;
     private const float SMOOTH_TIME = .1f;
 
-    private List<OffensiveTemplate> m_offensiveTemplates;
+    private List<MovementTemplate> m_MovementTemplates;
     private List<AIBase> m_aibase;
 
     internal void Awake()
@@ -81,7 +83,7 @@ public class MovementBase : MonoBehaviour
         m_orient = GetComponent<Orientation>();
         m_trueAverageVelocity = new Vector3();
         m_aibase = new List<AIBase>(GetComponents<AIBase>());
-        m_offensiveTemplates = new List<OffensiveTemplate>(GetComponents<OffensiveTemplate>());
+        m_MovementTemplates = new List<MovementTemplate>(GetComponents<MovementTemplate>());
         lastPos = transform.position;
         if (CanJump)
             SetJumpHeight(JumpHeight);
@@ -98,14 +100,21 @@ public class MovementBase : MonoBehaviour
     internal void Update()
     {
         InputPacket ip = new InputPacket();
-        if (IsPlayerControl) {
-            ip = playerMovement();
-        } else {
-            ip = npcMovement();
+        if (m_canMove)
+        {
+            if (IsPlayerControl)
+            {
+                ip.MatchPlayerInput();
+            }
+            else
+            {
+                ip = npcMovement();
+            }
         }
+        
         moveSmoothly();
         currentPlayerControl(ip);
-        foreach (OffensiveTemplate ot in m_offensiveTemplates)
+        foreach (MovementTemplate ot in m_MovementTemplates)
             ot.HandleInput(ip);
 
         /*if (m_FootStepInfo.PlayFootsteps)
@@ -119,24 +128,6 @@ public class MovementBase : MonoBehaviour
         resetJumps();
         updateAverageVelocity();
     }
-
-    internal InputPacket playerMovement()
-    {
-        InputPacket ip = new InputPacket();
-        ip.movementInput.x = Input.GetAxis("Horizontal");
-        ip.movementInput.z = Input.GetAxis("Vertical");
-        ip.jump = Input.GetButtonDown("Jump");
-        ip.fire1 = Input.GetButton("Fire1");
-        ip.fire1Press = Input.GetButtonDown("Fire1");
-        Vector3 mousePos = Input.mousePosition;
-
-        Vector3 objectPos = Camera.main.WorldToScreenPoint(transform.position);
-        mousePos.x = mousePos.x - objectPos.x;
-        mousePos.y = mousePos.y - objectPos.y;
-        ip.MousePointWorld = mousePos;
-        return ip;
-    }
-
     internal InputPacket npcMovement()
     {
         InputPacket ip = new InputPacket();
@@ -144,7 +135,7 @@ public class MovementBase : MonoBehaviour
             ip.Combine(aib.AITemplate());
         return ip;
     }
-
+     
     public void updateAverageVelocity()
     {
         if (Time.timeSinceLevelLoad - LastCalculatedTime > VEL_CALC_INTERVAL)
@@ -222,8 +213,14 @@ public class MovementBase : MonoBehaviour
     {        
         if (ip.movementInput.magnitude > 0.01f && m_orient != null)
         {
-            Direction d = m_orient.VectorToDirection(ip.movementInput);
-            m_orient.SetDirection(d);
+             m_orient.FaceVector(ip.movementInput);
+            //m_orient.SetDirection(d);
+        }
+        if (ip.leftMouse || ip.leftMousePress ||
+            ip.rightMouse || ip.rightMousePress ||
+            ip.middleMouse || ip.middleMousePress)
+        {
+            m_orient.FacePoint(ip.MousePointWorld);
         }
         m_jumpDown = ip.jumpDown;
         m_jumpHold = ip.jump;
@@ -312,4 +309,8 @@ public class MovementBase : MonoBehaviour
         CanJump = d.GetBool("CanJump");
         MidAirJumps = d.GetInt("MidAirJumps");
     }
+    public void SetCanMove (bool canMove)
+    { m_canMove = canMove; }
+
+
 }

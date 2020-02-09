@@ -54,13 +54,13 @@ public class AIShootAtPlayer : AIBase
                 target.y = target.y - transform.position.y;
                 ip.MousePointWorld = target;
                 if (t < m_fireHoldTime)
-                    ip.fire1 = true;
+                    ip.leftMouse = true;
                 if (ShootProbability > 0.0f && t > m_nextShootTime)
                 {
                     if (Random.Range(0, 100) < ShootProbability)
                     {
                         m_nextShootTime = t + ShootCheckInterval;
-                        ip.fire1Press = true;
+                        ip.leftMousePress = true;
                         m_fireHoldTime = t + ShootHoldBurstTime;
                     }
                 }

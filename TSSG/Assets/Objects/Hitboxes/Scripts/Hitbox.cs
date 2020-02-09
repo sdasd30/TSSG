@@ -74,8 +74,8 @@ public class Hitbox : MonoBehaviour
     public bool IsResetKnockback { get { return m_resetKnockback; } set { m_resetKnockback = value; } }
 
     [SerializeField]
-    private Vector2 m_knockback = new Vector2(0.0f, 40.0f);
-    public Vector2 Knockback { get { return m_knockback; } set { m_knockback = value; } }
+    private Vector3 m_knockback = new Vector3(0.0f, 40.0f);
+    public Vector3 Knockback { get { return m_knockback; } set { m_knockback = value; } }
 
     [SerializeField]
     private float m_stun = 0.0f;
@@ -103,12 +103,12 @@ public class Hitbox : MonoBehaviour
     private GameObject m_followObj;
 
     [SerializeField]
-    public Vector2 m_followOffset;
+    public Vector3 m_followOffset;
 
     //[SerializeField]
     //private List<Collider2D> m_upRightDownLeftColliders;
 
-    private PhysicsSS m_creatorPhysics;
+    private BasicPhysics m_creatorPhysics;
     private Vector4 m_knockbackRanges;
     public List<Attackable> m_collidedObjs = new List<Attackable>();
     public List<Attackable> m_overlappingControl = new List<Attackable>();
@@ -118,7 +118,6 @@ public class Hitbox : MonoBehaviour
 
     virtual public void Init()
     {
-        m_creatorPhysics = Creator.GetComponent<PhysicsSS>();
         if (m_focusDamage == -1f)
             m_focusDamage = m_damage;
 
@@ -140,8 +139,8 @@ public class Hitbox : MonoBehaviour
     protected virtual void Tick()
     {
         //Debug.Log ("Hitbox created");
-        if (m_followObj != null)
-            FollowObj();
+        //if (m_followObj != null)
+        //    FollowObj();
         if (m_creatorPhysics != null)
         {
             //SwitchActiveCollider(m_creatorPhysics.GetComponent<Orientation>().FacingLeft);
@@ -160,8 +159,8 @@ public class Hitbox : MonoBehaviour
         m_followObj = obj;
         m_followOffset = offset;
         Vector3 newOffset = new Vector3(offset.x, offset.y, 0f);
-        if (m_followObj.GetComponent<PhysicsSS>() != null &&
-            m_followObj.GetComponent<PhysicsSS>().GetComponent<Orientation>().FacingLeft)
+        if (m_followObj.GetComponent<BasicPhysics>() != null &&
+            m_followObj.GetComponent<BasicPhysics>().GetComponent<Orientation>().FacingLeft)
         {
             newOffset.x *= -1f;
             //Debug.Log ("Reverse");
@@ -197,7 +196,7 @@ public class Hitbox : MonoBehaviour
     }
     private void FollowObj()
     {
-        transform.position = new Vector3(m_followObj.transform.position.x + m_followOffset.x, m_followObj.transform.position.y + m_followOffset.y, 0);
+        //transform.position = new Vector3(m_followObj.transform.position.x + m_followOffset.x, m_followObj.transform.position.y + m_followOffset.y, 0);
     }
 
     private void RandomizeKnockback()
@@ -319,8 +318,8 @@ public class Hitbox : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        Gizmos.color = new Color(1, 0, 0, .8f);
-        Gizmos.DrawCube(transform.position, transform.lossyScale);
+        //Gizmos.color = new Color(1, 0, 0, .8f);
+        //Gizmos.DrawCube(transform.position, transform.lossyScale);
     }
 
     public void AddElement(ElementType element)
@@ -434,21 +433,18 @@ public class Hitbox : MonoBehaviour
         m_overlappingControl.Clear();
     }
 
-    public void InitFromHitboxInfo(HitboxInfo hbi, Orientation orient, FactionHolder fh = null)
-    {
-        Vector3 cOff = (orient == null) ? hbi.HitboxOffset : orient.OrientVectorToDirection2D(hbi.HitboxOffset);
-        //Debug.Log("Initial offset is: " + cOff);
-        Vector3 newPos = transform.position + (Vector3)cOff;
-        //Debug.Log("Instantiated at: " + newPos);
-        transform.localPosition = newPos;
+    public void InitFromHitboxInfo(HitboxInfo hbi, GameObject parent, FactionHolder fh = null)
+    {        
         if (hbi.FollowCharacter)
         {
-            transform.SetParent(gameObject.transform);
+            transform.SetParent(parent.transform);
             transform.localScale = new Vector3(hbi.HitboxScale.x / transform.localScale.x, hbi.HitboxScale.y / transform.localScale.y, hbi.HitboxScale.z / transform.localScale.z);
+            transform.localPosition = hbi.HitboxOffset;
+            transform.localRotation = Quaternion.identity;
         }
         else
         {
-            SetScale((orient == null) ? hbi.HitboxScale : orient.OrientVectorToDirection2D(hbi.HitboxScale, false));
+            SetScale(hbi.HitboxScale);// : orient.OrientVectorToDirection2D(hbi.HitboxScale, false));
         }
         Damage = hbi.Damage;
         OriginSource = hbi.OriginSource;
@@ -456,17 +452,18 @@ public class Hitbox : MonoBehaviour
         FocusDamage = hbi.FocusDamage;
         Penetration = hbi.Penetration;
         Duration = hbi.HitboxDuration;
-        Knockback = (orient == null) ? hbi.Knockback : orient.OrientVectorToDirection2D(hbi.Knockback);
+        float deg = Mathf.Deg2Rad * parent.transform.rotation.eulerAngles.y;
+        Knockback = Orientation.OrientToVectorZ(hbi.Knockback, deg);// (orient == null) ? hbi.Knockback : orient.OrientVectorToDirection2D(hbi.Knockback);
         IsFixedKnockback = hbi.FixedKnockback;
         Stun = hbi.Stun;
         FreezeTime = hbi.FreezeTime;
         AddElement(hbi.Element);
-        Creator = gameObject;
+        Creator = parent;
         if (fh != null)
             fh.SetFaction(gameObject);
         IsResetKnockback = hbi.ResetKnockback;
         if (hbi.FollowCharacter)
-            SetFollow(gameObject, hbi.HitboxOffset);
+            SetFollow(parent, hbi.HitboxOffset);
         Init();
     }
 }

@@ -5,11 +5,11 @@ using UnityEngine.EventSystems;
 
 public class HitboxMaker : MonoBehaviour
 {
-	CharacterBase m_charBase;
+    MovementBase m_charBase;
     Orientation m_orient;
 
 	void Awake () {
-        m_charBase = GetComponent<CharacterBase>();
+        m_charBase = GetComponent<MovementBase>();
         m_orient = GetComponent<Orientation>();
 	}
 
@@ -43,40 +43,15 @@ public class HitboxMaker : MonoBehaviour
 	//}
 
     public Hitbox CreateHitbox(HitboxInfo hbi) {
-        Vector3 cOff = (m_charBase == null) ? hbi.HitboxOffset : m_orient.OrientVectorToDirection2D(hbi.HitboxOffset);
-        //Debug.Log("Initial offset is: " + cOff);
-		Vector3 newPos = transform.position + (Vector3)cOff;
-        //Debug.Log("Instantiated at: " + newPos);
-        var go = GameObject.Instantiate(ListHitboxes.Instance.Hitbox, newPos, Quaternion.identity);
+        if (ListHitboxes.Instance == null)
+        {
+            Debug.LogWarning("LIstHitboxes not found. Please add a Gameobject with the ListHItboxes prefab");
+            return null;
+        }
+        var go = GameObject.Instantiate(ListHitboxes.Instance.Hitbox, transform.position, Quaternion.identity);
 
 		Hitbox newBox = go.GetComponent<Hitbox>();
-        newBox.InitFromHitboxInfo(hbi,m_orient,GetComponent<FactionHolder>());
-        /*
-        if (hbi.FollowCharacter) {
-			go.transform.SetParent (gameObject.transform);
-			newBox.transform.localScale = new Vector3 (hbi.HitboxScale.x / transform.localScale.x, hbi.HitboxScale.y / transform.localScale.y, hbi.HitboxScale.z / transform.localScale.z);
-		} else {
-			newBox.SetScale ((m_charBase == null) ? hbi.HitboxScale : m_orient.OrientVectorToDirection2D(hbi.HitboxScale,false));
-		}
-		newBox.Damage = hbi.Damage;
-        newBox.SourceEqp = hbi.SourceEqp;
-
-        newBox.FocusDamage = hbi.FocusDamage;
-		newBox.Penetration = hbi.Penetration;
-		newBox.Duration = hbi.HitboxDuration;
-		newBox.Knockback = (m_charBase == null) ? hbi.Knockback : m_orient.OrientVectorToDirection2D(hbi.Knockback);
-		newBox.IsFixedKnockback = hbi.FixedKnockback;
-		newBox.Stun = hbi.Stun;
-		newBox.FreezeTime = hbi.FreezeTime;
-		newBox.AddElement(hbi.Element);
-		newBox.Creator = gameObject;
-		newBox.Faction = Faction;
-		newBox.IsResetKnockback = hbi.ResetKnockback;
-		if (hbi.FollowCharacter)
-			newBox.SetFollow (gameObject,hbi.HitboxOffset);
-		if (hbi.ApplyProps)
-			ExecuteEvents.Execute<ICustomMessageTarget> (gameObject, null, (x, y) => x.OnHitboxCreate(newBox));
-		newBox.Init();*/
+        newBox.InitFromHitboxInfo(hbi,gameObject,GetComponent<FactionHolder>());
 		return newBox;
 	}
 
@@ -175,7 +150,7 @@ public class HitboxMaker : MonoBehaviour
         Vector3 cOff = (m_charBase == null) ? creationPoint : m_orient.OrientVectorToDirection(creationPoint);
         Vector3 newPos = transform.position + (Vector3)cOff;
         GameObject go = Instantiate (prefab, newPos, Quaternion.identity);
-        if (go.GetComponent<CharacterBase> () != null) {
+        if (go.GetComponent<MovementBase> () != null) {
             Vector3 throwVec = throwSpeed * throwPoint.normalized;
             go.GetComponent<BasicPhysics> ().AddToVelocity (m_orient.OrientVectorToDirection (throwVec));
         }
@@ -184,7 +159,17 @@ public class HitboxMaker : MonoBehaviour
     
     public Projectile CreateProjectile(ProjectileInfo pi)
     {
-        return CreateProjectile(pi.Projectile, pi.ProjectileCreatePos, pi.ProjectileAimDirection, pi.ProjectileSpeed, pi.Damage, pi.Stun, pi.HitboxDuration, pi.Knockback, true, pi.Element, pi.PenetrativePower);
+        GameObject go;
+        if (pi.Projectile != null)
+        {
+            go = GameObject.Instantiate(pi.Projectile, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            go = GameObject.Instantiate(ListHitboxes.Instance.StandardProjectile, transform.position, Quaternion.identity);
+        }
+        go.GetComponent<Projectile>().InitFromProjectileInfo(pi, gameObject, GetComponent<FactionHolder>());
+        return go.GetComponent<Projectile>();
     }
     public Projectile CreateProjectile(GameObject prefab, Vector3 creationPoint, Vector3 targetPoint,
         float projectileSpeed, float damage, float stun, float projectileDuration, Vector3 knockback, 
@@ -225,8 +210,8 @@ public class HitboxMaker : MonoBehaviour
 
 	public void RegisterHit(GameObject otherObj, HitInfo hi, HitResult hr)
 	{
-		if (m_charBase)
-            m_charBase.RegisterHit (otherObj,hi,hr);
+		//if (m_charBase)
+  //          m_charBase.RegisterHit (otherObj,hi,hr);
 	}
 
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletShooter : OffensiveTemplate
+public class BulletShooter : MovementTemplate
 {
 
     /*public WeaponStats Weapon;
