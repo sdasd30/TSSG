@@ -62,11 +62,11 @@ public class Projectile : Hitbox
         if (m_velocity.y > TERMINAL_VELOCITY)
             m_velocity.y += -GravityScale * Time.fixedDeltaTime;
     }
-    protected override void OnHitObject(Collider2D other)
+    protected override void OnHitObject(Collider other)
     {
         if (TravelThroughWalls)
             return;
-        if (other.gameObject != Creator && !other.isTrigger && !JumpThruTag(other.gameObject)
+        if (other.gameObject != Creator && !other.isTrigger
             && other.GetComponent<Attackable>() == null)
         {
             m_remainingDuration = 0f;
@@ -77,13 +77,6 @@ public class Projectile : Hitbox
         if (ProjectileSpeed != 0f)
             transform.rotation = Quaternion.Euler(new Vector3(90f, 0f, Mathf.Rad2Deg * Mathf.Atan2(speed.z, speed.x)));
     }
-
-    private bool JumpThruTag(GameObject obj)
-    {
-        return (obj.CompareTag("JumpThru") || (obj.transform.parent != null &&
-            obj.transform.parent.CompareTag("JumpThru")));
-    }
-
     public override void SetHitboxActive(bool a)
     {
         base.SetHitboxActive(a);
@@ -127,6 +120,7 @@ public class Projectile : Hitbox
         Knockback = Orientation.OrientToVectorZ(pi.Knockback, deg);
         if (fh != null)
             fh.SetFaction(gameObject);
+        Creator = parent;
         Init();
     }
 }

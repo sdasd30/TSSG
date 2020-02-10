@@ -254,7 +254,7 @@ public class Hitbox : MonoBehaviour
         return GetComponent<FactionHolder>().CanAttack(atkObj);
     }
 
-    internal HitResult OnTriggerEnter2D(Collider2D other)
+    internal HitResult OnTriggerEnter(Collider other)
     {
         if (other == null)
             return HitResult.NONE;
@@ -275,10 +275,10 @@ public class Hitbox : MonoBehaviour
         projectile.SetAimPoint(new Vector2(-ap.x, -ap.y));
         projectile.ResetDuration();
     }
-    protected virtual void OnHitObject(Collider2D other)
+    protected virtual void OnHitObject(Collider other)
     {
     }
-    internal void OnTriggerExit2D(Collider2D other)
+    internal void OnTriggerExit(Collider other)
     {
         /*
 		 * TODO: Delay removal of collided object to avoid stuttered collisions 
