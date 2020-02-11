@@ -34,8 +34,12 @@ public class LineHitbox : Hitbox {
 		} else {
 			line.SetPosition (0, transform.position);
 			line.SetPosition (1, transform.position + new Vector3 ((aimPoint * range).x, (aimPoint * range).y, (aimPoint * range).z));
-			foreach (RaycastHit hit in hit_list) {
+            float minDistance = float.MaxValue;
+            foreach (RaycastHit hit in hit_list) {
 				Collider collider = hit.collider;
+                float dist = Vector3.Distance(transform.position, hit.point);
+                if (dist > minDistance)
+                    continue;
                 if (!CanPenetrateWall && collider.gameObject != Creator && !collider.isTrigger &&
                     collider.GetComponent<Attackable>() == null)
                 {
@@ -43,13 +47,13 @@ public class LineHitbox : Hitbox {
                     line.SetPosition(1, hit.point);
                     foundPoint = true;
                     endPoint = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-                    return;
+                    minDistance = Mathf.Min(minDistance, dist);
                 }
 				HitResult hitType = OnTriggerEnter (collider);
 				if (hitType != HitResult.NONE) {
 					if (hitType == HitResult.REFLECTED)
 						getReflected (hit.point);
-                    OnAttackable(collider.gameObject.GetComponent<Attackable>());
+                    //OnAttackable(collider.gameObject.GetComponent<Attackable>());
                     if (m_numPenetrated >= EnemiesCanPenetrate)
                     {
                         line.SetPosition(0, transform.position);

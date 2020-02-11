@@ -238,7 +238,7 @@ MonoBehaviour:
     MaxRange: 10
     PenetrativePower: 0
     CanPenetrateWall: 0
-    Damage: 0
+    Damage: 25
     Stun: 0
     HitboxDuration: 0.2
     Knockback: {x: 10, y: 0, z: 0}

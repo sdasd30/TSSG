@@ -10,7 +10,7 @@ public class HitInfo
     public float Damage = 10f;
     public float FocusDamage = 10f;
     public float Penetration = 0f;
-    public Vector2 Knockback = new Vector2();
+    public Vector3 Knockback = new Vector3();
     public bool IsFixedKnockback = false;
     public bool ResetKnockback = true;
     public float Stun = 0f;
@@ -215,7 +215,7 @@ public class Hitbox : MonoBehaviour
             RandomizeKnockback();
         HitInfo newHI = ToHitInfo();
         newHI.LastTimeHit = Time.timeSinceLevelLoad;
-        newHI.Knockback = new Vector2(Knockback.x, Knockback.y);
+        newHI.Knockback = Knockback;
         newHI.target = atkObj.gameObject;
         //HitResult r = atkObj.TakeHit(newHI);
         HitResult r = atkObj.TakeHit(newHI);

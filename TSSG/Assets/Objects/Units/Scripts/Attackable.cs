@@ -291,7 +291,8 @@ public class Attackable : MonoBehaviour
         float fD = hi.FocusDamage;
         d = DamageObj(d);
 
-        ApplyHitToPhysics(hi);
+        if (m_physics != null)
+            ApplyHitToPhysics(hi);
         float s = hi.Stun - (hi.Stun * Mathf.Min(1f, (r.StunResist / 100f)));
         if (hi.Stun > 0f && m_charBase)
         {
