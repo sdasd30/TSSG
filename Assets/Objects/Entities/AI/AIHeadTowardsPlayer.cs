@@ -11,8 +11,7 @@ public class AIHeadTowardsPlayer : AIBase
     public float JumpProbabilityPercent = 0.0f;
     public float JumpCheckInterval = 1.0f;
     public float JumpWhenInProximityOf = 999f;
-    public bool YAccessMove = false;
-    public Vector2 TargetOffset = new Vector2();
+    public Vector3 TargetOffset = new Vector3();
     public float TargetTolerance = 0.2f;
 
     public Transform m_targetObj;
@@ -54,14 +53,13 @@ public class AIHeadTowardsPlayer : AIBase
         if (m_targetObj != null && t > m_nextMoveOKTime)
         {
             float moddedOffX = (m_targetObj.transform.position.x > transform.position.x) ? TargetOffset.x : -TargetOffset.x ;
-            Vector2 target = new Vector2(m_targetObj.transform.position.x + moddedOffX, m_targetObj.transform.position.y + TargetOffset.y);
-            float d = Vector2.Distance(target, transform.position);
+            float moddedOffZ = (m_targetObj.transform.position.z > transform.position.z) ? TargetOffset.z : -TargetOffset.z;
+            Vector3 target = new Vector3(m_targetObj.transform.position.x + moddedOffX,0f, m_targetObj.transform.position.z + moddedOffZ);
+            float d = Vector3.Distance(target, transform.position);
             if (d > TargetTolerance)
             {
                 ip.movementInput = new Vector2((target.x > transform.position.x) ? 1f : -1f,
-                (target.y > transform.position.y) ? 1f : -1f);
-                if (!YAccessMove)
-                    ip.movementInput.y = 0f;
+                (target.z > transform.position.z) ? 1f : -1f);
             }
             if (t < m_jumpingHoldTime)
                 ip.jump = true;

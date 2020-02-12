@@ -9,9 +9,9 @@ public class AIShootAtPlayer : AIBase
     public float ShootProbability = 0.0f;
     public float ShootCheckInterval = 1.0f;
     public float ShootHoldBurstTime = 0.1f;
-    public Vector2 TargetOffset = new Vector2();
+    public Vector3 TargetOffset = new Vector3();
     public Vector2 RandomRangeX = new Vector2();
-    public Vector2 RandomRangeY = new Vector2();
+    public Vector2 RandomRangeZ = new Vector2();
     private float m_nextShootTime = 0.0f;
     private float m_nextRecheck = 0.0f;
     private float m_fireHoldTime;
@@ -45,13 +45,12 @@ public class AIShootAtPlayer : AIBase
         float t = Time.timeSinceLevelLoad;
         if (m_targetObj != null)
         {
-            float d = Vector2.Distance(m_targetObj.transform.position, transform.position);
+            float d = Vector3.Distance(m_targetObj.transform.position, transform.position);
             if (d < StartShootingRange)
             {
-                Vector2 target = new Vector2(m_targetObj.transform.position.x + TargetOffset.x, m_targetObj.transform.position.y + TargetOffset.y);
-                target += new Vector2(Random.Range(RandomRangeX.x, RandomRangeX.y), Random.Range(RandomRangeY.x, RandomRangeY.y));
-                target.x = target.x - transform.position.x;
-                target.y = target.y - transform.position.y;
+                Vector3 target =  m_targetObj.transform.position + TargetOffset;
+                target += new Vector3(Random.Range(RandomRangeX.x, RandomRangeX.y),0f, Random.Range(RandomRangeZ.x, RandomRangeZ.y));
+                target = target - transform.position;
                 ip.MousePointWorld = target;
                 if (t < m_fireHoldTime)
                     ip.leftMouse = true;

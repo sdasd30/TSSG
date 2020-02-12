@@ -12,6 +12,7 @@ public enum InputKey
     Item1,
     Item2,
     Item3,
+    Inventory,
     Pause
 }
 

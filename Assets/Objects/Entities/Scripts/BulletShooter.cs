@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletShooter : MovementTemplate
+public class BulletShooter : InputHandler
 {
 
     /*public WeaponStats Weapon;

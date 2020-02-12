@@ -75,7 +75,7 @@ public class MovementBase : MonoBehaviour
     private const float MIN_JUMP_INTERVAL = 0.2f;
     private const float SMOOTH_TIME = .1f;
 
-    private List<MovementTemplate> m_MovementTemplates;
+    private List<InputHandler> m_InputHandlers;
     private List<AIBase> m_aibase;
 
     internal void Awake()
@@ -85,7 +85,7 @@ public class MovementBase : MonoBehaviour
         m_orient = GetComponent<Orientation>();
         m_trueAverageVelocity = new Vector3();
         m_aibase = new List<AIBase>(GetComponents<AIBase>());
-        m_MovementTemplates = new List<MovementTemplate>(GetComponents<MovementTemplate>());
+        m_InputHandlers = new List<InputHandler>(GetComponents<InputHandler>());
         lastPos = transform.position;
         if (CanJump)
             SetJumpHeight(JumpHeight);
@@ -116,7 +116,7 @@ public class MovementBase : MonoBehaviour
         
         moveSmoothly();
         currentPlayerControl(ip);
-        foreach (MovementTemplate ot in m_MovementTemplates)
+        foreach (InputHandler ot in m_InputHandlers)
             ot.HandleInput(ip);
 
         /*if (m_FootStepInfo.PlayFootsteps)

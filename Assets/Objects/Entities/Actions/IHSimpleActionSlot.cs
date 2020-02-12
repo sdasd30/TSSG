@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterBase))]
-public class SimpleActionSlot : MovementTemplate
+public class IHSimpleActionSlot : InputHandler
 {
 
     public ActionInfo OnLeftMouse;

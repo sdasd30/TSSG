@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 [RequireComponent(typeof(InventoryContainer))]
-public class EquipmentActionSlot : MovementTemplate
+public class IHEquipmentActionSlot : InputHandler
 {
     public string LeftMouseItem = "primary";
     public string RightMouseItem = "secondary";
