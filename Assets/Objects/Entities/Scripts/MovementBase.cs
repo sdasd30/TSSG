@@ -20,8 +20,9 @@ public class MovementBase : MonoBehaviour
 {
     public bool IsPlayerControl = false;
     private bool m_canMove = true;
-    
+    [HideInInspector]
     public bool CanJump = true;
+    [HideInInspector]
     public int MidAirJumps = 0;
 
     private BasicPhysics m_physics;
@@ -30,19 +31,20 @@ public class MovementBase : MonoBehaviour
     [SerializeField]
     private float m_moveSpeed = 8.0f;
     public float MoveSpeed { get { return m_moveSpeed; } private set { m_moveSpeed = value; } }
-    [SerializeField]
+    //[SerializeField]
     private float m_jumpHeight = 4.0f;
-    [SerializeField]
+    //[SerializeField]
     private bool VariableJumpHeight = false;
     public float JumpHeight { get { return m_jumpHeight; } private set { m_jumpHeight = value; } }
-    [SerializeField]
+    //[SerializeField]
     private float m_sprintRatio = 1.5f;
     //public float SprintRatio { get { return m_sprintRatio; } private set { m_sprintRatio = value; } }
-    [SerializeField]
+    //[SerializeField]
     private bool m_currentlySprinting = false;
     public bool IsSprinting { get { return m_currentlySprinting; } private set { m_currentlySprinting = value; } }
 
     public Vector3 InputMove { get { return m_inputMove; } private set { m_inputMove = value; } }
+    [HideInInspector]
     public bool DecelerateInAir = true;
 
     // Movement tracking

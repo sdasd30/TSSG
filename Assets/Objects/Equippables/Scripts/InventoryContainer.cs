@@ -57,7 +57,7 @@ public class InventoryContainer : MonoBehaviour
     private bool m_displaying;
     private List<Vector2> m_freeSlots;
     private bool m_inventoryInitialized = false;
-
+    public bool DisplayOnStart = false;
     internal void Awake()
     {
         if (GetComponent<PersistentItem>() != null)
@@ -85,6 +85,8 @@ public class InventoryContainer : MonoBehaviour
         m_freeSlots.Sort((a, b) => (a.x + a.y * 10).CompareTo(b.x + b.y * 10));
         if (!m_inventoryInitialized)
             InitInventory();
+        if (DisplayOnStart)
+            ToggleDisplay();
     }
 
     public bool CanFit(Vector2 itemPos, Vector2 itemSize)

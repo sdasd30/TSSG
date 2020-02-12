@@ -10,10 +10,17 @@ public class CharData {
 
 	public string regID = "Not Assigned";
 	public string prefabPath;
-	public string name;
-	public Vector3 pos;
 
-	[Serializable] public class DictionaryOfStringAndInt : SerializableDictionary<string, int> {}
+    [HideInInspector]
+    public string name;
+    [HideInInspector]
+    public Vector3 pos;
+    [HideInInspector]
+    public Direction targetDir;
+    [HideInInspector]
+    public string targetID;
+
+    [Serializable] public class DictionaryOfStringAndInt : SerializableDictionary<string, int> {}
 	public DictionaryOfStringAndInt PersistentInt;
 
 	[Serializable] public class DictionaryOfStringAndFloat : SerializableDictionary<string, float> {}
@@ -25,8 +32,7 @@ public class CharData {
 	[Serializable] public class DictionaryOfStringAndBool : SerializableDictionary<string, bool> {}
     public DictionaryOfStringAndBool PersistentBools;
 
-	public Direction targetDir;
-	public string targetID;
+
 
     public void SetInt(string key, int value) { PersistentInt[key] = value; }
     public int GetInt(string key, int defaultValue = 0)

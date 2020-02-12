@@ -34,10 +34,12 @@ public class BasicPhysics : MonoBehaviour
     private Vector3 m_artificialVelocity = new Vector3();
     private List<Force> m_forces;
     private Vector3 m_lastPosition;
+    [HideInInspector]
     public Vector3 m_trueVelocity;
     private Vector3 m_velocity;
     public Dictionary<Direction, float> TimeCollided { get { return m_timeCollided; } private set { m_timeCollided = value; } }
     public Dictionary<Direction, float> m_timeCollided;
+    [HideInInspector]
     public bool IsGrounded;
 
     // Tracking inputed movement

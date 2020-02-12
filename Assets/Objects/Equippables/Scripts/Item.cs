@@ -9,9 +9,8 @@ public class Item : Interactable
 {
     public bool Equipabble;
     public int MaxStack = 1;
-    public bool Rotated = false;
     
-    public Vector2 baseSize = new Vector2(1,1);
+
     public string displayname;
     public Sprite InventoryIcon;
     public delegate void LoadFunction(CharData d);
@@ -21,18 +20,26 @@ public class Item : Interactable
     public CharData ItemProperties;
 
     [HideInInspector]
+    public bool Rotated = false;
+    [HideInInspector]
+    public Vector2 baseSize = new Vector2(1, 1);
+    [HideInInspector]
     public InventorySlotUI CurrentSlot;
+    [HideInInspector]
+    public string prefabName;
+
     protected InventoryContainer m_currentContainer;
     protected Vector2 m_slotPosition;
 
-    [HideInInspector]
-    public string prefabName;
+
 
     // Start is called before the first frame update
     void Awake()
     {
         if (GetComponent<PersistentItem>() != null)
             ItemProperties = GetComponent<PersistentItem>().data;
+        if (InventoryIcon == null && GetComponent<SpriteRenderer>() != null)
+            InventoryIcon = GetComponent<SpriteRenderer>().sprite;
     }
 
     // Update is called once per frame

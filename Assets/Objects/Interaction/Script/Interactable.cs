@@ -15,7 +15,7 @@ public class InteractionInfo
 public class Interactable : MonoBehaviour
 {
     //[HideInInspector]
-    //public Interactor Actor;
+    //public CharacterBase Actor;
 
     public InteractionInfo interactableObjectInfo;
 
@@ -77,27 +77,26 @@ public class Interactable : MonoBehaviour
 
     internal void OnTriggerEnter(Collider other)
     {
-        //if (interactableObjectInfo.autoTrigger && other.gameObject.GetComponent<Interactor>())
-        //{
-        //    TriggerWithCoolDown(other.gameObject);
-        //}
-        //if (other.gameObject.GetComponent<Interactor>() != null)
-        //{
-        //    /*m_prompt.text = "Press " + TextboxManager.GetKeyString("Interact") + " to " + InteractionPrompt;
-        //    FindObjectOfType<GUIHandler>().ReplaceText(m_prompt);*/
-        //    Actor = other.gameObject.GetComponent<Interactor>();
-        //   // Actor.PromptedInteraction = this;
-        //}
+        if (interactableObjectInfo.autoTrigger && other.gameObject.GetComponent<CharacterBase>())
+        {
+            TriggerWithCoolDown(other.gameObject);
+        }
+        if (other.gameObject.GetComponent<CharacterBase>() != null)
+        {
+            /*m_prompt.text = "Press " + TextboxManager.GetKeyString("Interact") + " to " + InteractionPrompt;
+            FindObjectOfType<GUIHandler>().ReplaceText(m_prompt);*/
+            //Actor = other.gameObject.GetComponent<CharacterBase>();
+            // Actor.PromptedInteraction = this;
+        }
     }
 
     internal void OnTriggerExit(Collider other)
     {
-        //if (other.gameObject.GetComponent<Interactor>() != null &&
-        //    Actor == other.gameObject.GetComponent<Interactor>())
-        //{
-        //   /* FindObjectOfType<GUIHandler>().RemoveText(m_prompt);
-        //    Actor.PromptedInteraction = null;*/
-        //}
+        if (other.gameObject.GetComponent<CharacterBase>() != null )
+        {
+            /* FindObjectOfType<GUIHandler>().RemoveText(m_prompt);
+             Actor.PromptedInteraction = null;*/
+        }
     }
 
     /*private void storeData(CharData d)

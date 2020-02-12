@@ -8,6 +8,7 @@ public enum EquipmentDegradationType
 }
 public class Equipment : Item
 {
+    [HideInInspector]
     public GameObject EquipmentPiecePrefab;
     private string m_equipmentPieceType = "";
     private GameObject ItemInstance;

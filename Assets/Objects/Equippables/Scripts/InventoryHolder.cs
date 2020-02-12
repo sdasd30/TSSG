@@ -11,7 +11,7 @@ public class InventoryHolder : Interactable
     private InventoryHolder m_currentInspector = null;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         m_containers = new Dictionary<string, InventoryContainer>();
         initializeContainers();

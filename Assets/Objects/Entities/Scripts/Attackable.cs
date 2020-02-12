@@ -16,7 +16,7 @@ public class Attackable : MonoBehaviour
     public float MaxHealth = 100.0f;
 
     public bool Alive = true;
-    public float DeathTime = 0.0f;
+    private float m_deathTime = 0.0f;
     private float m_currDeathTime;
     public FactionType Faction = FactionType.NEUTRAL;
 
@@ -24,9 +24,11 @@ public class Attackable : MonoBehaviour
     private Dictionary<ElementType, Resistence> m_fullResistences = new Dictionary<ElementType, Resistence>();
     private CharacterBase m_charBase;
     private BasicPhysics m_physics;
-
+    [HideInInspector]
     public bool DisplayHealth = true;
+    [HideInInspector]
     public bool CanTarget = true;
+    [HideInInspector]
     public GameObject Killer;
     public GameObject DeathFX;
     //private HealthDisplay m_display;
@@ -38,8 +40,7 @@ public class Attackable : MonoBehaviour
         m_health = Mathf.Min(Health, MaxHealth);
         m_currDeathTime = 0.0f;
         InitResistences();
-        if (GetComponent<PersistentItem>() != null)
-            GetComponent<PersistentItem>().InitializeSaveLoadFuncs(storeData, loadData);
+        GetComponent<PersistentItem>()?.InitializeSaveLoadFuncs(storeData, loadData);
     }
 
     internal void InitResistences()
@@ -95,7 +96,7 @@ public class Attackable : MonoBehaviour
         Alive = Health > 0;
         if (Alive)
             return;
-        if (m_currDeathTime > DeathTime)
+        if (m_currDeathTime > m_deathTime)
         {
             //ExecuteEvents.Execute<ICustomMessageTarget>(gameObject, null, (x, y) => x.OnDeath());
             /*if (GetComponent<BasicMovement> () && GetComponent<BasicMovement> ().IsCurrentPlayer)
@@ -105,7 +106,7 @@ public class Attackable : MonoBehaviour
 			}*/
             Destroy(gameObject);
         }
-        GetComponent<SpriteRenderer>().color = Color.Lerp(Color.white, Color.black, (m_currDeathTime) / DeathTime);
+        GetComponent<SpriteRenderer>().color = Color.Lerp(Color.white, Color.black, (m_currDeathTime) / m_deathTime);
         m_currDeathTime += Time.deltaTime;
     }
 

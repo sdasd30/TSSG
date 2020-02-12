@@ -309,7 +309,7 @@ public class SaveObjManager : MonoBehaviour{
 		
 		GameObject prefab = Resources.Load<GameObject>(path);
 		if (prefab == null) {
-			Debug.Log ("ERROR: Could not re-instantiate object: " + path);
+			Debug.Log ("ERROR: Could not re-instantiate object: " + path + " prefab not found");
 			return null;
 		}
 		//Debug.Log (prefab);

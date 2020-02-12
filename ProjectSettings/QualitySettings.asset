@@ -200,7 +200,7 @@ QualitySettings:
     shadowmaskMode: 1
     skinWeights: 4
     textureQuality: 0
-    anisotropicTextures: 2
+    anisotropicTextures: 0
     antiAliasing: 0
     softParticles: 1
     softVegetation: 1
@@ -220,7 +220,8 @@ QualitySettings:
     asyncUploadBufferSize: 16
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
-    customRenderPipeline: {fileID: 0}
+    customRenderPipeline: {fileID: 11400000, guid: 3826d18e4d089cb46ab7996f0f62c870,
+      type: 2}
     excludedTargetPlatforms: []
   m_PerPlatformDefaultQuality:
     Android: 2
