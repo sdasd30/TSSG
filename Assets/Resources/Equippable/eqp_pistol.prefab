@@ -111,8 +111,6 @@ MonoBehaviour:
   PressTrigger: 0
   Equipabble: 1
   MaxStack: 1
-  Rotated: 0
-  baseSize: {x: 1, y: 1}
   displayname: Pistol
   InventoryIcon: {fileID: -4167987384140197314, guid: 73b19f8afbc522f449fcb46b2922c752,
     type: 3}
@@ -121,6 +119,8 @@ MonoBehaviour:
     prefabPath: Equippable/eqp_pistol
     name: 
     pos: {x: 0, y: 0, z: 0}
+    targetDir: 0
+    targetID: 
     PersistentInt:
       keys: []
       values: 
@@ -133,8 +133,8 @@ MonoBehaviour:
     PersistentBools:
       keys: []
       values: 
-    targetDir: 0
-    targetID: 
+  Rotated: 0
+  baseSize: {x: 1, y: 1}
   CurrentSlot: {fileID: 0}
   prefabName: 
   EquipmentPiecePrefab: {fileID: 0}
@@ -211,6 +211,9 @@ MonoBehaviour:
     RecoveryTime: 0.5
     StartUpAnimation: none
     RecoveryAnimation: none
+  m_MovementInfo:
+    CanMove: 0
+    MovementModifier: 1
   m_AIInfo:
     Frequency: 1
     UniqueAIPrediction: 0
@@ -221,15 +224,11 @@ MonoBehaviour:
   m_SoundInfo:
     StartupSoundFX: {fileID: 0}
     AttackSoundFX: {fileID: 0}
-  m_SentimentInfo:
-    RequiredMinSentiment: 0
-    ConsumedSentiment: 0
-    DrainOnWhiff: 1
-    TransferSentiment: 0
   m_actionIcons:
     IconOffset: {x: 0, y: 2}
     PreUseAnimation: {fileID: 0}
     PostUseAnimation: {fileID: 0}
+  m_useButton: 0
   m_HitScan:
   - CreatePos: {x: 0.5, y: 0, z: 0}
     AimTowardsTarget: 0
