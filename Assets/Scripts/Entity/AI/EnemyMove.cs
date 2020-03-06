@@ -14,6 +14,7 @@ public class EnemyMove : MonoBehaviour
     void Start()
     {
         m_aibase = GetComponent<AIBase>();
+
     }
     // Update is called once per frame
     void Update()

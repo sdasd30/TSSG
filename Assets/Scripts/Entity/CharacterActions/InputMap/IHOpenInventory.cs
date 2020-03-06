@@ -14,7 +14,7 @@ public class IHOpenInventory : InputHandler
 
     public override void HandleInput(InputPacket ip)
     {
-        if (ip.InputKeyPressed.ContainsKey(InputKey.Inventory) && 
+        if (ip.InputKeyPressed.ContainsKey(InputKey.Inventory) && ip.InputKeyPressed[InputKey.Inventory] &&
             (!RequirePlayerControllable || GetComponent<MovementBase>().IsPlayerControl))
         {
             GetComponent<InventoryHolder>().ToggleAllInventory();

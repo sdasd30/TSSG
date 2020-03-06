@@ -359,8 +359,20 @@ public class CharacterBase : MonoBehaviour
         if (m_currentAction != null)
             m_currentAction.OnHitConfirm(otherObj, hi, hr);
     }
+    public void TryAction(string actionInfoName, OnRegisterHit hitCallback = null, InputKey holdInput = InputKey.Fire)
+    {
+        foreach (ActionInfo ai in GetComponents<ActionInfo>())
+        {
+            if (ai.name == actionInfoName)
+            {
+                TryAction(ai, hitCallback, holdInput);
+            }
+        }
+    }
     public void TryAction(ActionInfo ai, OnRegisterHit hitCallback = null,InputKey holdInput = InputKey.Fire)
     {
+        if (ai == null)
+            return;
         if (!canAct())
             return;
         m_currentAction = ai;

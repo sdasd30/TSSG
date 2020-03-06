@@ -16,6 +16,7 @@ public class FootstepInfo
     public float FootstepInterval = 0.75f;
 }
 
+[RequireComponent(typeof(AIBaseMovement))]
 public class MovementBase : MonoBehaviour
 {
     public bool IsPlayerControl = false;
@@ -91,6 +92,8 @@ public class MovementBase : MonoBehaviour
         m_trueAverageVelocity = new Vector3();
         m_aibase = new List<AIBase>(GetComponents<AIBase>());
         m_InputHandlers = new List<InputHandler>(GetComponents<InputHandler>());
+
+        
         lastPos = transform.position;
         if (CanJump)
             SetJumpHeight(JumpHeight);

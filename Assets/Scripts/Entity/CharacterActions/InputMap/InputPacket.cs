@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using System.Collections.Generic;
 
 public class InputPacket {
     public Vector3 movementInput = new Vector3();
@@ -54,5 +54,25 @@ public class InputPacket {
         InputKeyPressed[InputKey.MiddleMouse] = Input.GetButtonDown("Fire3");
 
         MousePointWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        if (GameObject.FindObjectOfType<InputManager>() != null)
+        {
+            SerializableDictionary<InputKey, List<string>> my_keys = GameObject.FindObjectOfType<InputManager>().KeyMaps;
+            foreach (InputKey ik in my_keys.Keys)
+            {
+                foreach (string s in my_keys[ik])
+                {
+                    if (Input.GetKeyDown(s))
+                        InputKeyPressed[ik] = true;
+                    if (Input.GetKey(s))
+                        InputKeyDown[ik] = true;
+                }
+            } 
+        } else {
+            InputKeyPressed[InputKey.Inventory] = Input.GetKeyDown("i");
+            InputKeyDown[InputKey.Inventory] = Input.GetKey("i");
+            InputKeyPressed[InputKey.Interact] = Input.GetKeyDown("e");
+            InputKeyDown[InputKey.Interact] = Input.GetKey("e");
+        }
     }
 }

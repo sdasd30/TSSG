@@ -63,7 +63,8 @@ public class Equipment : Item
             m_onSave = ItemInstance.GetComponent<Item>().onItemSave;
 
             Destroy(ItemInstance.GetComponent<PersistentItem>());
-            
+
+            m_currentContainer = s;
             ItemInstance.name = es.SlotName;
 
             ItemInstance.GetComponent<Equipment>().AddActionListeners(s.gameObject);

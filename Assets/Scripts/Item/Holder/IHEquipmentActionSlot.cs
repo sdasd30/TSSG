@@ -24,7 +24,7 @@ public class IHEquipmentActionSlot : InputHandler
             return;
         if (ip.leftMousePress)
             m_container.EquipmentUseUpdatePlayer(LeftMouseItem, ip);
-        if (ip.leftMousePress)
+        if (ip.rightMousePress)
             m_container.EquipmentUseUpdatePlayer(RightMouseItem, ip);
         foreach (InputKey keyID in ButtonActions.Keys)
         {

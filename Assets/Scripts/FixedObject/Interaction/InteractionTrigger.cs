@@ -77,8 +77,9 @@ public class InteractionTrigger : MonoBehaviour
         }
         if (bestInteractable != null)
         {
-            bestInteractable.onPress(gameObject);
+            bestInteractable.onPress(MasterInteractor.gameObject);
         }
+        OverlapInteractions.Clear();
     }
 
     public void OnAttemptInteract(Interactable i, bool force = false)

@@ -43,7 +43,9 @@ public class ActionInteract : ActionInfo
         }
         Vector3 newPos = transform.position + (Vector3)i.HitboxOffset;
         //Debug.Log("Instantiated at: " + newPos);
-        var go = GameObject.Instantiate(ListHitboxes.Instance.InteractBox, newPos, Quaternion.identity);
+        var go = GameObject.Instantiate(ListHitboxes.Instance.InteractBox, gameObject.transform);
         go.transform.localScale = i.HitboxScale;
+        go.transform.localPosition = i.HitboxOffset;
+        go.GetComponent<InteractionTrigger>().MasterInteractor = GetComponent<CharacterBase>();
     }
 }

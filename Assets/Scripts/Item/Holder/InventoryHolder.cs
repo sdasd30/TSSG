@@ -78,12 +78,13 @@ public class InventoryHolder : Interactable
     }
     public override bool IsInteractable(GameObject interactor)
     {
-        return (m_currentInspector != null);
+        return (m_currentInspector == null);
     }
     protected override void onTrigger(GameObject interactor)
     {
         if (interactor.GetComponent<InventoryHolder>())
         {
+            interactor.GetComponent<InventoryHolder>().SetInventoryGUIOn(true);
             SetInventoryGUIOn(true);
             m_currentInspector = interactor.GetComponent<InventoryHolder>();
         }

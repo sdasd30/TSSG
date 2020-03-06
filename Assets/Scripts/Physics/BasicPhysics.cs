@@ -52,7 +52,6 @@ public class BasicPhysics : MonoBehaviour
     private float m_oldFloatingTime = 0f;
     private bool m_oldFloating = false;
 
-
     internal void Awake()
     {
         m_oldFloating = Floating;
