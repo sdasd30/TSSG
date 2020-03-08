@@ -15,6 +15,12 @@ public class AIBaseMovement : AIBase
     private float m_tolerance = 5f;
 
     // Start is called before the first frame update
+    private void Awake()
+    {
+        m_agent = gameObject.GetComponent<NavMeshAgent>();
+        m_agent.updatePosition = false;
+        m_agent.updateRotation = false;
+    }
     void Start()
     {
         m_agent = gameObject.GetComponent<NavMeshAgent>();

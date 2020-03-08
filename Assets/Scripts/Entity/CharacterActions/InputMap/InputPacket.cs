@@ -21,11 +21,11 @@ public class InputPacket {
 
     public void Combine(InputPacket ip)
     {
-        movementInput = movementInput + movementInput;
-        MousePointWorld = MousePointWorld;
-        jump = jump || jump;
-        leftMouse = leftMouse || leftMouse;
-        leftMousePress = leftMousePress || leftMousePress;
+        movementInput = movementInput + ip.movementInput;
+        MousePointWorld = ip.MousePointWorld;
+        jump = jump || ip.jump;
+        leftMouse = leftMouse || ip.leftMouse;
+        leftMousePress = leftMousePress || ip.leftMousePress;
     }
 
     public void MatchPlayerInput()

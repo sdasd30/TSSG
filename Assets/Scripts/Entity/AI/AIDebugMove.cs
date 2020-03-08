@@ -7,18 +7,23 @@ public class AIDebugMove : AIBase
 {
     Camera cam;
     private NavMeshAgent m_agent;
-    private float m_tolerance = 5f;
+    private float m_tolerance = 0.5f;
     // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
+        m_agent = gameObject.GetComponent<NavMeshAgent>();
+        m_agent.updatePosition = false;
+        m_agent.updateRotation = false;
+        m_agent.nextPosition = transform.position;
         cam = FindObjectOfType<Camera>();
-        m_agent = GetComponent<NavMeshAgent>();
     }
+
     // Update is called once per frame
     public override InputPacket AITemplate()
     {
         InputPacket ip = new InputPacket();
         m_agent.updateRotation = false;
+        m_agent.nextPosition = transform.position;
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -30,11 +35,15 @@ public class AIDebugMove : AIBase
         }
         m_agent.updatePosition = false;
         m_agent.updateRotation = false;
-
-        if (Vector3.Distance(transform.position, m_agent.destination) > m_tolerance)
+        Vector2 target = new Vector2(m_agent.destination.x, m_agent.destination.z);
+        Vector2 me = new Vector2(transform.position.x, transform.position.z);
+        if (Vector2.Distance(me, target) > m_tolerance)
         {
             ip.movementInput = m_agent.desiredVelocity.normalized;
             //m_agent.velocity = m_charControl.velocity;
+        } else
+        {
+            ip.movementInput = Vector3.zero;
         }
         return ip;
     }
