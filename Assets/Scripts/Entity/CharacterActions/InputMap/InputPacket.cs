@@ -35,8 +35,16 @@ public class InputPacket {
 
     public void DefaultPlayerInput()
     {
-        movementInput.x = Input.GetAxis("Horizontal");
-        movementInput.z = Input.GetAxis("Vertical");
+        movementInput.x = 0f;
+        if (Input.GetButton("Left"))
+            movementInput.x -= 1f;
+        if (Input.GetButton("Right"))
+            movementInput.x += 1f;
+        movementInput.z = 0f;
+        if (Input.GetButton("Down"))
+            movementInput.z -= 1f;
+        if (Input.GetButton("Up"))
+            movementInput.z += 1f;
         jump = Input.GetButtonDown("Jump");
         leftMouse = Input.GetButton("Fire1");
         leftMousePress = Input.GetButtonDown("Fire1");

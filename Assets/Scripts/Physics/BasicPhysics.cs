@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class BasicPhysics : MonoBehaviour
 {
-    private const float VELOCITY_MINIMUM_THRESHOLD = 0.3f;
+    private const float VELOCITY_MINIMUM_THRESHOLD = 0.8f;
 
     // References
     private CharacterController m_controller;
@@ -44,7 +44,7 @@ public class BasicPhysics : MonoBehaviour
 
     // Tracking inputed movement
     private Force m_inputedForce;
-    private Vector3 m_inputedMove = Vector3.zero;
+    public Vector3 m_inputedMove = Vector3.zero;
     public Vector3 InputedMove { get { return m_inputedMove; } }
 
     //Special Case Variables:
@@ -78,24 +78,26 @@ public class BasicPhysics : MonoBehaviour
     internal void FixedUpdate()
     {
         DecelerateAutomatically(VELOCITY_MINIMUM_THRESHOLD);
+        m_accumulatedVelocity = Vector2.zero;
         ProcessMovement();
         UpdateFloating();
+        if (m_agent != null)
+        {
+            m_agent.velocity = m_controller.velocity;
+        }
     }
     internal void Update()
     {
         m_trueVelocity = (transform.position - m_lastPosition) / Time.deltaTime;
         m_lastPosition = transform.position;
         IsGrounded = m_controller.isGrounded;
-        if (m_agent != null)
-        {
-            m_agent.velocity = m_controller.velocity;
-        }
+        
         //particleProcess();
     }
 
     private void DecelerateAutomatically(float threshold)
     {
-         if (m_accumulatedVelocity.sqrMagnitude > threshold)
+         if (m_accumulatedVelocity.magnitude > threshold)
             m_accumulatedVelocity *= (1.0f - Time.fixedDeltaTime * DecelerationRatio * 3.0f);
         else
             m_accumulatedVelocity = Vector2.zero;

@@ -218,7 +218,7 @@ public class MovementBase : MonoBehaviour
         else
             m_velocity.x = Mathf.SmoothDamp(m_velocity.x, targetVel.x, ref m_accelerationTimeX, SMOOTH_TIME);
         m_velocity.z = Mathf.SmoothDamp(m_velocity.z, targetVel.z, ref m_accelerationTimeZ, SMOOTH_TIME);
-        m_physics.InputMove(m_velocity, m_inputMove);
+        m_physics.InputMove(m_velocity, input);
     }
     
     private void currentPlayerControl(InputPacket ip)
