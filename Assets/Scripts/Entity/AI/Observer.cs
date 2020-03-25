@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent (typeof (Orientation))]
 public class Observer : MonoBehaviour {
 
 	public float detectionRange = 15.0f;
+    public float detectionAngle = 40.0f;
 
 	public List<Observable> VisibleObjs = new List<Observable>();
 	float nextScan;
@@ -22,10 +24,23 @@ public class Observer : MonoBehaviour {
 	}
 
 	void Update() {
-		if (Time.timeSinceLevelLoad > nextScan) {
-			scanForEnemies ();
+        DebugDrawLoS();
+        if (Time.timeSinceLevelLoad > nextScan) {
+            
+            scanForEnemies ();
 		}
 	}
+
+    private void DebugDrawLoS()
+    {
+        Vector3 myPos = transform.position;
+        float leftAngle = Mathf.Deg2Rad * (transform.rotation.z - detectionAngle / 2f);
+        float rightAngle = Mathf.Deg2Rad * (transform.rotation.z + detectionAngle / 2f);
+        Vector3 leftPoint = new Vector3(Mathf.Cos(leftAngle) * detectionRange, myPos.y, Mathf.Sin(leftAngle) * detectionRange);
+        Vector3 rightPoint = new Vector3(Mathf.Cos(rightAngle) * detectionRange, myPos.y, Mathf.Sin(rightAngle) * detectionRange);
+        Debug.DrawRay(myPos, leftPoint, Color.blue);
+        Debug.DrawRay(myPos, rightPoint, Color.blue);
+    }
 
 	void scanForEnemies() {
         Observable[] allObs = FindObjectsOfType<Observable> ();
@@ -34,10 +49,9 @@ public class Observer : MonoBehaviour {
 			Vector3 otherPos = o.transform.position;
 			Vector3 myPos = transform.position;
             float cDist = Vector3.Distance(otherPos, myPos);
-            if (o.gameObject != gameObject && cDist < detectionRange && 
-                m_orient.FacingPoint2D(otherPos)) {
+            if (o.gameObject != gameObject && InConeOfVision(otherPos)) {
 				RaycastHit[] hits = Physics.RaycastAll (myPos, otherPos - myPos, cDist);
-				Debug.DrawRay (myPos, otherPos - myPos, Color.green);
+				
                 
 				float minDist = float.MaxValue;
 				foreach (RaycastHit h in hits) {
@@ -47,7 +61,8 @@ public class Observer : MonoBehaviour {
 					}
 				}
 				float diff = Mathf.Abs (cDist - minDist);
-				if (cDist < minDist) {
+				if (cDist - 0.3f < minDist) {
+                    Debug.DrawRay(myPos, otherPos - myPos, Color.green);
                     m_lastTimeSeen[o] = lts;
                     if (!VisibleObjs.Contains (o)) {
                         //Debug.Log("On Sight!: " + o.gameObject + " minDist: " + minDist + " dist: " + cDist);
@@ -94,6 +109,12 @@ public class Observer : MonoBehaviour {
 		}
 	}
 
+    private bool InConeOfVision(Vector3 point)
+    {
+        Vector3 myPos = transform.position;
+        float cDist = Vector3.Distance(point, myPos);
+        return cDist < detectionRange && GetComponent<Orientation>().FacingPoint(point,detectionAngle/2f);          
+    }
 	/*private bool SeeThroughTag( GameObject obj ) {
 		return (obj.CompareTag ("JumpThru") || (obj.transform.parent != null &&
 			obj.transform.parent.CompareTag ("JumpThru")));

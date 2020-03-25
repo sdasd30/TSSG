@@ -11,7 +11,9 @@ public class Orientation : MonoBehaviour
 
     // Tracking m_sprite orientation (flipping if left)...
     //private SpriteRenderer m_sprite;
+    [HideInInspector]
     public bool FacingLeft = false;
+    [HideInInspector]
     public Direction CurrentDirection = Direction.DOWN;
 
     // Use this for initialization
@@ -157,6 +159,13 @@ public class Orientation : MonoBehaviour
             testDirection = Direction.RIGHT;
         return testDirection;
     }
+
+    public float AngleToPoint(Vector3 targetPoint)
+    {
+        Vector3 me = new Vector3(transform.position.x, 0f, transform.position.z);
+        Vector3 you = new Vector3(targetPoint.x, 0f, targetPoint.z);
+        return Vector3.SignedAngle(Vector3.right, you - me, Vector3.up);
+    }
     public bool DirectionToPoint2D(Vector3 point)
     {
         return (point.x < transform.position.x);
@@ -182,6 +191,13 @@ public class Orientation : MonoBehaviour
         return (point.x < transform.position.x == left);
     }
 
+    public bool FacingPoint(Vector3 point, float tolerance)
+    {
+        float angle = AngleToPoint(point);
+        float myCurrentAngle = transform.rotation.z;
+        return (Mathf.Abs(angle - myCurrentAngle) < tolerance ||
+            Mathf.Abs(angle = (myCurrentAngle + 360f)) < tolerance);
+    }
     public static Vector3 OrientToVectorZ(Vector3 baseVector, float ZRotation)
     {
         float x = baseVector.x * Mathf.Cos(ZRotation) + baseVector.z * Mathf.Sin(ZRotation);
