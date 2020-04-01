@@ -18,6 +18,7 @@ public class Item : Interactable
 
 
     public CharData ItemProperties;
+    public GameObject AIBehaviour;
 
     [HideInInspector]
     public bool Rotated = false;

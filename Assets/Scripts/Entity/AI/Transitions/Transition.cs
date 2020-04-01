@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TransitionType {FROM_THIS_TASK, TO_THIS_TASK}
+public enum TransitionType { TO_THIS_TASK, FROM_THIS_TASK}
 
 public class Transition : MonoBehaviour {
 
@@ -13,10 +13,12 @@ public class Transition : MonoBehaviour {
     [HideInInspector]
     public Goal ParentGoal;
 
-    public TaskType OriginType;
-	public Task OriginTask;
-	public TaskType TargetType;
-	public Task TargetTask;
+    public TaskType TransitionOriginType;
+    [HideInInspector]
+    public Task OriginTask;
+	public TaskType TransitionTargetType;
+    [HideInInspector]
+    public Task TargetTask;
 
 	// Use this for initialization
 	void Start () {
@@ -37,6 +39,8 @@ public class Transition : MonoBehaviour {
 
 	public virtual void OnSight(Observable o) {}
 
+    public virtual void OutOfSight(Observable o) { }
+
     public virtual void OnExitZone(Zone z) { }
 
     public virtual void OnEnterZone(Zone z) { }
@@ -45,12 +49,16 @@ public class Transition : MonoBehaviour {
 
     public virtual void OnStart() { }
 
+    public virtual void OnItemEnterInventory(InventoryItemData id) { }
+
+    public virtual void OnItemExitInventory(InventoryItemData id) { }
+
     public void TriggerTransition() {
 		if (TypeOfTransition == TransitionType.FROM_THIS_TASK) {
 			if (TargetTask != null)
 				MasterAI.TransitionToTask (TargetTask);
 			else
-				MasterAI.TransitionToTask (TargetType);
+				MasterAI.TransitionToTask (TransitionTargetType);
 		} else {
 			MasterAI.TransitionToTask (GetComponent<Task>());
 		}

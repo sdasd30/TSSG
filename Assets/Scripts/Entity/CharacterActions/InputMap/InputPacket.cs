@@ -18,7 +18,7 @@ public class InputPacket {
     public SerializableDictionary<InputKey, bool> InputKeyDown = new SerializableDictionary<InputKey, bool>();
     public bool interact = false;
     public bool inventory = false;
-
+    public List<string> itemSlotUse = new List<string>();
     public void Combine(InputPacket ip)
     {
         movementInput = movementInput + ip.movementInput;

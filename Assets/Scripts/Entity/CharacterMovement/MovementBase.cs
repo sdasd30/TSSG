@@ -80,7 +80,7 @@ public class MovementBase : MonoBehaviour
     private const float SMOOTH_TIME = .1f;
 
     private List<InputHandler> m_InputHandlers;
-    private List<AIBase> m_aibase;
+    private List<AIInputParentClass> m_aibase;
 
     public InputPacket LastInput { get { return m_lastInput; } private set { m_lastInput = value; } }
     private InputPacket m_lastInput;
@@ -90,7 +90,7 @@ public class MovementBase : MonoBehaviour
         m_lastInput = new InputPacket();
         m_orient = GetComponent<Orientation>();
         m_trueAverageVelocity = new Vector3();
-        m_aibase = new List<AIBase>(GetComponents<AIBase>());
+        m_aibase = new List<AIInputParentClass>(GetComponents<AIInputParentClass>());
         m_InputHandlers = new List<InputHandler>(GetComponents<InputHandler>());
 
         
@@ -109,6 +109,7 @@ public class MovementBase : MonoBehaviour
 
     internal void Update()
     {
+        transform.rotation = Quaternion.Euler(90, transform.localRotation.y,GetComponent<Orientation>().LastZ);
         InputPacket ip = new InputPacket();
         if (m_canMove)
         {
@@ -141,7 +142,7 @@ public class MovementBase : MonoBehaviour
     internal InputPacket npcMovement()
     {
         InputPacket ip = new InputPacket();
-        foreach (AIBase aib in m_aibase)
+        foreach (AIInputParentClass aib in m_aibase)
             ip.Combine(aib.AITemplate());
         return ip;
     }
@@ -156,15 +157,7 @@ public class MovementBase : MonoBehaviour
             LastCalculatedTime = Time.timeSinceLevelLoad;
         }
     }
-    //public void SetTargetPoint(Vector3 target, float tolerance = 0.5f)
-    //{
-    //    m_currentControl.SetTarget(target, tolerance);
-    //}
-    //public void FacePoint2D(Vector3 target)
-    //{
-    //    m_currentControl.FacePoint(target);
-    //    //GetComponent<Orientation>().OrientToPoint2D(target);
-    //}
+
     public void SetJumpHeight(float jumpHeight)
     {
         m_jumpVector.y = (-m_physics.GravityForce * (12f * Mathf.Sqrt(jumpHeight))) + 3f;

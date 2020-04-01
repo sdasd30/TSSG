@@ -18,7 +18,6 @@ public class Attackable : MonoBehaviour
     public bool Alive = true;
     private float m_deathTime = 0.0f;
     private float m_currDeathTime;
-    public FactionType Faction = FactionType.NEUTRAL;
 
     public List<Resistence> Resistences = new List<Resistence>();
     private Dictionary<ElementType, Resistence> m_fullResistences = new Dictionary<ElementType, Resistence>();
@@ -376,13 +375,11 @@ public class Attackable : MonoBehaviour
     {
         d.SetFloat("Health", Health);
         d.SetFloat("MaxHealth", MaxHealth);
-        d.SetInt("Faction", (int)Faction);
     }
 
     private void loadData(CharData d)
     {
         MaxHealth = d.GetFloat("MaxHealth");
         Health = d.GetFloat("Health");
-        Faction = (FactionType)d.GetInt("Faction");
     }
 }

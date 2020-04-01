@@ -77,17 +77,20 @@ public class BasicPhysics : MonoBehaviour
     // Update is called once per frame
     internal void FixedUpdate()
     {
+        
         DecelerateAutomatically(VELOCITY_MINIMUM_THRESHOLD);
         m_accumulatedVelocity = Vector2.zero;
         ProcessMovement();
         UpdateFloating();
-        if (m_agent != null)
+        if (m_agent != null )
         {
-            m_agent.velocity = m_controller.velocity;
+            m_agent.nextPosition = transform.position;
+            //m_agent.velocity = m_controller.velocity;
         }
     }
     internal void Update()
     {
+        
         m_trueVelocity = (transform.position - m_lastPosition) / Time.deltaTime;
         m_lastPosition = transform.position;
         IsGrounded = m_controller.isGrounded;
@@ -95,6 +98,10 @@ public class BasicPhysics : MonoBehaviour
         //particleProcess();
     }
 
+    internal void LateUpdate()
+    {
+        
+    }
     private void DecelerateAutomatically(float threshold)
     {
          if (m_accumulatedVelocity.magnitude > threshold)

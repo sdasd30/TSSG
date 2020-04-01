@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AIDebugMove : AIBase
+public class AIDebugMove : AIInputParentClass
 {
     Camera cam;
     private NavMeshAgent m_agent;

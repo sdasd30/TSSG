@@ -16,6 +16,23 @@ public class Observer : MonoBehaviour {
     Orientation m_orient;
 
 	Dictionary<Observable,float> m_lastTimeSeen;
+
+    public List<GameObject> ScanRayToPoint(Vector3 targetPoint)
+    {
+        List<GameObject> newHitList = new List<GameObject>();
+        Vector3 myPos = transform.position;
+        float cDist = Vector3.Distance(targetPoint, myPos);
+        RaycastHit[] hits = Physics.RaycastAll(myPos, targetPoint - myPos, cDist);
+        foreach (RaycastHit h in hits)
+        {
+            GameObject oObj = h.collider.gameObject;
+            if (oObj != gameObject && !h.collider.isTrigger)
+            {
+                newHitList.Add(oObj);
+            }
+        }
+        return newHitList;
+    }
 	// Use this for initialization
 	void Start () {
 		m_lastTimeSeen = new Dictionary<Observable,float> ();
@@ -34,8 +51,8 @@ public class Observer : MonoBehaviour {
     private void DebugDrawLoS()
     {
         Vector3 myPos = transform.position;
-        float leftAngle = Mathf.Deg2Rad * (transform.rotation.z - detectionAngle / 2f);
-        float rightAngle = Mathf.Deg2Rad * (transform.rotation.z + detectionAngle / 2f);
+        float leftAngle = Mathf.Deg2Rad * (-transform.eulerAngles.y - detectionAngle / 2f);
+        float rightAngle = Mathf.Deg2Rad * (-transform.eulerAngles.y + detectionAngle / 2f);
         Vector3 leftPoint = new Vector3(Mathf.Cos(leftAngle) * detectionRange, myPos.y, Mathf.Sin(leftAngle) * detectionRange);
         Vector3 rightPoint = new Vector3(Mathf.Cos(rightAngle) * detectionRange, myPos.y, Mathf.Sin(rightAngle) * detectionRange);
         Debug.DrawRay(myPos, leftPoint, Color.blue);
@@ -80,10 +97,10 @@ public class Observer : MonoBehaviour {
 					
 					if (lts - m_lastTimeSeen[o] > postLineVisibleTime) {
                         //Debug.Log ("Cannot see, lts = " + lts + " m_lasttime: " + m_lastTimeSeen [o] + " post: " + postLineVisibleTime);
-						o.removeObserver (this);
-						//outOfSight (o, true);
-						VisibleObjs.RemoveAt (i);
-					} else if (Mathf.Abs(lts - m_lastTimeSeen[o]) > 0.05f){
+						
+						outOfSight (o);
+                        VisibleObjs.RemoveAt(i);
+                    } else if (Mathf.Abs(lts - m_lastTimeSeen[o]) > 0.05f){
 						//Out of sight thing.
 					}	
 				}
@@ -91,15 +108,18 @@ public class Observer : MonoBehaviour {
 		}
 		nextScan = Time.timeSinceLevelLoad + scanInterval;
     }
-
+    
     internal void OnSight(Observable o) {
         //ExecuteEvents.Execute<ICustomMessageTarget> (gameObject, null, (x, y) => x.OnSight (o));
-		if (GetComponent<AICharacter>()) {
-			GetComponent<AICharacter> ().OnSight (o);
-		}
+	    GetComponent<AICharacter> ()?.OnSight (o);
 		o.addObserver (this);
 		VisibleObjs.Add (o);
 	}
+    internal void outOfSight(Observable o)
+    {
+        GetComponent<AICharacter>()?.outOfSight(o);
+        o.removeObserver(this);
+    }
 	public bool IsVisible(Observable o) {
 		return VisibleObjs.Contains (o);
 	}

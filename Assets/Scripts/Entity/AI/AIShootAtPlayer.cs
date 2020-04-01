@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIShootAtPlayer : AIBase 
+public class AIShootAtPlayer : AIInputParentClass
 {
     public Transform m_targetObj;
     public float StartShootingRange;

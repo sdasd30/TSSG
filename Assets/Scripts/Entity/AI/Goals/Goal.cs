@@ -17,6 +17,8 @@ public class Goal : MonoBehaviour
 
     public virtual void OnSight(Observable o) { }
 
+    public virtual void OutOfSight(Observable o) { }
+
     public virtual void OnStart() { }
 
     public virtual void OnTime() { }
@@ -25,7 +27,6 @@ public class Goal : MonoBehaviour
 
     public virtual void OnExitZone(Zone z) { }
 
-    [SerializeField]
     protected int NumGoalVariables = 0;
     [SerializeField]
     protected StringDictionary GoalVariables;
@@ -65,7 +66,15 @@ public class Goal : MonoBehaviour
             }
         }
     }
-
+    public string outputDebugString()
+    {
+        string s = "";
+        foreach (string k in GoalVariables.Keys)
+        {
+            s = s + k + ":" + GoalVariables[k] + "\n";
+        }
+        return s;
+    }
     void Start()
     {
         init();
@@ -104,6 +113,7 @@ public class Goal : MonoBehaviour
     {
         GoalVariables[origin.GetType() + "-" + origin.ParentGoal.name + "-" + key] = value;
     }
+
     public string GetVariable(string key, Transition origin)
     {
         if (!ContainsKey(key, origin))

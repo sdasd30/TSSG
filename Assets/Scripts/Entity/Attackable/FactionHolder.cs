@@ -11,6 +11,7 @@ public class FactionHolder : MonoBehaviour
     {
         if (FindObjectOfType<FactionManager>() != null && GetComponent<Attackable>() != null)
             FindObjectOfType<FactionManager>().RegisterAttackable(this);
+        GetComponent<PersistentItem>()?.InitializeSaveLoadFuncs(storeData, loadData);
     }
     void OnDestroy()
     {
@@ -64,5 +65,15 @@ public class FactionHolder : MonoBehaviour
         if (go != null)
             return go.transform;
         return null;
+    }
+
+    private void storeData(CharData d)
+    {
+        d.SetInt("Faction", (int)Faction);
+    }
+
+    private void loadData(CharData d)
+    {
+        Faction = (FactionType)d.GetInt("Faction");
     }
 }

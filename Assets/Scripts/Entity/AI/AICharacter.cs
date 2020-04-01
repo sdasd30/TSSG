@@ -13,12 +13,19 @@ public class AICharacter : MonoBehaviour
     public Goal m_currentGoal;
     private float m_currentPriority;
     private string m_currentBehaviourName;
+
+
     void Awake()
     {
         m_taskManager =  GetComponent<AITaskManager>();
         ReloadGoals();
-        if (GetComponent<PersistentItem>() != null)
-            GetComponent<PersistentItem>().InitializeSaveLoadFuncs(storeData, loadData);
+        GetComponent<PersistentItem>()?.InitializeSaveLoadFuncs(storeData, loadData);
+        Goal[] gList = GetComponentsInChildren<Goal>();
+        foreach (Goal g in gList)
+            GoalList.Add(g);
+        gList = GetComponents<Goal>();
+        foreach (Goal g in gList)
+            GoalList.Add(g);
     }
 
     private void storeData(CharData d)
@@ -89,7 +96,7 @@ public class AICharacter : MonoBehaviour
 
     public void SetBehaviour(GameObject g, Goal originGoal, float priorityScore)
     {
-        m_taskManager.SetBehaviour(g,originGoal);
+        m_taskManager.AddBehaviour(g,originGoal);
         m_currentPriority = priorityScore;
         m_currentBehaviourName = g.name;
         m_currentGoal = originGoal;
@@ -123,6 +130,14 @@ public class AICharacter : MonoBehaviour
         m_taskManager.OnSight(o);
     }
 
+    public void outOfSight(Observable o)
+    {
+        foreach (Goal g in GoalList)
+        {
+            g.OutOfSight(o);
+        }
+        m_taskManager.OutOfSight(o);
+    }
     private void OnStart()
     {
         foreach( Goal g in GoalList)

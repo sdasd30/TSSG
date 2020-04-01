@@ -13,10 +13,16 @@ public class GoalAlwaysExecute : Goal
     protected override void init()
     {
         base.init();
+
+
+          
         GameObject g = (GameObject)Resources.Load(GoalVariables["ExecutePrefab"]);
         if (g != null)
         {
             b = new AIBehaviour("AutoSet", g, this, 10000.0f);
+        } else if (GoalVariables["ExecutePrefab"] == "ExecuteThisBehaviour")
+        {
+            b = new AIBehaviour("AutoSet", gameObject, this, 10000.0f);
         }
     }
     public override void OnStart()
@@ -28,7 +34,6 @@ public class GoalAlwaysExecute : Goal
     }
     public override void OnEnterZone(Zone z)
     {
-        //Debug.Log("On enter zone: " + z.Label);
     }
     protected override void initVariableDictionary() {
         base.initVariableDictionary();

@@ -227,13 +227,36 @@ public class InventoryContainer : MonoBehaviour
     {
         return true;
     }
-
-    public virtual void EquipmentUseUpdatePlayer(string slot, InputPacket input)
+    
+    public virtual bool ItemNameUseUpdatePlayer(string itemName, InputPacket input)
     {
-        Transform t = transform.Find(slot);
+        int c = transform.childCount;
+        for (int i = 0; i < c; i++)
+        {
+            Transform t = transform.GetChild(c);
+            if (t.gameObject.GetComponent<Equipment>() && t.gameObject.GetComponent<Equipment>().displayname == itemName)
+            {
+                Equipment e = t.gameObject.GetComponent<Equipment>();
+                if (input.movementInput.magnitude > 0.1f)
+                {
+                    e.OnSecondaryUse(input, gameObject);
+                }
+                else
+                {
+                    e.OnPrimaryUse(input, gameObject);
+                }
+
+                return true;
+            }
+        }
+        return false;
+    }
+    public virtual bool EquipmentSlotUseUpdatePlayer(string slotOrItemName, InputPacket input)
+    {
+        Transform t = transform.Find(slotOrItemName);
         if (t == null)
         {
-            return;
+            return false;
         }
         Equipment e = t.gameObject.GetComponent<Equipment>();
         if (input.movementInput.magnitude > 0.1f)
@@ -244,6 +267,7 @@ public class InventoryContainer : MonoBehaviour
         {
             e.OnPrimaryUse(input, gameObject);
         }
+        return true;
     }
 
     private string convertToSaveList(Dictionary<Vector2, InventoryItemData> saveItems)

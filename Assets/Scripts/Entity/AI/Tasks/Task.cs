@@ -5,18 +5,23 @@ using UnityEngine;
 public enum TaskType {NEUTRAL,AGGRESSIVE,ATTACK};
 
 public class Task : MonoBehaviour {
+    [HideInInspector]
+    public AITaskManager MasterAI;
 
-	public AITaskManager MasterAI;
 	public TaskType MyTaskType;
 	public bool IsInitialTask = false;
 
-	bool m_active = false;
+	private bool m_active = false;
 
-	public List<Transition> TransitionsTo;
-	public List<Transition> TransitionsFrom;
+    [HideInInspector]
+    public List<Transition> TransitionsTo;
+    [HideInInspector]
+    public List<Transition> TransitionsFrom;
 
     [HideInInspector]
     public Goal ParentGoal;
+    [HideInInspector]
+    public string ParentBehaviour;
 
 	public void Init() {
 		TransitionsTo = new List<Transition> ();
@@ -51,7 +56,16 @@ public class Task : MonoBehaviour {
 		}
 	}
 
-	public void OnHit(HitInfo hb) { 
+    public void OutOfSight(Observable o)
+    {
+        foreach (Transition t in TransitionsFrom)
+        {
+            if (t.isActiveAndEnabled)
+                t.OutOfSight(o);
+        }
+    }
+
+    public void OnHit(HitInfo hb) { 
 		foreach (Transition t in TransitionsFrom) {
 			if (t.isActiveAndEnabled)
 				t.OnHit (hb);
@@ -121,5 +135,10 @@ public class Task : MonoBehaviour {
         if (ParentGoal == null || !ParentGoal.ContainsKey("Target", this))
             return null;
         return GameObject.Find(ParentGoal.GetVariable("Target", this));
+    }
+
+    public virtual string debugExtraInfo()
+    {
+        return "";
     }
 }

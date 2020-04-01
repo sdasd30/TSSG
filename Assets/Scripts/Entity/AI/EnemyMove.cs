@@ -8,12 +8,12 @@ public class EnemyMove : MonoBehaviour
     public bool facingRight = true;
     public int jumpPower = 1250;
 
-    private AIBase m_aibase;
+    private AIInputParentClass m_aibase;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_aibase = GetComponent<AIBase>();
+        m_aibase = GetComponent<AIInputParentClass>();
 
     }
     // Update is called once per frame

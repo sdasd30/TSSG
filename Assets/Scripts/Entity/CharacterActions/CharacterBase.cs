@@ -131,15 +131,7 @@ public class CharacterBase : MonoBehaviour
             }
             else
             {
-                if (false) //(!m_haveMovedOnGround && m_physics.TimeCollided[Direction.DOWN] < 0.45f)
-                {
-                    m_anim.Play(new string[] { LandAnimation, IdleAnimation });
-                }
-                else
-                {
-                    m_anim.Play(IdleAnimation);
-                    //m_anim.Play(new string[] { WalkAnimation + "_back", WalkAnimation }, false);
-                }
+                 m_anim.Play(IdleAnimation);
             }
         }
     }

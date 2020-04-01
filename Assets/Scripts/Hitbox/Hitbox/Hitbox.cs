@@ -106,9 +106,6 @@ public class Hitbox : MonoBehaviour
     [SerializeField]
     public Vector3 m_followOffset;
 
-    
-
-    private BasicPhysics m_creatorPhysics;
     private Vector4 m_knockbackRanges;
     public List<Attackable> m_collidedObjs = new List<Attackable>();
     public List<Attackable> m_overlappingControl = new List<Attackable>();
@@ -140,13 +137,6 @@ public class Hitbox : MonoBehaviour
 
     protected virtual void Tick()
     {
-        //Debug.Log ("Hitbox created");
-        //if (m_followObj != null)
-        //    FollowObj();
-        if (m_creatorPhysics != null)
-        {
-            //SwitchActiveCollider(m_creatorPhysics.GetComponent<Orientation>().FacingLeft);
-        }
         if (m_hasDuration)
             MaintainOrDestroyHitbox();
     }

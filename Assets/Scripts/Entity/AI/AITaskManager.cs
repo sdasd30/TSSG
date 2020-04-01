@@ -10,8 +10,11 @@ public class AITaskManager : MonoBehaviour {
 
 	Dictionary<TaskType, List<Transition>> GenericTransitions;
 
-	// Use this for initialization
-	void Awake () {
+
+    public string debugLastEvent = "";
+    public string debugLastTransition = "initial";
+    // Use this for initialization
+    void Awake () {
 		GenericTransitions = new Dictionary<TaskType, List<Transition>> ();
 		ReloadTasks ();
 	}
@@ -47,17 +50,20 @@ public class AITaskManager : MonoBehaviour {
         }
     }
 
-    public void SetBehaviour(GameObject g, Goal originGoal)
+    public List<Task> AddBehaviour(GameObject g, Goal originGoal)
     {
-        
         GameObject newG = Instantiate(g);
+        
         Task[] tList = newG.GetComponentsInChildren<Task>();
         Transition[] trList = newG.GetComponentsInChildren<Transition>();
+        List<Task> addedTasks = new List<Task>();
         foreach (Task t in tList)
         {
             t.ParentGoal = originGoal;
             t.transform.parent = transform;
+            t.ParentBehaviour = newG.name;
             t.OnLoad(originGoal);
+            addedTasks.Add(t);
         }
 
         foreach (Transition t in trList)
@@ -67,12 +73,23 @@ public class AITaskManager : MonoBehaviour {
             t.OnLoad(originGoal);
         }
 
-        //        newG.GetComponent<Animation>().GetClip("hwierowh");
         ReloadTasks();
         Destroy(newG);
+        return addedTasks;
     }
 
-	public void OnHit(HitInfo hb) { 
+    public void RemoveBehaviour(GameObject g, Goal originGoal)
+    {
+        Task[] tList = GetComponentsInChildren<Task>();
+
+        foreach (Task t in tList)
+        {
+            if (t.ParentBehaviour == g.name)
+                Destroy(t.gameObject);
+        }
+    }
+	public void OnHit(HitInfo hb) {
+        debugLastEvent = "hit by: " + hb.Creator.name;
 		if (m_currentTask != null) {
 			m_currentTask.OnHit (hb);
 			foreach (Transition t in GenericTransitions[m_currentTask.MyTaskType]) {
@@ -81,15 +98,27 @@ public class AITaskManager : MonoBehaviour {
 		}
 	}
 	public void OnSight(Observable o) {
-        //Debug.Log("Calling AIM on sight");
-		if (m_currentTask != null) {
-            //Debug.Log("Current task on sight");
+        debugLastEvent = "saw: " + o.gameObject.name;
+        if (m_currentTask != null) {
 			m_currentTask.OnSight (o);
 			foreach (Transition t in GenericTransitions[m_currentTask.MyTaskType]) {
 				t.OnSight (o);
 			}
 		}
 	}
+    public void OutOfSight(Observable o)
+    {
+        debugLastEvent = "lost sight: " + o.gameObject.name;
+        if (m_currentTask != null)
+        {
+            m_currentTask.OutOfSight(o);
+            foreach (Transition t in GenericTransitions[m_currentTask.MyTaskType])
+            {
+                t.OutOfSight(o);
+            }
+        }
+    }
+
     public void OnStart()
     {
         if (m_currentTask != null)
@@ -103,6 +132,7 @@ public class AITaskManager : MonoBehaviour {
     }
     public void OnTime()
     {
+        debugLastEvent = "on time: ";
         if (m_currentTask != null)
         {
             m_currentTask.OnTime();
@@ -114,6 +144,7 @@ public class AITaskManager : MonoBehaviour {
     }
     public void OnEnterZone(Zone z)
     {
+        debugLastEvent = "enter zone: " + z.gameObject.name;
         if (m_currentTask != null)
         {
             m_currentTask.OnEnterZone(z);
@@ -125,6 +156,7 @@ public class AITaskManager : MonoBehaviour {
     }
     public void OnExitZone(Zone z)
     {
+        debugLastEvent = "exit zone: " + z.gameObject.name;
         if (m_currentTask != null)
         {
             m_currentTask.OnExitZone(z);
@@ -135,7 +167,8 @@ public class AITaskManager : MonoBehaviour {
         }
     }
     public void TransitionToTask(Task t) {
-		if (m_currentTask != null)
+        debugLastTransition = debugLastEvent;
+        if (m_currentTask != null)
 			m_currentTask.SetActive (false);
 		m_currentTask = t;
 		m_currentTask.SetActive (true);
@@ -149,7 +182,7 @@ public class AITaskManager : MonoBehaviour {
 			TransitionToTask (MyTasks [tt] [0]);
 	}
 
-	public void AddTask(Task t) {
+	private void AddTask(Task t) {
 		t.Init ();
 		if (!MyTasks.ContainsKey(t.MyTaskType))
 			MyTasks[t.MyTaskType] = new List<Task>();
@@ -163,7 +196,7 @@ public class AITaskManager : MonoBehaviour {
 		}
 	}
 
-	public void RemoveTask(Task t) {
+	private void RemoveTask(Task t) {
 		if (!MyTasks.ContainsKey(t.MyTaskType))
 			MyTasks[t.MyTaskType] = new List<Task>();
 		if (MyTasks [t.MyTaskType].Contains (t))
@@ -174,15 +207,19 @@ public class AITaskManager : MonoBehaviour {
 	void addTransitions(List<Transition> lt) {
 		foreach (Transition t in lt) {
 			t.MasterAI = this;
-			if (!GenericTransitions [t.OriginType].Contains (t))
-				GenericTransitions [t.OriginType].Add (t);
+            if (!GenericTransitions.ContainsKey(t.TransitionOriginType))
+                GenericTransitions[t.TransitionOriginType] = new List<Transition>();
+			if (!GenericTransitions [t.TransitionOriginType].Contains (t))
+				GenericTransitions [t.TransitionOriginType].Add (t);
 		}
 	}
 
 	void removeTransitions (List<Transition> lt) {
 		foreach (Transition t in lt) {
-			if (GenericTransitions [t.OriginType].Contains (t))
-				GenericTransitions [t.OriginType].Remove (t);
+            if (!GenericTransitions.ContainsKey(t.TransitionOriginType))
+                GenericTransitions[t.TransitionOriginType] = new List<Transition>();
+            if (GenericTransitions [t.TransitionOriginType].Contains (t))
+				GenericTransitions [t.TransitionOriginType].Remove (t);
 		}
 	}
 

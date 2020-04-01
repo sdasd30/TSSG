@@ -5,13 +5,13 @@ using UnityEngine;
 public enum ItemUseMode {PRIMARY,SECONDARY}
 public class TKUseItem : Task
 {
-    public string UseItemSlot = "Item1";
+    public string UseItemSlot = "primary";
     public ItemUseMode UseSecondary;
 
     public override void OnActiveUpdate()
     {
         Vector2 input = (UseSecondary == ItemUseMode.PRIMARY) ? (new Vector2()) : (new Vector2(1, 1));
-        //MasterAI.GetComponent<AICharacter>().UseItem(UseItemSlot, input);
+        MasterAI.GetComponent<AIBaseMovement>().UseItem(UseItemSlot, input);
     }
 
     public override void OnLoad(Goal g)

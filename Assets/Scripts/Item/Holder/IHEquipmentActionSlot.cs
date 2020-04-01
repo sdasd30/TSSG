@@ -23,14 +23,21 @@ public class IHEquipmentActionSlot : InputHandler
         if (m_container == null)
             return;
         if (ip.leftMousePress)
-            m_container.EquipmentUseUpdatePlayer(LeftMouseItem, ip);
+            m_container.EquipmentSlotUseUpdatePlayer(LeftMouseItem, ip);
         if (ip.rightMousePress)
-            m_container.EquipmentUseUpdatePlayer(RightMouseItem, ip);
+            m_container.EquipmentSlotUseUpdatePlayer(RightMouseItem, ip);
         foreach (InputKey keyID in ButtonActions.Keys)
         {
             if (ip.InputKeyPressed.ContainsKey(keyID) && ip.InputKeyPressed[keyID])
             {
-                m_container.EquipmentUseUpdatePlayer(ButtonActions[keyID], ip);
+                m_container.EquipmentSlotUseUpdatePlayer(ButtonActions[keyID], ip);
+            }
+        }
+        foreach (string s in ip.itemSlotUse)
+        {
+            if (!m_container.EquipmentSlotUseUpdatePlayer(s, ip))
+            {
+                m_container.ItemNameUseUpdatePlayer(s, ip);
             }
         }
     }

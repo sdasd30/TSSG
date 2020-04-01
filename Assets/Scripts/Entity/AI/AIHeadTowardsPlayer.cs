@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIHeadTowardsPlayer : AIBase
+public class AIHeadTowardsPlayer : AIInputParentClass
 {
     public float ChaseDistance = 10f;
     public float MaxYDistanceChase = -1f;
