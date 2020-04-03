@@ -14,11 +14,32 @@ public class AICharacter : MonoBehaviour
     private float m_currentPriority;
     private string m_currentBehaviourName;
 
-
+    public void ProposeNewBehaviour(AIBehaviour b)
+    {
+        if (b.BehaviourPrefab == null)
+            return;
+        if (m_currentGoal == null)
+        {
+            SetBehaviour(b.BehaviourPrefab, b.ParentGoal, b.PriorityScore);
+            return;
+        }
+        if (b.PriorityScore * b.ParentGoal.GoalPriority >
+            m_currentPriority * m_currentGoal.GoalPriority)
+        {
+            SetBehaviour(b.BehaviourPrefab, b.ParentGoal, b.PriorityScore);
+        }
+    }
+    public void SetBehaviour(GameObject g, Goal originGoal, float priorityScore)
+    {
+        m_taskManager.AddBehaviour(g, originGoal);
+        m_currentPriority = priorityScore;
+        m_currentBehaviourName = g.name;
+        m_currentGoal = originGoal;
+    }
     void Awake()
     {
         m_taskManager =  GetComponent<AITaskManager>();
-        ReloadGoals();
+        reloadGoals();
         GetComponent<PersistentItem>()?.InitializeSaveLoadFuncs(storeData, loadData);
         Goal[] gList = GetComponentsInChildren<Goal>();
         foreach (Goal g in gList)
@@ -26,6 +47,12 @@ public class AICharacter : MonoBehaviour
         gList = GetComponents<Goal>();
         foreach (Goal g in gList)
             GoalList.Add(g);
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        OnStart();
     }
 
     private void storeData(CharData d)
@@ -47,8 +74,6 @@ public class AICharacter : MonoBehaviour
 
     private void loadData(CharData d)
     {
-        
-        
         //Debug.Log("Loading a new Character: last goal: " + d.PersistentStrings["CurrentGoal"]);
         string savedItems = d.GetString("GoalList");
         var arr = savedItems.Split('\n');
@@ -73,11 +98,11 @@ public class AICharacter : MonoBehaviour
             if (g != null && t != null)
                 SetBehaviour(g, t.gameObject.GetComponent<Goal>(), d.GetFloat("CurrentBehaviourPriority"));
         }
-        ReloadGoals();
+        reloadGoals();
         OnStart();
     }
 
-    void ReloadGoals()
+    private void reloadGoals()
     {
         Goal[] gList = GetComponentsInChildren<Goal>();
         GoalList = new List<Goal>();
@@ -87,19 +112,6 @@ public class AICharacter : MonoBehaviour
             g.SetMasterAI(this);
             GoalList.Add(g);
         }
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        OnStart();
-    }
-
-    public void SetBehaviour(GameObject g, Goal originGoal, float priorityScore)
-    {
-        m_taskManager.AddBehaviour(g,originGoal);
-        m_currentPriority = priorityScore;
-        m_currentBehaviourName = g.name;
-        m_currentGoal = originGoal;
     }
 
     private GameObject findBehaviour(string name)
@@ -188,23 +200,5 @@ public class AICharacter : MonoBehaviour
             g.OnItemLost(i);
         }
         m_taskManager.OnItemLost(i);
-    }
-    public void ProposeNewBehaviour(AIBehaviour b)
-    {
-        if (b.BehaviourPrefab == null)
-            return;
-        /*Debug.Log("Parent: ");
-        Debug.Log(b.ParentGoal);
-        Debug.Log(b.PriorityScore);
-        Debug.Log("CurrentGoal: " + m_currentGoal);*/
-        if (m_currentGoal == null)
-        {
-            SetBehaviour(b.BehaviourPrefab,b.ParentGoal,b.PriorityScore);
-            return;
-        }
-        if (b.PriorityScore * b.ParentGoal.GoalPriority >  
-            m_currentPriority * m_currentGoal.GoalPriority) {
-            SetBehaviour(b.BehaviourPrefab, b.ParentGoal,b.PriorityScore);
-        }
     }
 }
