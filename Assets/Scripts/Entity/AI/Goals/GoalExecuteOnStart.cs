@@ -41,7 +41,7 @@ public class GoalExecuteOnStart : Goal
     {
         if (b != null)
         {
-            m_masterAI.ProposeNewBehaviour(b);
+            m_masterAI.AddNewBehaviour(b);
         }
     }
     public override void OnEnterZone(Zone z)

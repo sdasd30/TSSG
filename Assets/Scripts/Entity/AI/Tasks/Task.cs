@@ -22,6 +22,8 @@ public class Task : MonoBehaviour {
     public Goal ParentGoal;
     [HideInInspector]
     public string ParentBehaviour;
+	[HideInInspector]
+	public float TaskPriority;
 
 	public void Init() {
 		TransitionsTo = new List<Transition> ();

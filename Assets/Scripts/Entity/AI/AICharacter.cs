@@ -29,9 +29,19 @@ public class AICharacter : MonoBehaviour
             SetBehaviour(b.BehaviourPrefab, b.ParentGoal, b.PriorityScore);
         }
     }
+	public void AddNewBehaviour(AIBehaviour b) {
+		if (b.BehaviourPrefab == null)
+            return;
+        if (m_currentGoal == null)
+        {
+            SetBehaviour(b.BehaviourPrefab, b.ParentGoal, b.PriorityScore);
+            return;
+        }
+        SetBehaviour(b.BehaviourPrefab, b.ParentGoal, b.PriorityScore);
+	}
     public void SetBehaviour(GameObject g, Goal originGoal, float priorityScore)
     {
-        m_taskManager.AddBehaviour(g, originGoal);
+        m_taskManager.AddBehaviour(g, originGoal,priorityScore);
         m_currentPriority = priorityScore;
         m_currentBehaviourName = g.name;
         m_currentGoal = originGoal;

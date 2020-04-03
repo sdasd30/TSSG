@@ -51,7 +51,7 @@ public class AITaskManager : MonoBehaviour {
         return Vector3.Distance(transform.position, tgt);
     }
 
-    public List<Task> AddBehaviour(GameObject g, Goal originGoal)
+    public List<Task> AddBehaviour(GameObject g, Goal originGoal, float priority = 1.0f)
     {
         GameObject newG = Instantiate(g);
         
@@ -63,6 +63,7 @@ public class AITaskManager : MonoBehaviour {
             t.ParentGoal = originGoal;
             t.transform.parent = transform;
             t.ParentBehaviour = newG.name;
+			t.TaskPriority = priority;
             t.OnLoad(originGoal);
             addedTasks.Add(t);
         }
@@ -193,6 +194,9 @@ public class AITaskManager : MonoBehaviour {
         }
     }
     public void TransitionToTask(Task t) {
+		if (!shouldTransitionToTask(t))
+			return;
+		
         debugLastTransition = debugLastEvent;
         if (m_currentTask != null)
 			m_currentTask.SetActive (false);
@@ -202,12 +206,17 @@ public class AITaskManager : MonoBehaviour {
 		if (!GenericTransitions.ContainsKey (m_currentTask.MyTaskType))
 			GenericTransitions [m_currentTask.MyTaskType] = new List<Transition> ();
 	}
-
+	
 	public void TransitionToTask(TaskType tt) {
 		if (MyTasks.ContainsKey(tt))
 			TransitionToTask (MyTasks [tt] [0]);
 	}
-
+	
+	private bool shouldTransitionToTask(Task t) {
+		if (t.ParentGoal == GetComponent<AICharacter>().m_currentGoal)
+			return true;
+		return t.ParentGoal.GoalPriority * t.TaskPriority > GetComponent<AICharacter>().m_currentGoal.GoalPriority * m_currentTask.TaskPriority;
+	}
 	private void AddTask(Task t) {
 		t.Init ();
 		if (!MyTasks.ContainsKey(t.MyTaskType))
