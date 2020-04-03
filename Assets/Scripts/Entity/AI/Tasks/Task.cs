@@ -72,6 +72,22 @@ public class Task : MonoBehaviour {
 		}
 	}
 
+    public void OnItemGet(Item i)
+    {
+        foreach (Transition t in TransitionsFrom)
+        {
+            if (t.isActiveAndEnabled)
+                t.OnItemGet(i);
+        }
+    }
+    public void OnItemLost(InventoryItemData i)
+    {
+        foreach (Transition t in TransitionsFrom)
+        {
+            if (t.isActiveAndEnabled)
+                t.OnItemLost(i);
+        }
+    }
     public void OnStart()
     {
         foreach (Transition t in TransitionsFrom)

@@ -172,6 +172,8 @@ public class InventoryContainer : MonoBehaviour
             items.Remove(pos);
         items.Add(pos, new InventoryItemData(i));
         m_freeSlots.Remove(pos);
+
+        Holder.GetComponent<AICharacter>()?
     }
     public void ClearItem(Vector2 v)
     {

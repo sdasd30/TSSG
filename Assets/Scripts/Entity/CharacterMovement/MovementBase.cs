@@ -31,7 +31,7 @@ public class MovementBase : MonoBehaviour
 
     [SerializeField]
     private float m_moveSpeed = 8.0f;
-    public float MoveSpeed { get { return m_moveSpeed; } private set { m_moveSpeed = value; } }
+    public float MaxMoveSpeed { get { return m_moveSpeed; } private set { m_moveSpeed = value; } }
 
     private Dictionary<string, float> m_movementModifier = new Dictionary<string,float>();
     private Dictionary<string, float> m_modifierDuration = new Dictionary<string, float>();
@@ -66,7 +66,7 @@ public class MovementBase : MonoBehaviour
     private float m_sinceStep = 0f;
     private float m_accelerationTimeX = .1f;
     private float m_accelerationTimeZ = .1f;
-
+    private float m_currentMoveSpeed;
 
     private float LastCalculatedTime = 0;
     private Vector3 lastPos;
@@ -99,6 +99,7 @@ public class MovementBase : MonoBehaviour
             SetJumpHeight(JumpHeight);
         if (GetComponent<PersistentItem>() != null)
             GetComponent<PersistentItem>().InitializeSaveLoadFuncs(storeData, loadData);
+        m_currentMoveSpeed = MaxMoveSpeed;
     }
 
     // Start is called before the first frame update
@@ -192,7 +193,7 @@ public class MovementBase : MonoBehaviour
     private void moveSmoothly()
     {
         Vector2 input = new Vector2(m_inputMove.x, m_inputMove.z);
-        float realMoveSpeed = MoveSpeed;
+        float realMoveSpeed = MaxMoveSpeed;
         foreach (float f in m_modifierDuration.Values)
             realMoveSpeed *= f;
         Vector3 targetVel = new Vector3(input.normalized.x * realMoveSpeed, 0, input.normalized.y * realMoveSpeed);
@@ -305,11 +306,13 @@ public class MovementBase : MonoBehaviour
     {
         if (m_modifierDuration.ContainsKey(key))
         {
-            m_movementModifier.Remove(key);
-            m_modifierDuration.Remove(key);
+            m_movementModifier[key] = Modifier;
+            m_modifierDuration[key] = duration;
+        } else
+        {
+            m_movementModifier.Add(key, Modifier);
+            m_modifierDuration.Add(key, Time.timeSinceLevelLoad + duration);
         }
-        m_movementModifier.Add(key, Modifier);
-        m_modifierDuration.Add(key, Time.timeSinceLevelLoad + duration);
     }
 
     private void processModifiers()

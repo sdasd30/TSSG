@@ -13,6 +13,9 @@ public class Goal : MonoBehaviour
 
     public virtual string GoalName { get { return "DefaultGoal"; } }
 
+    public virtual void OnItemGet(Item i) { }
+    public virtual void OnItemLost(InventoryItemData i) { }
+
     public virtual void OnHit(HitInfo hb) { }
 
     public virtual void OnSight(Observable o) { }

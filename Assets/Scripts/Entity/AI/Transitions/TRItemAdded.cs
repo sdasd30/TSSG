@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TRItemAdded : MonoBehaviour
+public class TRItemAdded : Transition
 {
-    // Start is called before the first frame update
-    void Start()
+    public Item PrefabOfItem;
+    public override void OnItemGet(Item i)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        base.OnItemGet(i);
+        if (i.name == PrefabOfItem.name)
+        {
+            TargetTask.SetTargetObj(i.gameObject);
+            TriggerTransition();
+        }
+            
     }
 }

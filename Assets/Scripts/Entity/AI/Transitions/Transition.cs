@@ -13,10 +13,9 @@ public class Transition : MonoBehaviour {
     [HideInInspector]
     public Goal ParentGoal;
 
-    public TaskType TransitionOriginType;
+    public TaskType OtherTaskType;
     [HideInInspector]
     public Task OriginTask;
-	public TaskType TransitionTargetType;
     [HideInInspector]
     public Task TargetTask;
 
@@ -49,16 +48,16 @@ public class Transition : MonoBehaviour {
 
     public virtual void OnStart() { }
 
-    public virtual void OnItemEnterInventory(InventoryItemData id) { }
+    public virtual void OnItemGet(Item i) { }
 
-    public virtual void OnItemExitInventory(InventoryItemData id) { }
+    public virtual void OnItemLost(InventoryItemData i) { }
 
     public void TriggerTransition() {
 		if (TypeOfTransition == TransitionType.FROM_THIS_TASK) {
 			if (TargetTask != null)
 				MasterAI.TransitionToTask (TargetTask);
 			else
-				MasterAI.TransitionToTask (TransitionTargetType);
+				MasterAI.TransitionToTask (OtherTaskType);
 		} else {
 			MasterAI.TransitionToTask (GetComponent<Task>());
 		}

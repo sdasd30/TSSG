@@ -12,7 +12,7 @@ public class TRSeeLogicalObject : Transition
 
     public override void OnSight(Observable o)
     {
-        if (o.GetComponent<LogicalObject>() && o.GetComponent<LogicalObject>().Label == ObjectSeen)
+        if (o.GetComponent<LogicalObject>() && o.GetComponent<LogicalObject>().LogicalName == ObjectSeen)
         {
             if (IfSeenInZone != "NONE")
             {

@@ -7,26 +7,40 @@ public class TKWanderZone : Task
 
     public Vector2 WaitTimeRange;
     public Vector2 WanderDistanceRange;
+    public string ZoneName = "";
 
+    private bool FoundZone = false;
+    private Vector3 nextSpot;
     private float nextMoveTime = 0;
     private const int MAX_TRIES = 10;
     // Start is called before the first frame update
-    void Start()
+    public void SetZone()
     {
-        
+        if (ZoneName != "" && ZoneManager.GetZone(ZoneName) != null)
+        {
+            SetTargetObj(ZoneManager.GetZone(ZoneName).gameObject);
+        }
     }
-
     // Update is called once per frame
     public override void OnActiveUpdate()
     {
-        if (Time.timeSinceLevelLoad > nextMoveTime)
-            pickNewDestination();
+        if (GetTargetObj() == null)
+        {
+            SetZone();
+        } else
+        {
+            FoundZone = true;
+            if (Time.timeSinceLevelLoad > nextMoveTime)
+                pickNewDestination();
+            if (nextSpot != null)
+                MasterAI.GetComponent<AIBaseMovement>().SetTarget(nextSpot);
+        }
     }
 
     private void pickNewDestination()
     {
         int numTries = 0;
-        Vector3 nextSpot = transform.position;
+        nextSpot = transform.position;
         while (numTries < MAX_TRIES )
         {
             nextSpot = RandomPointFromPoint(MasterAI.transform.position,
@@ -70,5 +84,14 @@ public class TKWanderZone : Task
     {
         g.SetVariable("WaitTimeRange", WaitTimeRange.x + "," + WaitTimeRange.y, this);
         g.SetVariable("TriggerWhenInZone", WanderDistanceRange.x + "," + WanderDistanceRange.y, this);
+    }
+
+    public override string debugExtraInfo()
+    {
+        string F = (FoundZone) ? "T" : "F";
+        string s = "Fouund: " + F + " Tgt: " + nextSpot + "\n";
+        float tim = nextMoveTime - Time.timeSinceLevelLoad;
+        s += "Time until move: " + tim;
+        return s;
     }
 }

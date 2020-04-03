@@ -16,7 +16,7 @@ public class AITaskManager : MonoBehaviour {
     // Use this for initialization
     void Awake () {
 		GenericTransitions = new Dictionary<TaskType, List<Transition>> ();
-		ReloadTasks ();
+		reloadTasks ();
 	}
 	
 	// Update is called once per frame
@@ -32,22 +32,23 @@ public class AITaskManager : MonoBehaviour {
         }
     }
 
-	void ReloadTasks() {
-		Task[] tList = GetComponentsInChildren<Task> ();
-		MyTasks = new Dictionary<TaskType, List<Task>>();
-		foreach (Task t in tList) {
-			t.MasterAI = this;
-			if (m_currentTask == null || t.IsInitialTask)
-				TransitionToTask (t);
-			AddTask (t);
-            t.OnSave(t.ParentGoal);
-        }
-        Transition[] trList = GetComponentsInChildren<Transition>();
-        foreach (Transition t in trList)
-        {
-            t.MasterAI = this;
-            t.OnSave(t.ParentGoal);
-        }
+	public float get2DDistanceToPoint(Vector3 tgt)
+    {
+        return Vector2.Distance(new Vector2(transform.position.x, transform.position.z),
+                new Vector2(tgt.x, tgt.z));
+    }
+
+    public void MoveToPoint(Vector3 target, float tolerance = 0.5f, float speedProportion = 1.0f)
+    {
+        GetComponent<AIBaseMovement>().SetTarget(target, tolerance, speedProportion);
+    }
+    public void FacePoint(Vector3 tgt)
+    {
+        GetComponent<Orientation>().FacePoint(tgt);
+    }
+    public float getDistanceToPoint(Vector3 tgt)
+    {
+        return Vector3.Distance(transform.position, tgt);
     }
 
     public List<Task> AddBehaviour(GameObject g, Goal originGoal)
@@ -73,7 +74,7 @@ public class AITaskManager : MonoBehaviour {
             t.OnLoad(originGoal);
         }
 
-        ReloadTasks();
+        reloadTasks();
         Destroy(newG);
         return addedTasks;
     }
@@ -88,7 +89,32 @@ public class AITaskManager : MonoBehaviour {
                 Destroy(t.gameObject);
         }
     }
-	public void OnHit(HitInfo hb) {
+    public void OnItemGet(Item i)
+    {
+        debugLastEvent = "item received: " + i.name;
+        if (m_currentTask != null)
+        {
+            m_currentTask.OnItemGet(i);
+            foreach (Transition t in GenericTransitions[m_currentTask.MyTaskType])
+            {
+                t.OnItemGet(i);
+            }
+        }
+    }
+    public void OnItemLost(InventoryItemData i)
+    {
+        debugLastEvent = "item lost: " + i.itemName;
+        if (m_currentTask != null)
+        {
+            m_currentTask.OnItemLost(i);
+            foreach (Transition t in GenericTransitions[m_currentTask.MyTaskType])
+            {
+                t.OnItemLost(i);
+            }
+        }
+    }
+
+    public void OnHit(HitInfo hb) {
         debugLastEvent = "hit by: " + hb.Creator.name;
 		if (m_currentTask != null) {
 			m_currentTask.OnHit (hb);
@@ -204,23 +230,41 @@ public class AITaskManager : MonoBehaviour {
 		removeTransitions (t.TransitionsTo);
 	}
 
-	void addTransitions(List<Transition> lt) {
+    private void addTransitions(List<Transition> lt) {
 		foreach (Transition t in lt) {
 			t.MasterAI = this;
-            if (!GenericTransitions.ContainsKey(t.TransitionOriginType))
-                GenericTransitions[t.TransitionOriginType] = new List<Transition>();
-			if (!GenericTransitions [t.TransitionOriginType].Contains (t))
-				GenericTransitions [t.TransitionOriginType].Add (t);
+            if (t.TypeOfTransition == TransitionType.TO_THIS_TASK && !GenericTransitions.ContainsKey(t.OtherTaskType))
+                GenericTransitions[t.OtherTaskType] = new List<Transition>();
+			if (!GenericTransitions [t.OtherTaskType].Contains (t))
+				GenericTransitions [t.OtherTaskType].Add (t);
 		}
 	}
 
-	void removeTransitions (List<Transition> lt) {
+    private void removeTransitions (List<Transition> lt) {
 		foreach (Transition t in lt) {
-            if (!GenericTransitions.ContainsKey(t.TransitionOriginType))
-                GenericTransitions[t.TransitionOriginType] = new List<Transition>();
-            if (GenericTransitions [t.TransitionOriginType].Contains (t))
-				GenericTransitions [t.TransitionOriginType].Remove (t);
+            if (t.TypeOfTransition == TransitionType.TO_THIS_TASK && !GenericTransitions.ContainsKey(t.OtherTaskType))
+                GenericTransitions[t.OtherTaskType] = new List<Transition>();
+            if (GenericTransitions [t.OtherTaskType].Contains (t))
+				GenericTransitions [t.OtherTaskType].Remove (t);
 		}
 	}
-
+    private void reloadTasks()
+    {
+        Task[] tList = GetComponentsInChildren<Task>();
+        MyTasks = new Dictionary<TaskType, List<Task>>();
+        foreach (Task t in tList)
+        {
+            t.MasterAI = this;
+            if (m_currentTask == null || t.IsInitialTask)
+                TransitionToTask(t);
+            AddTask(t);
+            t.OnSave(t.ParentGoal);
+        }
+        Transition[] trList = GetComponentsInChildren<Transition>();
+        foreach (Transition t in trList)
+        {
+            t.MasterAI = this;
+            t.OnSave(t.ParentGoal);
+        }
+    }
 }

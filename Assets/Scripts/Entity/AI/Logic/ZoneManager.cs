@@ -59,11 +59,11 @@ public class ZoneManager : MonoBehaviour
 
     public static void RegisterZone(Zone z)
     {
-        m_instance.m_registeredZones[z.Label] = z;
+        m_instance.m_registeredZones[z.LogicalName] = z;
     }
     public static void DeRegisterZone(Zone z)
     {
-        if (m_instance.m_registeredZones.ContainsKey(z.Label))
-            m_instance.m_registeredZones.Remove(z.Label);
+        if (m_instance.m_registeredZones.ContainsKey(z.LogicalName))
+            m_instance.m_registeredZones.Remove(z.LogicalName);
     }
 }

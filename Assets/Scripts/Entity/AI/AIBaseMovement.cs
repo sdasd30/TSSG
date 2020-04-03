@@ -89,12 +89,16 @@ public class AIBaseMovement : AIInputParentClass
         return ip;
     }
 
-    public void SetTarget(Vector3 target, float tolerance = 0.5f)
+    public void SetTarget(Vector3 target, float tolerance = 0.5f,float moveSpeedMod = 1.0f)
     {
         //Debug.Log("Setting destination to : " + t);
         m_agent.SetDestination(target);
         m_tolerance = tolerance;
         m_targetPoint = target;
+        if (moveSpeedMod != 1.0f)
+        {
+            GetComponent<MovementBase>().AddModifier("AITarget", moveSpeedMod, Time.fixedDeltaTime);
+        }
     }
     public void SetFollowGameObject(GameObject follow, bool keepFollowing = true)
     {

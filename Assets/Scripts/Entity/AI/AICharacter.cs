@@ -172,6 +172,23 @@ public class AICharacter : MonoBehaviour
         }
         m_taskManager.OnExitZone(z);
     }
+
+    public void OnItemGet(Item i)
+    {
+        foreach (Goal g in GoalList)
+        {
+            g.OnItemGet(i);
+        }
+        m_taskManager.OnItemGet(i);
+    }
+    public void OnItemLost(InventoryItemData i)
+    {
+        foreach (Goal g in GoalList)
+        {
+            g.OnItemLost(i);
+        }
+        m_taskManager.OnItemLost(i);
+    }
     public void ProposeNewBehaviour(AIBehaviour b)
     {
         if (b.BehaviourPrefab == null)

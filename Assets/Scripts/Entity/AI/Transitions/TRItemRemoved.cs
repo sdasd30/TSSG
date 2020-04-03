@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TRItemRemoved : MonoBehaviour
+public class TRItemRemoved : Transition
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Item PrefabOfItem;
 
-    // Update is called once per frame
-    void Update()
+    public override void OnItemLost(InventoryItemData i)
     {
-        
+        base.OnItemLost(i);
+        if (i.itemName == PrefabOfItem.name)
+            TriggerTransition();
     }
 }

@@ -34,12 +34,11 @@ public class TKInvestigatePoint : Task
 
         if (Time.timeSinceLevelLoad > m_finishStartupTime)
         {
-            float d = Vector2.Distance(new Vector2(MasterAI.transform.position.x, MasterAI.transform.position.z),
-                new Vector2(m_nextSearchpoint.x, m_nextSearchpoint.z));
+            float d = MasterAI.get2DDistanceToPoint(m_nextSearchpoint);
             if (d > tolerance * 1.2)
             {
                 state = "headingToPoint";
-                MasterAI.GetComponent<AIBaseMovement>().SetTarget(m_nextSearchpoint, tolerance);
+                MasterAI.MoveToPoint(m_nextSearchpoint, tolerance);
                 m_nextSearchTime = -1f;
             } else
             {
