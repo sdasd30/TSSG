@@ -35,7 +35,7 @@ public class TKWalkToAndAttack : Task
             {
                 state = "headingToPoint";
                 MasterAI.GetComponent<AIBaseMovement>().SetTarget(targetPos, DesiredDistanceToTarget);
-                m_nextFireTime = Time.timeSinceLevelLoad + m_nextFireTime;
+                m_nextFireTime = Time.timeSinceLevelLoad + FirePauseTime;
             } else
             {
                 MasterAI.GetComponent<Orientation>().FacePoint(GetTargetObj().transform.position);

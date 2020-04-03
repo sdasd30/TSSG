@@ -173,7 +173,7 @@ public class InventoryContainer : MonoBehaviour
         items.Add(pos, new InventoryItemData(i));
         m_freeSlots.Remove(pos);
 
-        Holder.GetComponent<AICharacter>()?
+        Holder.GetComponent<AICharacter>()?.OnItemGet(i);
     }
     public void ClearItem(Vector2 v)
     {
@@ -183,13 +183,16 @@ public class InventoryContainer : MonoBehaviour
         if (eqpSlotInfo.ContainsKey(v))
         {
             items[v].exitFunc(this, eqpSlotInfo[v]);
+            Holder.GetComponent<AICharacter>()?.OnItemLost(items[v]);
         } else {
             items[v].exitFunc(this, null);
+            Holder.GetComponent<AICharacter>()?.OnItemLost(items[v]);
         }
-
+        
         items.Remove(v);
         m_freeSlots.Add(v);
         m_freeSlots.Sort((a, b) => (a.x + a.y*10).CompareTo(b.x + b.y*10));
+        
 
     }
     public Vector2 findFreeSlot(Item i)
