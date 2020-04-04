@@ -3,36 +3,37 @@ using System.Collections;
 
 public class CameraFollow : MonoBehaviour {
 
-	public Transform target;
-	public float verticalOffset;
-	public float lookAheadDstX;
-	public float lookSmoothTimeX;
-	public float verticalSmoothTime;
-	public Vector2 focusAreaSize;
-	public bool UseCameraLimits;
-	public Vector2 minVertex;
-	public Vector2 maxVertex;
-	Vector2 viewSize;
+	[SerializeField]
+	private Transform target;
+	[SerializeField]
+	private float verticalOffset;
+	[SerializeField]
+	private float lookAheadDst;
+	[SerializeField]
+	private float lookSmoothTime;
+	[SerializeField]
+	private Vector2 focusAreaSize;
+	[SerializeField]
+	private bool UseCameraLimits;
+	[SerializeField]
+	private Vector2 minVertex;
+	[SerializeField]
+	private Vector2 maxVertex;
 
-	FocusArea focusArea;
+	private Vector2 viewSize;
 
-	float currentLookAheadX;
-	float targetLookAheadX;
-	float lookAheadDirX;
-	float smoothLookVelocityX;
-	float smoothVelocityY;
-	const float DISTANCE_SNAP = 999f;
+	private FocusArea focusArea;
 
-	bool lookAheadStopped;
+	private float currentLookAheadX;
+	private float targetLookAheadX;
+	private float lookAheadDirX;
+	private float smoothLookVelocityX;
+	private float smoothVelocityY;
+	private const float DISTANCE_SNAP = 999f;
 
-	void Start() {
-		initFunct ();
-	}
-    public void initFunct() {
-        SetPlayerObj(target);
-    }
+	private bool lookAheadStopped;
 
-    public void SetPlayerObj(Transform t)
+    public void SetTarget(Transform t)
     {
         if (t != null)
         {
@@ -42,6 +43,17 @@ public class CameraFollow : MonoBehaviour {
             focusArea = new FocusArea(target.GetComponent<Collider2D>().bounds, focusAreaSize, viewSize, minVertex, maxVertex);
         }
     }
+	void Start()
+	{
+		initFunct();
+	}
+
+	private void initFunct()
+	{
+		if (target == null)
+			target = CurrentPlayerSettings.GetCurrentPlayer().transform;
+		SetTarget(target);
+	}
 	void Update() {
 		if (target != null) {
 			focusArea.Update (target.GetComponent<Collider2D> ().bounds, minVertex, maxVertex, UseCameraLimits);
@@ -71,15 +83,15 @@ public class CameraFollow : MonoBehaviour {
 			//}
 		}
 
-		currentLookAheadX = Mathf.SmoothDamp (currentLookAheadX, targetLookAheadX, ref smoothLookVelocityX, lookSmoothTimeX);
+		currentLookAheadX = Mathf.SmoothDamp (currentLookAheadX, targetLookAheadX, ref smoothLookVelocityX, lookSmoothTime);
 
-		focusPosition.y = Mathf.SmoothDamp (transform.position.y, focusPosition.y, ref smoothVelocityY, verticalSmoothTime);
+		focusPosition.y = Mathf.SmoothDamp (transform.position.y, focusPosition.y, ref smoothVelocityY, lookSmoothTime);
 		focusPosition += Vector2.right * currentLookAheadX;
 		transform.position = (Vector3)focusPosition + Vector3.forward * -10;
 		//transform.position = new Vector3 ((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
 	}
 
-	void OnDrawGizmos() {
+	private void OnDrawGizmos() {
 		Gizmos.color = new Color (0, 0, 1, .1f);
 		Gizmos.DrawCube (focusArea.centre, focusAreaSize);
 		Gizmos.color = new Color (0, 1, 0, .4f);

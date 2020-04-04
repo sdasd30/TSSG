@@ -7,11 +7,11 @@ using UnityEngine.UI;
 public class ItemUIElement : MonoBehaviour, IDragHandler, IEndDragHandler, 
     IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    private Vector3 mouseoffset = new Vector3();
-    private float maxY;
-    private Image m_image;
     public Item ItemInfo;
     public bool CanMove = true;
+
+    private Vector3 mouseoffset = new Vector3();
+    private Image m_image;
     //public InventorySlotUI CurrentSlot;
 
     private Vector3 m_returnPos;
@@ -79,7 +79,7 @@ public class ItemUIElement : MonoBehaviour, IDragHandler, IEndDragHandler,
         {
             Vector2 newPos = Input.mousePosition - mouseoffset;
             float newX = Mathf.Min(Mathf.Max(0f, newPos.x), Screen.width);
-            float newY = Mathf.Min(Mathf.Max(0f, newPos.y), Screen.height - maxY);
+            float newY = Mathf.Min(Mathf.Max(0f, newPos.y), Screen.height);
             transform.position = new Vector3(newX, newY, 0f);
             m_image.raycastTarget = false;
         }
