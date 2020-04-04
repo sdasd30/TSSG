@@ -101,6 +101,8 @@ public class PersistentItem : MonoBehaviour {
         string guessedPath = "";
         if (GetComponent<Equipment>() != null)
             guessedPath += "Equippable/";
+        else if (GetComponent<Item>() != null)
+            guessedPath += "Item/";
         else if (GetComponent<CharacterBase>() != null)
             guessedPath += "Entity/";
         else

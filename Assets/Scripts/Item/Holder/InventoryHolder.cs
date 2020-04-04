@@ -76,6 +76,29 @@ public class InventoryHolder : Interactable
         }
         return false;
     }
+    public int GetItemCount(Item i)
+    {
+        int itemCount = 0;
+        foreach (InventoryContainer m_container in m_containers.Values)
+        {
+            itemCount += m_container.GetItemCount(i);
+        }
+        return itemCount;
+    }
+    public int RemoveItem(Item i, int amount = 1)
+    {
+        int numToRemove = amount;
+        int numRemoved = 0;
+        foreach (InventoryContainer m_container in m_containers.Values)
+        {
+            int itemsRemoved = m_container.RemoveItem(i, numToRemove);
+            numRemoved += itemsRemoved;
+            numToRemove -= itemsRemoved;
+            if (numToRemove == 0)
+                break;
+        }
+        return numRemoved;
+    }
     public override bool IsInteractable(GameObject interactor)
     {
         return (m_currentInspector == null);

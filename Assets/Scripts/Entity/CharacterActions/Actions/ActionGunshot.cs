@@ -29,6 +29,8 @@ public class WeaponStats
     [HideInInspector]
     public bool deflector = false;
     public List<AudioClip> attackSound; //What sounds should play when a projectile is created?
+    public Item AmmoType;
+    public int AmmoConsumedPerShot = 1;
 }
 
 
@@ -37,6 +39,8 @@ public class ActionGunshot : ActionInfo
     
     public WeaponStats m_weaponStats;
 
+
+    private int AmmoLeftInClip;
     private float m_nextTimeCanFire = 0;
     internal void Start()
     {
@@ -62,6 +66,16 @@ public class ActionGunshot : ActionInfo
     {
         WeaponStats wp = m_weaponStats;
         base.OnAttack();
+        
+        if (SourceEqp != null)
+        {
+            EqpWeapon wep = (EqpWeapon)SourceEqp;
+            if (wep != null && wp.AmmoConsumedPerShot > wep.CurrentAmmo)
+            {
+                m_nextTimeCanFire = Time.timeSinceLevelLoad + wp.firedelay;
+                return;
+            }
+        }
         GetComponent<Attackable>().DamageObj(wp.RecoilDamage);
         for (int i = 0; i < wp.shots; i++)
         {

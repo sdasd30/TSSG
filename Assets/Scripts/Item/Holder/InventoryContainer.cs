@@ -8,6 +8,7 @@ public class InitialItemData
 {
     public Vector2 inventoryLocation;
     public CharData ItemProperties;
+    public int CurrentStack = 1;
 }
 [System.Serializable]
 public class EquipmentSlot
@@ -26,6 +27,8 @@ public class InventoryItemData
     [HideInInspector]
     public string itemName;
     [HideInInspector]
+    public string displayName;
+    [HideInInspector]
     public Vector2 size;
     [HideInInspector]
     public delegate void OnExitReturnFunc(InventoryContainer i, EquipmentSlot es);
@@ -35,7 +38,8 @@ public class InventoryItemData
     public Sprite InvIcon;
 
     public InventoryItemData(Item i, CharData itemData = null) {
-        itemName = i.displayname;
+        itemName = i.name;
+        displayName = (i.displayname.Length > 0) ? i.displayname : i.name;
         size = i.baseSize;
         exitFunc = i.OnExitInventory;
         ItemInstance = i;
@@ -88,7 +92,7 @@ public class InventoryContainer : MonoBehaviour
         if (DisplayOnStart)
             ToggleDisplay();
     }
-
+    
     public bool CanFit(Vector2 itemPos, Vector2 itemSize)
     {
         if (!hasSpace(itemPos, itemSize))
@@ -169,11 +173,57 @@ public class InventoryContainer : MonoBehaviour
             i.OnEnterInventory(this, null);
         }
         if (items.ContainsKey(pos))
+        {
+            if (items[pos].displayName == i.displayname)
+            {
+                items[pos].ItemInstance.CurrentStack += i.CurrentStack;
+                return;
+            }
             items.Remove(pos);
+        }
         items.Add(pos, new InventoryItemData(i));
         m_freeSlots.Remove(pos);
 
         Holder.GetComponent<AICharacter>()?.OnItemGet(i);
+    }
+    public int RemoveItem(Item i, int amount = 1)
+    {
+        int remainingToRemove = amount;
+        int numRemoved = 0;
+        foreach (Vector2 v in items.Keys)
+        {
+            InventoryItemData myI = items[v];
+            if (myI.displayName == i.displayname)
+            {
+                if (myI.ItemInstance.CurrentStack <= remainingToRemove)
+                {
+                    numRemoved += myI.ItemInstance.CurrentStack;
+                    remainingToRemove -= myI.ItemInstance.CurrentStack;
+                    ClearItem(v);
+                    if (remainingToRemove == 0)
+                        return numRemoved;
+                } else
+                {
+                    numRemoved += remainingToRemove;
+                    myI.ItemInstance.CurrentStack -= remainingToRemove;  
+                    return numRemoved;
+                }
+            }
+        }
+        return numRemoved;
+    }
+    public int GetItemCount( Item i )
+    {
+        int stack = 0;
+        foreach (Vector2 v in items.Keys)
+        {
+            InventoryItemData myI = items[v];
+            if (myI.displayName == i.displayname)
+            {
+                stack += myI.ItemInstance.CurrentStack;
+            }
+        }
+        return stack;
     }
     public void ClearItem(Vector2 v)
     {
@@ -192,13 +242,19 @@ public class InventoryContainer : MonoBehaviour
         items.Remove(v);
         m_freeSlots.Add(v);
         m_freeSlots.Sort((a, b) => (a.x + a.y*10).CompareTo(b.x + b.y*10));
-        
-
     }
+    
     public Vector2 findFreeSlot(Item i)
     {
         if (!canAcceptItem(i))
             return new Vector2(-1, -1);
+        foreach (Vector2 v in items.Keys)
+        {
+            InventoryItemData myI = items[v];
+            if (myI.displayName == i.displayname &&
+                myI.ItemInstance.CurrentStack + i.CurrentStack <= myI.ItemInstance.MaxStack)
+                return v;
+        }
         foreach (Vector2 v in m_freeSlots)
         {
             if (CanFit(v, i.baseSize))
@@ -282,6 +338,7 @@ public class InventoryContainer : MonoBehaviour
         {
             InitialItemData newItem = new InitialItemData();
             newItem.inventoryLocation = v;
+            newItem.CurrentStack = items[v].ItemInstance.CurrentStack;
             newItem.ItemProperties = new CharData();
             items[v].ItemInstance.SaveItems();
             newItem.ItemProperties = items[v].ItemInstance.ItemProperties;

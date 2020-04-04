@@ -121,7 +121,7 @@ public class ActionInfo : MonoBehaviour
 
     [HideInInspector]
     public InputKey m_useButton;
-    //public Equipment SourceEqp = null;
+    public Equipment SourceEqp = null;
     //public AttackFXList m_attackFXList;
 
     protected CharacterBase m_charBase;

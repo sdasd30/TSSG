@@ -11,6 +11,7 @@ public class InventoryUIManager : MonoBehaviour
     public GameObject InvPrefab;
     public GameObject SlotPrefab;
     public GameObject ItemIconPrefab;
+    public Canvas MainInventoryCanvas;
 
     private InventorySlotUI m_highlightedSlot;
     private ItemUIElement m_highlightedItem;
@@ -47,7 +48,7 @@ public class InventoryUIManager : MonoBehaviour
 
     public static GameObject CreateInventoryGUI(InventoryContainer ic)
     {
-        GameObject go = Instantiate(m_instance.InvPrefab,FindObjectOfType<Canvas>().transform);
+        GameObject go = Instantiate(m_instance.InvPrefab, m_instance.MainInventoryCanvas.transform);
         go.GetComponent<InventoryUIMenu>().Container = ic;
         m_instance.m_containerPrefabs.Add(ic, go);
         if (m_instance.m_openHolder.ContainsKey(ic.Holder))
@@ -62,7 +63,7 @@ public class InventoryUIManager : MonoBehaviour
             invX++;
         }
         int invY = m_instance.m_openHolder[ic.Holder];
-        go.GetComponent<RectTransform>().anchoredPosition = new Vector2(-300f + (300f * (invX - 1)), 140f - (200f * (invY - 1)));
+        go.GetComponent<RectTransform>().anchoredPosition = new Vector2(-300f + (300f * (invX - 1)),  - (200f * (invY - 1)));
         go.GetComponent<RectTransform>().sizeDelta = new Vector2(150f + ((ic.size.x - 1 )* 50f), 150f + ((ic.size.y - 1) * 50f));
 
         go.transform.Find("DragBar").Find("OwnerName").GetComponent<TextMeshProUGUI>().text = ic.Holder.name;

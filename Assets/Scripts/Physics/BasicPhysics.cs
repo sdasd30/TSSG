@@ -16,6 +16,7 @@ public class BasicPhysics : MonoBehaviour
     public float TerminalVelocity = -1f;
     public float GravityForce = -1.0f;
     public bool Floating = false;
+    public bool IsTrigger = false;
 
     // Particles
     //public bool DrawParticles = true;
@@ -56,6 +57,7 @@ public class BasicPhysics : MonoBehaviour
     {
         m_oldFloating = Floating;
         m_controller = GetComponent<CharacterController>();
+        m_controller.detectCollisions = false;
         m_forces = new List<Force>();
         m_inputedForce = new Force();
         m_lastPosition = transform.position;
@@ -94,7 +96,7 @@ public class BasicPhysics : MonoBehaviour
         m_trueVelocity = (transform.position - m_lastPosition) / Time.deltaTime;
         m_lastPosition = transform.position;
         IsGrounded = m_controller.isGrounded;
-        
+        m_controller.detectCollisions = false; // !IsTrigger;
         //particleProcess();
     }
 
@@ -123,7 +125,8 @@ public class BasicPhysics : MonoBehaviour
     {
         applyForcesToVelocity();
         processArtificialVelocity();
-        m_controller.Move(m_velocity);
+        if (m_controller.enabled)
+            m_controller.Move(m_velocity);
     }
 
     private void applyForcesToVelocity()

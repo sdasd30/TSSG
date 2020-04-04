@@ -11,9 +11,9 @@ public class TKUseWeaponAI : Task
     {
         base.OnTransition();
         Transform t = transform.Find(UseItemSlot);
-        if (t != null && t.GetComponent<Item>() != null && t.GetComponent<Item>().AIBehaviour != null)
+        if (t != null && t.GetComponent<Equipment>() != null && t.GetComponent<Equipment>().AIBehaviour != null)
         {
-            GetComponent<AITaskManager>().AddBehaviour(t.GetComponent<Item>().AIBehaviour, ParentGoal);
+            GetComponent<AITaskManager>().AddBehaviour(t.GetComponent<Equipment>().AIBehaviour, ParentGoal);
         }
     }
 
