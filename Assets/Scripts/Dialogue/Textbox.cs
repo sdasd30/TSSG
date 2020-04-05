@@ -10,8 +10,10 @@ public enum DialogueSound { TYPED, SPOKEN, RECORDED};
 public class Textbox : MonoBehaviour {
 
 	public DialogueUnit MasterSequence;
-	public string FullText;
-	public string CurrentText;
+	[SerializeField]
+	private string RawText;
+	[SerializeField]
+	private string CurrentText;
 	public float TimeBetweenType = 0.01f;
 	public float PauseAfterTextboxDone = 2f;
 	public Color TextboxColor;
@@ -24,36 +26,22 @@ public class Textbox : MonoBehaviour {
 	private float m_pauseTime = 0f;
 	private float m_timeSinceStop = 0f;
 	private Vector3 m_lastPos;
+	private string m_processedText;
 	private int m_lastCharacterIndex;
 	private bool m_isTyping;
 
-	private List<DialogueAction> m_potentialActions;
 	private GameObject m_targetedObj;
 
-
+	public void SkipSection()
+	{
+		skipAll();
+		Destroy(gameObject);
+	}
 	// Use this for initialization
 	void Start () {
 		m_Text = GetComponentInChildren<TextMeshProUGUI> ();
 		if (!m_isTyping)
-			m_Text.text = FullText;
-		
-		m_potentialActions = new List<DialogueAction> ();
-		m_potentialActions.Add (new DAPause());
-		m_potentialActions.Add (new DATextSpeed ());
-		m_potentialActions.Add (new DAWalkTo ());
-		m_potentialActions.Add (new DAControl ());
-		m_potentialActions.Add (new DAFacingDirection ());
-		m_potentialActions.Add (new DAKeyname ());
-		m_potentialActions.Add (new DACameraFocus ());
-		m_potentialActions.Add (new DASceneChange ());
-		m_potentialActions.Add (new DAAnimation ());
-
-		m_potentialActions.Add (new DAEnd ());
-		m_potentialActions.Add (new DAJump ());
-		m_potentialActions.Add (new DAQuestion ());
-
-		m_potentialActions.Add (new DAVarSet ());
-		m_potentialActions.Add (new DAVarCheck ());
+			skipAll();
 	}
 
 	void OnDestroy() {
@@ -80,11 +68,12 @@ public class Textbox : MonoBehaviour {
 			CurrentText = "";
 			m_lastCharacterIndex = 0;
 		} else {
-			CurrentText = FullText;
+			CurrentText = m_processedText;
 		}
 	}
 	public void setText(string text) {
-		FullText = text;
+		RawText = text;
+		m_processedText = RawText;
 	}
 	public void FreezeCharacter(MovementBase bm, bool isFrozen = true) {
 		if (!FrozenCharacters.ContainsKey (bm))
@@ -106,12 +95,33 @@ public class Textbox : MonoBehaviour {
 	 * 
 	 * */
 
-	public void PerformSpecialAction(string section) {
+	public string ParseSection(string section)
+	{
+		string retString = "";
+		string remainingParseStr = section;
+		while (remainingParseStr.Length > 1)
+		{
+			char nextChar = remainingParseStr.ToCharArray()[0];
+			remainingParseStr = remainingParseStr.Substring(1);
+			if (nextChar != '<')
+			{
+				retString += nextChar;
+			} else
+			{
+				remainingParseStr = ParseSpecialSection(remainingParseStr);
+			}
+		}
+		if (remainingParseStr.Length > 0)
+			retString += remainingParseStr;
+		return retString;
+	}
+	public string ParseSpecialSection(string section) {
 		string actStr = "";
 		int charNum = 0;
 		char nextChar = section.ToCharArray () [charNum];
 		actStr += nextChar;
 		int numSpecials = 1;
+		string retString = "";
 		while (numSpecials > 0 && charNum < section.Length - 1) {
 			charNum++;
 			nextChar = section.ToCharArray () [charNum];
@@ -124,42 +134,43 @@ public class Textbox : MonoBehaviour {
 			}
 			actStr += nextChar;
 		}
-			
-		List<DialogueAction> executedActions = new List<DialogueAction> ();
-		foreach (DialogueAction da in m_potentialActions) {
-			if (da.IsExecutionString (actStr))
-				executedActions.Add (da);
-		}
+
+		List<DialogueAction> executedActions = TextboxManager.ValidActions(actStr);
 		foreach (DialogueAction da in executedActions)
-			da.PerformAction (actStr, this);
+			retString += da.PerformAction (actStr, this);
+		charNum++;
+		return retString + section.Substring(charNum);
 	}
 
 
-	private void processSpecialSection() {
+	private void processSpecialSection(bool skip = false) {
 		string actStr = "";
-		char nextChar = FullText.ToCharArray () [m_lastCharacterIndex];
+		char nextChar = RawText.ToCharArray () [m_lastCharacterIndex];
 		int numSpecials = 1;
-		while (numSpecials > 0 && m_lastCharacterIndex < FullText.Length - 1) {
+		while (numSpecials > 0 && m_lastCharacterIndex < RawText.Length - 1) {
 			actStr += nextChar;
 			m_lastCharacterIndex++;
-			nextChar = FullText.ToCharArray () [m_lastCharacterIndex];
+			nextChar = RawText.ToCharArray () [m_lastCharacterIndex];
 			if (nextChar == '>')
 				numSpecials--;
 			else if (nextChar == '<')
 				numSpecials++;
 		}
-		List<DialogueAction> executedActions = new List<DialogueAction> ();
-		foreach (DialogueAction da in m_potentialActions) {
-			if (da.IsExecutionString (actStr))
-				executedActions.Add (da);
-		}
+		List<DialogueAction> executedActions = TextboxManager.ValidActions(actStr);
+		string retStr = "";
 		foreach (DialogueAction da in executedActions)
-			da.PerformAction (actStr, this);
+		{
+			if (skip)
+				retStr += da.SkipAction(actStr, this);
+			else
+				retStr += da.PerformAction(actStr, this);
+		}
 		m_lastCharacterIndex++;
+		m_processedText = m_processedText.Substring(0, m_lastCharacterIndex) + retStr + m_processedText.Substring(m_lastCharacterIndex);
 	}
 
-	private void processNormalChar(char nextChar) {
-		if (m_sinceLastSound > 0.15f) {
+	private void processNormalChar(char nextChar, bool skip = false) {
+		if (m_sinceLastSound > 0.15f && !skip) {
 			m_sinceLastSound = 0f;
 			playSound ();
 		}
@@ -168,11 +179,11 @@ public class Textbox : MonoBehaviour {
 		m_sinceLastChar = 0f;
 	}
 
-	private void processChar() {
+	private void processChar(bool skip = false) {
 		m_lastCharacterIndex++;
-		char nextChar = FullText.ToCharArray () [m_lastCharacterIndex - 1];
+		char nextChar = m_processedText.ToCharArray () [m_lastCharacterIndex - 1];
 		if (nextChar == '<') {
-			processSpecialSection ();
+			processSpecialSection (skip);
 		} else {
 			processNormalChar (nextChar);
 		}
@@ -184,7 +195,7 @@ public class Textbox : MonoBehaviour {
 			m_lastPos = m_targetedObj.transform.position;
 		}
 		if (m_isTyping ) {
-			if (m_lastCharacterIndex < FullText.Length) { 
+			if (m_lastCharacterIndex < m_processedText.Length) { 
 				m_sinceLastChar += Time.deltaTime;
 				m_sinceLastSound += Time.deltaTime;
 				if (m_pauseTime > 0f) {
@@ -198,7 +209,24 @@ public class Textbox : MonoBehaviour {
 					Destroy (gameObject);
 				}
 			}
-
+		}
+	}
+	private void skipAll()
+	{
+		while (m_lastCharacterIndex < m_processedText.Length)
+		{
+			if (m_lastCharacterIndex < m_processedText.Length)
+			{
+				processChar(true);
+			}
+			else
+			{
+				m_timeSinceStop += Time.deltaTime;
+				if (m_timeSinceStop > PauseAfterTextboxDone)
+				{
+					Destroy(gameObject);
+				}
+			}
 		}
 	}
 	private void playSound() {

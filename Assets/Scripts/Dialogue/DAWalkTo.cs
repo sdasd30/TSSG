@@ -8,14 +8,15 @@ public class DAWalkTo : DialogueAction {
 		return MatchStart (actionString, "MOV");
 	}
 
-	public override void PerformAction(string actionString, Textbox originTextbox) {
+	public override string PerformAction(string actionString, Textbox originTextbox) {
 		List<string> chars = ExtractArgs(actionString,"MOV");
 		if (chars.Count < 2)
-			return;
+			return "";
 		GameObject character = GameObject.Find (chars[0]);
 		GameObject target = GameObject.Find (chars[1]);
 		if (character != null && character.GetComponent<MovementBase>()) {
 			character.GetComponent<AIBaseMovement> ().SetTarget (target.transform.position);
 		}
+		return "";
 	}
 }

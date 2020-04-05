@@ -63,17 +63,13 @@ public class MovementBase : MonoBehaviour
 
     private float m_lastJump = 0.0f;
     private bool m_variableJumpApplied = false;
-    private float m_sinceStep = 0f;
     private float m_accelerationTimeX = .1f;
     private float m_accelerationTimeZ = .1f;
-    private float m_currentMoveSpeed;
 
     private float LastCalculatedTime = 0;
     private Vector3 lastPos;
     private Vector3 m_trueAverageVelocity;
     public Vector3 TrueAverageVelocity { get { return m_trueAverageVelocity; } private set { m_trueAverageVelocity = value; } }
-
-    private InputPacket m_extraInputs;
 
     private const float VEL_CALC_INTERVAL = 0.1f;
     private const float MIN_JUMP_INTERVAL = 0.2f;
@@ -99,7 +95,6 @@ public class MovementBase : MonoBehaviour
             SetJumpHeight(JumpHeight);
         if (GetComponent<PersistentItem>() != null)
             GetComponent<PersistentItem>().InitializeSaveLoadFuncs(storeData, loadData);
-        m_currentMoveSpeed = MaxMoveSpeed;
     }
 
     // Start is called before the first frame update
@@ -116,10 +111,12 @@ public class MovementBase : MonoBehaviour
         {
             if (IsPlayerControl)
             {
+                GetComponent<NavMeshAgent>().enabled = false;
                 ip.MatchPlayerInput();
             }
             else
             {
+                GetComponent<NavMeshAgent>().enabled = true;
                 ip = npcMovement();
             }
         }

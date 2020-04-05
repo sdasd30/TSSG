@@ -1,0 +1,1 @@
+{"actors":[],"PublicVars":{"regID":"Not Assigned","prefabPath":"auto","name":"","pos":{"x":0.0,"y":0.0,"z":0.0},"targetDir":0,"targetID":"","PersistentInt":{"keys":[],"values":[]},"PersistentFloats":{"keys":[],"values":[]},"PersistentStrings":{"keys":[],"values":[]},"PersistentBools":{"keys":[],"values":[]}}}

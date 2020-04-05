@@ -8,8 +8,9 @@ public class DAEnd : DialogueAction {
 		return MatchStart (actionString, "END");
 	}
 
-	public override void PerformAction(string actionString, Textbox originTextbox) {
+	public override string PerformAction(string actionString, Textbox originTextbox) {
 		Debug.Log ("End Called");
 		originTextbox.MasterSequence.closeSequence ();
+		return "";
 	}
 }

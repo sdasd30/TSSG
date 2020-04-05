@@ -75,7 +75,7 @@ public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler , IPointerExi
         }
         return false;
     }
-    public void AddItem(Item i, ItemUIElement iue)
+    public void AddItem(Item i)
     {
         m_container.AddItem(i, Coordinate);
     }

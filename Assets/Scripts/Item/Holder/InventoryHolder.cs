@@ -61,7 +61,7 @@ public class InventoryHolder : Interactable
             }
         }
     }
-    public bool AddItemIfFree(Item i)
+    public bool AddItemIfFree(Item i, bool dropIfCannotHold = true, bool forceGive = false)
     {
         Vector2 badV = new Vector2(-1, -1);
         foreach (InventoryContainer m_container in m_containers.Values)
@@ -74,11 +74,58 @@ public class InventoryHolder : Interactable
                 return true;
             }
         }
+        if (dropIfCannotHold)
+        {
+            Debug.Log("Could not carry item: " + i);
+            
+        }
         return false;
+    }
+    public int GetItemCount(Item i)
+    {
+        int itemCount = 0;
+        foreach (InventoryContainer m_container in m_containers.Values)
+        {
+            itemCount += m_container.GetItemCount(i);
+        }
+        return itemCount;
+    }
+    public int RemoveItem(Item i, int amount = 1)
+    {
+        int numToRemove = amount;
+        int numRemoved = 0;
+        foreach (InventoryContainer m_container in m_containers.Values)
+        {
+            int itemsRemoved = m_container.RemoveItem(i, numToRemove);
+            numRemoved += itemsRemoved;
+            numToRemove -= itemsRemoved;
+            if (numToRemove == 0)
+                break;
+        }
+        return numRemoved;
     }
     public override bool IsInteractable(GameObject interactor)
     {
         return (m_currentInspector == null);
+    }
+
+    public void ForceEquip(Item i ,string slotname = "primary")
+    {
+        Vector2 targetSlot = new Vector2(-1, -1);
+        InventoryContainer targetContainer = null;
+        foreach (InventoryContainer m_container in m_containers.Values)
+        {
+            Vector2 slot = m_container.getSlot(slotname);
+            if (slot != targetSlot)
+            {
+                targetSlot = slot;
+                targetContainer = m_container;
+                break;
+            }
+        }
+        if (targetContainer == null)
+            return;
+        InventoryUIManager.MoveItemTo(i, targetContainer, targetSlot, true);
     }
     protected override void onTrigger(GameObject interactor)
     {

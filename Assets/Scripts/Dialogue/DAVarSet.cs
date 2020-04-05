@@ -5,16 +5,17 @@ using UnityEngine;
 public class DAVarSet : DialogueAction {
 
 	public override bool IsExecutionString(string actionString) {
-		return MatchStart (actionString, "SET");
+		return MatchStart (actionString, "VARSET");
 	}
 
-	public override void PerformAction(string actionString, Textbox originTextbox) {
-		List<string> args = ExtractArgs(actionString,"SET");
+	public override string PerformAction(string actionString, Textbox originTextbox) {
+		List<string> args = ExtractArgs(actionString,"VARSET");
 		if (args.Count != 2) {
 			Debug.Log ("INVALID SET VARIABLE COMMAND, Need 2 Args got: " + args.Count);
-			return;
+			return "";
 		}
         SaveObjManager.PublicVars().ClearString(args[0]);
 		SaveObjManager.PublicVars ().SetString (args [0], args [1]);
+		return "";
 	}
 }

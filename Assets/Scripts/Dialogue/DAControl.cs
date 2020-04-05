@@ -8,7 +8,7 @@ public class DAControl : DialogueAction {
 		return MatchStart (actionString, "!");
 	}
 
-	public override void PerformAction(string actionString, Textbox originTextbox) {
+	public override string PerformAction(string actionString, Textbox originTextbox) {
 		List<string> listChars = ExtractArgs (actionString, "!");
 		foreach (string targetChar in listChars) { 
 			GameObject target = GameObject.Find (targetChar);
@@ -17,5 +17,6 @@ public class DAControl : DialogueAction {
                    !target.GetComponent<CharacterBase>().IsAutonomous);
 			}	
 		}
+		return "";
 	}
 }

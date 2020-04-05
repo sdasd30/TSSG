@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Reflection;
 using UnityEngine.UI;
+using System.Linq;
+using System;
 //using Luminosity.IO;
 
 public class TextboxManager : MonoBehaviour {
@@ -28,6 +31,7 @@ public class TextboxManager : MonoBehaviour {
 	//Color TextboxColor;
 	float timeAfter = 2f;
 	float textSpeed = 0.03f;
+	private List<DialogueAction> m_potentialActions;
 
 	void Awake()
 	{
@@ -41,8 +45,23 @@ public class TextboxManager : MonoBehaviour {
 			return;
 		}
 		m_currentSequences = new List<DialogueSequence> ();
+		m_potentialActions = new List<DialogueAction>();
+		foreach (System.Type type in
+			Assembly.GetAssembly(typeof(DialogueAction)).GetTypes().Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(DialogueAction))))
+		{
+			m_potentialActions.Add((DialogueAction)Activator.CreateInstance(type));
+		}
 	}
-
+	public static List<DialogueAction> ValidActions(string sequence)
+	{
+		List<DialogueAction> executedActions = new List<DialogueAction>();
+		foreach (DialogueAction da in m_instance.m_potentialActions)
+		{
+			if (da.IsExecutionString(sequence))
+				executedActions.Add(da);
+		}
+		return executedActions;
+	}
 	public static void StartSequence(string text,GameObject speaker = null, bool Skippable = false) {
 		DialogueSequence ds = Instance.parseSequence (text);
 		ds.Speaker = speaker;
@@ -183,6 +202,7 @@ public class TextboxManager : MonoBehaviour {
 		textSpeed = time;
 	}
 	public static void ClearAllSequences() {
+		
 		//Debug.Log ("Clearing: " + Instance.m_currentSequences.Count);
 		foreach (DialogueSequence ds in Instance.m_currentSequences) {
 			if (ds != null) {

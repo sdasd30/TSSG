@@ -1,0 +1,96 @@
+
+Pause
+<NUMBER>
+Will pause for a certain number of seconds.
+Example:
+"Hmm... <2> I guess I don't know yet?"
+
+TextSpeed
+<$NewSpeed>
+Sets the new text speed for typing the text. Textspeed is measured in seconds between each character
+Example:
+"Watch this... <$0.05> I am talking slowly. <$0.01> Now I am talking quickly."
+
+Tag
+<TAGNAME>
+Not used for anything. But used for the Goto Command.
+
+Goto
+<@TAGNAME>
+Will jump directly to a line specified by a tag.
+
+
+Scene change
+<SCE NEWSCENENAME>
+Will load a new scene.
+
+Camera Focus
+<CAM NEWFOCUSGAMEOBJECT>
+Will force the Game Camera to focus on a different game object.
+
+
+Freeze Character
+<FRE CHARACTERNAME>
+Freezes the character, makes it unable to move by itself. Useful for cutscenes.
+
+
+Immediately stop dialogue
+<END>
+Will stop running the rest of the dialogue chain immediately.
+
+
+
+Walk to point
+<WAL CHARACTERNAME POINT>
+Makes a character walk to a certain gameobject target.
+Example:
+"Why don't you follow me! <MOV ME TARGETPOINT> Hurry up!"
+
+Set Persistent global variable
+<SET VARNAME VALUE>
+Example:
+<Set HaveSpokenToMe True>
+
+
+If Condition
+<IF VARIABLE EQUALTOTHIS ANYACTION ELSEACTION>
+
+This checks global variables set with the SET parameter.
+Example:
+<IF KeysCollected 5 <MOV >>
+
+
+Question
+<?Prompt-Option-Option-Option....>
+Creates a dialogue selection. This will Start with a prompt and display an arbitrary amount of selection options.
+When the option is selected, it will process the text. This is a good way to hide in jumps to different areas of text.
+
+Example:
+<?What Color is your favorite?
+-I like Green!<@GREENSELECTED>
+-\-I like Blue!<@BLUESELECTED>
+-Hmm...<2> I don't really know?<@CANNOTDECIDE>>
+
+
+TO-Make:
+
+Give Item
+<GIV CHARACTER ITEMPREFABNAME STACKAMOUNT>
+Gives a character an item. IF there is no inventory space, you drop the item.
+
+Equip Item
+<EQU CHARACTER EQUIPMENTPREFABNAME>
+Forces the character to equip an item. IF they don't have it, it gives it to them for free.
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//FORMAT: <?
 public class DAQuestion : DialogueAction {
 
 	public override bool IsExecutionString(string actionString) {
 		return MatchStart (actionString, "?");
 	}
 
-	public override void PerformAction(string actionString, Textbox originTextbox) {
+	public override string PerformAction(string actionString, Textbox originTextbox) {
 		List<string> rawOptions = new List<string> ();
 		bool inQuestion = true;
 		string prompt = "";
@@ -41,6 +42,7 @@ public class DAQuestion : DialogueAction {
 			go.GetComponent<DialogueOptionBox> ().AddDialogueOption (dop);
 		}
 		originTextbox.MasterSequence.closeSequence ();
+		return "";
 	}
 
 	private void SelectionFunction(DialogueOption dop) {

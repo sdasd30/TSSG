@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DAJump : DialogueAction {
+public class DAGoto : DialogueAction {
 
 	public override bool IsExecutionString(string actionString) {
 		return MatchStart (actionString, "@");
 	}
 
-	public override void PerformAction(string actionString, Textbox originTextbox) {
+	public override string PerformAction(string actionString, Textbox originTextbox) {
 		string raw = originTextbox.MasterSequence.RawText;
 
 		string targetTag = ExtractArgs(actionString,"@")[0];
@@ -40,5 +40,6 @@ public class DAJump : DialogueAction {
 			originTextbox.MasterSequence.closeSequence ();
 			TextboxManager.StartSequence (raw.Substring (startInt + 1));
 		}
+		return "";
 	}
 }

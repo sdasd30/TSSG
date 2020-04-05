@@ -8,7 +8,7 @@ public class DAKeyname : DialogueAction {
 		return MatchStart (actionString, "&");
 	}
 
-	public override void PerformAction(string actionString, Textbox originTextbox) {
-		originTextbox.CurrentText += TextboxManager.GetKeyString (ExtractArgs(actionString,"&")[0]);
+	public override string PerformAction(string actionString, Textbox originTextbox) {
+		return TextboxManager.GetKeyString (ExtractArgs(actionString,"&")[0]);
 	}
 }

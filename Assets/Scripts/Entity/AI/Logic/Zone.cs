@@ -42,6 +42,7 @@ public class Zone : LogicalObject
     }
     internal void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Trigger Zone enter:");
         if (other.gameObject.GetComponent<AICharacter>() != null)
         {
             OnAddChar(other.GetComponent<AICharacter>());

@@ -8,7 +8,8 @@ public class DATextSpeed : DialogueAction {
 		return MatchStart (actionString, "$");
 	}
 
-	public override void PerformAction(string actionString, Textbox originTextbox) {
+	public override string PerformAction(string actionString, Textbox originTextbox) {
 		originTextbox.TimeBetweenType = float.Parse (ExtractArgs(actionString,"$")[0]);
+		return "";
 	}
 }

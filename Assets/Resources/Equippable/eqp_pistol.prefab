@@ -10,12 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 5997349909625128855}
   - component: {fileID: 5997349909625128858}
-  - component: {fileID: -3106658426092285619}
   - component: {fileID: 4348361645237365448}
+  - component: {fileID: 4678625359565111794}
   - component: {fileID: 612400136946561781}
   - component: {fileID: 5700898507335731640}
-  - component: {fileID: 7132158389734685219}
-  m_Layer: 0
+  - component: {fileID: -3106658426092285619}
+  - component: {fileID: 6016519497244862448}
+  m_Layer: 8
   m_Name: eqp_pistol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,14 +30,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5997349909625128854}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0.70708084, y: -0.0060593216, z: -0.0060593244, w: 0.70708084}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 5997349910037686569}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90.981995, y: 89.99999, z: 89.99999}
 --- !u!212 &5997349909625128858
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -88,6 +89,70 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4348361645237365448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5997349909625128854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9224d68d5f990468b4df6bbc82e677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecelerationRatio: 1
+  TerminalVelocity: -1
+  GravityForce: -1
+  Floating: 0
+  IsTrigger: 0
+  m_trueVelocity: {x: 0, y: 0, z: 0}
+  IsGrounded: 0
+  m_inputedMove: {x: 0, y: 0, z: 0}
+--- !u!136 &4678625359565111794
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5997349909625128854}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 0.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!143 &612400136946561781
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5997349909625128854}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 0.5
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5700898507335731640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5997349909625128854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f176fa900675a449256a92aa0193c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &-3106658426092285619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,6 +176,7 @@ MonoBehaviour:
   PressTrigger: 0
   Equipabble: 1
   MaxStack: 1
+  CurrentStack: 1
   displayname: Pistol
   InventoryIcon: {fileID: -4167987384140197314, guid: 73b19f8afbc522f449fcb46b2922c752,
     type: 3}
@@ -140,9 +206,11 @@ MonoBehaviour:
   EquipmentPiecePrefab: {fileID: 0}
   MaxUses: 3
   EqpDegradationType: 3
-  PrimaryAction: {fileID: 7132158389734685219}
+  AIBehaviour: {fileID: 0}
+  PrimaryAction: {fileID: 0}
   SecondaryAction: {fileID: 0}
---- !u!114 &4348361645237365448
+  AmmoType: {fileID: 0}
+--- !u!114 &6016519497244862448
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,58 +219,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5997349909625128854}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d9224d68d5f990468b4df6bbc82e677, type: 3}
+  m_Script: {fileID: 11500000, guid: 56b75b7a0e9903e41ab14cc66b92a6c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DecelerationRatio: 1
-  TerminalVelocity: -1
-  GravityForce: -1
-  Floating: 0
-  m_trueVelocity: {x: 0, y: 0, z: 0}
-  IsGrounded: 0
---- !u!143 &612400136946561781
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5997349909625128854}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Height: 1.2800003
-  m_Radius: 0.64
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5700898507335731640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5997349909625128854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2f176fa900675a449256a92aa0193c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7132158389734685219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5997349909625128854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 959f78999c5f75143b51c53475798f98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AttackName: default
+  AttackName: fire
   m_HitboxInfo: []
   m_AttackAnimInfo:
     AnimSpeed: 1
@@ -229,19 +249,27 @@ MonoBehaviour:
     PreUseAnimation: {fileID: 0}
     PostUseAnimation: {fileID: 0}
   m_useButton: 0
-  m_HitScan:
-  - CreatePos: {x: 0.5, y: 0, z: 0}
-    AimTowardsTarget: 0
-    FollowCharacter: 0
-    AimDirection: {x: 1, y: 0, z: 0}
-    MaxRange: 10
-    PenetrativePower: 0
-    CanPenetrateWall: 0
-    Damage: 25
-    Stun: 0
-    HitboxDuration: 0.2
-    Knockback: {x: 10, y: 0, z: 0}
-    Element: 0
+  m_weaponStats:
+    projectile: {fileID: 0}
+    spread: 0
+    firedelay: 0
+    randomDelay: 0
+    damage: 1
+    speed: 10
+    duration: 5
+    shots: 1
+    pierce: 0
+    stun: 0.2
+    hitScanRange: 10
+    knockbackMult: 1
+    Offset: {x: 0, y: 0, z: 0}
+    OnDeathCreate: []
+    GravityScale: 0
+    timeToGravity: 0
+    RecoilDamage: 0
+    auto: 0
+    deflector: 0
+    attackSound: []
 --- !u!1 &5997349910037686568
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +279,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5997349910037686569}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

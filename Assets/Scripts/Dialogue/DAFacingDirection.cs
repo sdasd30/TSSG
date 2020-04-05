@@ -8,10 +8,10 @@ public class DAFacingDirection : DialogueAction {
 		return (MatchStart (actionString, "]") || MatchStart(actionString, "["));
 	}
 
-	public override void PerformAction(string actionString, Textbox originTextbox) {
+	public override string PerformAction(string actionString, Textbox originTextbox) {
 		List<string> chars = ExtractArgs(actionString.Substring(1,actionString.Length - 1),"");
 		if (chars.Count < 2)
-			return;
+			return "";
 		GameObject character = GameObject.Find (chars[0]);
 		GameObject target = GameObject.Find (chars[1]);
 		if (character != null && character.GetComponent<Orientation>()) {
@@ -21,5 +21,6 @@ public class DAFacingDirection : DialogueAction {
 				character.GetComponent<Orientation> ().SetDirection (target.transform.position.x > character.transform.position.x);
 			}
 		}
+		return "";
 	}
 }

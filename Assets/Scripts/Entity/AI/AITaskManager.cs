@@ -213,7 +213,7 @@ public class AITaskManager : MonoBehaviour {
 	}
 	
 	private bool shouldTransitionToTask(Task t) {
-		if (t.ParentGoal == GetComponent<AICharacter>().m_currentGoal)
+		if (GetComponent<AICharacter>().m_currentGoal == null || t.ParentGoal == GetComponent<AICharacter>().m_currentGoal)
 			return true;
 		return t.ParentGoal.GoalPriority * t.TaskPriority > GetComponent<AICharacter>().m_currentGoal.GoalPriority * m_currentTask.TaskPriority;
 	}

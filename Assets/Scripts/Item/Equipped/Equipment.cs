@@ -15,6 +15,9 @@ public class Equipment : Item
 
     public int MaxUses = 3;
     public EquipmentDegradationType EqpDegradationType;
+    public GameObject AIBehaviour;
+
+
     private int timesUsed = 0;
     private float m_timeOfLastDegrade = 0;
     private const float DEGRADE_COOLDOWN = 0.25f;
@@ -104,11 +107,6 @@ public class Equipment : Item
         {
             OnDeequip(s, es);
             Destroy(ItemInstance);
-            //if (EquipmentPiecePrefab != null && s.GetComponent<AnimatorMultiSprite>() != null)
-            //{
-            //    Debug.Log("Removing Piece " + displayname);
-            //    s.GetComponent<AnimatorMultiSprite>().RemovePiece(m_equipmentPieceType);
-            //}
         }
     }
     public void AddActionListeners(GameObject go)

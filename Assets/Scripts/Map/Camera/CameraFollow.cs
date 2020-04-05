@@ -12,13 +12,13 @@ public class CameraFollow : MonoBehaviour {
 	[SerializeField]
 	private float lookSmoothTime;
 	[SerializeField]
-	private Vector2 focusAreaSize;
+	private Vector3 focusAreaSize;
 	[SerializeField]
 	private bool UseCameraLimits;
 	[SerializeField]
-	private Vector2 minVertex;
+	private Vector3 minVertex;
 	[SerializeField]
-	private Vector2 maxVertex;
+	private Vector3 maxVertex;
 
 	private Vector2 viewSize;
 
@@ -40,7 +40,7 @@ public class CameraFollow : MonoBehaviour {
             target = t;
             viewSize.y = GetComponent<Camera>().orthographicSize * 2f;
             viewSize.x = viewSize.y * GetComponent<Camera>().aspect;
-            focusArea = new FocusArea(target.GetComponent<Collider2D>().bounds, focusAreaSize, viewSize, minVertex, maxVertex);
+            focusArea = new FocusArea(target.GetComponent<Collider>().bounds, focusAreaSize, viewSize, minVertex, maxVertex);
         }
     }
 	void Start()
@@ -56,7 +56,7 @@ public class CameraFollow : MonoBehaviour {
 	}
 	void Update() {
 		if (target != null) {
-			focusArea.Update (target.GetComponent<Collider2D> ().bounds, minVertex, maxVertex, UseCameraLimits);
+			focusArea.Update (target.GetComponent<Collider> ().bounds, minVertex, maxVertex, UseCameraLimits);
 			if (Vector3.Distance (target.transform.position, transform.position) > DISTANCE_SNAP) {
 				transform.position = target.transform.position;
 			}
@@ -66,7 +66,7 @@ public class CameraFollow : MonoBehaviour {
 			//	return;
 			//target = pl.GetComponent<PhysicsSS> ();
 		}
-		Vector2 focusPosition = focusArea.centre + Vector2.up * verticalOffset;
+		Vector3 focusPosition = focusArea.centre + Vector3.up * verticalOffset;
 
 
 		if (focusArea.velocity.x != 0) {
@@ -85,10 +85,9 @@ public class CameraFollow : MonoBehaviour {
 
 		currentLookAheadX = Mathf.SmoothDamp (currentLookAheadX, targetLookAheadX, ref smoothLookVelocityX, lookSmoothTime);
 
-		focusPosition.y = Mathf.SmoothDamp (transform.position.y, focusPosition.y, ref smoothVelocityY, lookSmoothTime);
-		focusPosition += Vector2.right * currentLookAheadX;
-		transform.position = (Vector3)focusPosition + Vector3.forward * -10;
-		//transform.position = new Vector3 ((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
+        focusPosition.z = Mathf.SmoothDamp (transform.position.z, focusPosition.z, ref smoothVelocityY, lookSmoothTime);
+		focusPosition += Vector3.right * currentLookAheadX;
+		transform.position = (Vector3)focusPosition + Vector3.up * 10;
 	}
 
 	private void OnDrawGizmos() {
@@ -99,16 +98,16 @@ public class CameraFollow : MonoBehaviour {
 	}
 
 	struct FocusArea {
-		public Vector2 centre;
-		public Vector2 velocity;
+		public Vector3 centre;
+		public Vector3 velocity;
 		float left,right;
 		float top,bottom;
 
-		Vector2 camSize;
+		Vector3 camSize;
 
 
-		public FocusArea(Bounds targetBounds, Vector2 size,Vector2 largeCam,Vector2 minVertex, Vector2 maxVertex) {
-			Vector2 realCenter = new Vector2(targetBounds.center.x,targetBounds.center.y);
+		public FocusArea(Bounds targetBounds, Vector3 size,Vector3 largeCam,Vector3 minVertex, Vector3 maxVertex) {
+			Vector3 realCenter = new Vector3(targetBounds.center.x,0f,targetBounds.center.y);
 			//Debug.Log("Min: " + (realCenter.y - largeCam.y/2f) + " Max vertex: " + minVertex.y);
 			if (realCenter.x - largeCam.x/2 < minVertex.x + size.x/2f) {
 				realCenter.x = (minVertex.x * 2f + largeCam.x)/2f;
@@ -116,22 +115,22 @@ public class CameraFollow : MonoBehaviour {
 				realCenter.x = (maxVertex.x * 2f - largeCam.x)/2f;
 			}
 
-			if (realCenter.y - largeCam.y/2f < minVertex.y + size.y/2f) {
-				realCenter.y = (minVertex.y * 2f + largeCam.y)/2f;
-			} else if (realCenter.y + largeCam.y/2f > maxVertex.y - size.y/2f) {
-				realCenter.y = (maxVertex.y * 2f - largeCam.y)/2f;
+			if (realCenter.z - largeCam.z/2f < minVertex.z + size.z/2f) {
+				realCenter.z = (minVertex.z * 2f + largeCam.z)/2f;
+			} else if (realCenter.z + largeCam.z/2f > maxVertex.z - size.z/2f) {
+				realCenter.z = (maxVertex.z * 2f - largeCam.z)/2f;
 			}
 			left = realCenter.x - size.x/2f;
 			right = realCenter.x + size.x/2f;
-			bottom = realCenter.y - size.y/2f;
-			top = realCenter.y + size.y/2f;
+			bottom = realCenter.z - size.z/2f;
+			top = realCenter.z + size.z/2f;
 
-			velocity = Vector2.zero;
-			centre = new Vector2((left+right)/2,(top + bottom)/2);
+			velocity = Vector3.zero;
+			centre = new Vector3((left+right)/2,(top + bottom)/2);
 			camSize = largeCam;
 		}
 
-		public void Update(Bounds targetBounds,Vector2 minVertex, Vector2 maxVertex,bool UseCameraLimits) {
+		public void Update(Bounds targetBounds,Vector3 minVertex, Vector3 maxVertex,bool UseCameraLimits) {
 			float shiftX = 0;
 
 			if (targetBounds.min.x < left) {
@@ -154,30 +153,28 @@ public class CameraFollow : MonoBehaviour {
 				right += shiftX;
 			}
 
-			float shiftY = 0;
-			if (targetBounds.min.y < bottom) {
-				shiftY = targetBounds.min.y - bottom;
-			} else if (targetBounds.max.y > top) {
-				shiftY = targetBounds.max.y - top;
+			float shiftZ = 0;
+			if (targetBounds.min.z < bottom) {
+                shiftZ = targetBounds.min.z - bottom;
+			} else if (targetBounds.max.z > top) {
+                shiftZ = targetBounds.max.z - top;
 			}
 			shift = true;
-			//Debug.Log (top);
 			if (UseCameraLimits) {
-				float extra = camSize.y;
-				//Debug.Log (extra);
-				if (bottom - (extra/2f) < minVertex.y && shiftY < 0f) {
+				float extra = camSize.z;
+				if (bottom - (extra/2f) < minVertex.z && shiftZ < 0f) {
 					shift = false;
 				}
-				if (top + (extra/2f) > maxVertex.y && shiftY > 0f) {
+				if (top + (extra/2f) > maxVertex.z && shiftZ > 0f) {
 					shift = false;
 				}
 			}
 			if (shift) {
-				bottom += shiftY;
-				top += shiftY;
+				bottom += shiftZ;
+				top += shiftZ;
 			}
-			centre = new Vector2((left+right)/2,(top +bottom)/2);
-			velocity = new Vector2 (shiftX, shiftY);
+			centre = new Vector3((left+right)/2,0,(top +bottom)/2);
+			velocity = new Vector3 (shiftX,0, shiftZ);
 		}
 	}
 

@@ -9,7 +9,8 @@ public class DAPause : DialogueAction {
 		return actionString.ToCharArray()[0] != '$' && float.TryParse (actionString, out res);
 	}
 
-	public override void PerformAction(string actionString, Textbox originTextbox) {
-		originTextbox.SetPause (float.Parse (actionString));		
+	public override string PerformAction(string actionString, Textbox originTextbox) {
+		originTextbox.SetPause (float.Parse (actionString));
+		return "";
 	}
 }

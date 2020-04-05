@@ -24,4 +24,13 @@ public class DialogueSequence  {
 		if (first != null)
 			first.closeSequence ();
 	}
+
+	public void SkipSequence()
+	{
+		foreach(DialogueUnit du in allDUnits)
+		{
+			du.skipSequence();
+		}
+		allDUnits.Clear();
+	}
 }

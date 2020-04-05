@@ -11,6 +11,7 @@ public class InventoryUIManager : MonoBehaviour
     public GameObject InvPrefab;
     public GameObject SlotPrefab;
     public GameObject ItemIconPrefab;
+    public Canvas MainInventoryCanvas;
 
     private InventorySlotUI m_highlightedSlot;
     private ItemUIElement m_highlightedItem;
@@ -47,7 +48,7 @@ public class InventoryUIManager : MonoBehaviour
 
     public static GameObject CreateInventoryGUI(InventoryContainer ic)
     {
-        GameObject go = Instantiate(m_instance.InvPrefab,FindObjectOfType<Canvas>().transform);
+        GameObject go = Instantiate(m_instance.InvPrefab, m_instance.MainInventoryCanvas.transform);
         go.GetComponent<InventoryUIMenu>().Container = ic;
         m_instance.m_containerPrefabs.Add(ic, go);
         if (m_instance.m_openHolder.ContainsKey(ic.Holder))
@@ -62,7 +63,7 @@ public class InventoryUIManager : MonoBehaviour
             invX++;
         }
         int invY = m_instance.m_openHolder[ic.Holder];
-        go.GetComponent<RectTransform>().anchoredPosition = new Vector2(-300f + (300f * (invX - 1)), 140f - (200f * (invY - 1)));
+        go.GetComponent<RectTransform>().anchoredPosition = new Vector2(-300f + (300f * (invX - 1)),  - (200f * (invY - 1)));
         go.GetComponent<RectTransform>().sizeDelta = new Vector2(150f + ((ic.size.x - 1 )* 50f), 150f + ((ic.size.y - 1) * 50f));
 
         go.transform.Find("DragBar").Find("OwnerName").GetComponent<TextMeshProUGUI>().text = ic.Holder.name;
@@ -118,7 +119,7 @@ public class InventoryUIManager : MonoBehaviour
             iue.transform.SetParent( m_instance.m_highlightedSlot.transform.parent.parent.Find("Items") );
             iue.ReturnPos();
             iue.ItemInfo.CurrentSlot.m_container.ClearItem(iue.ItemInfo.CurrentSlot.Coordinate);
-            m_instance.m_highlightedSlot.AddItem(iue.ItemInfo, iue);
+            m_instance.m_highlightedSlot.AddItem(iue.ItemInfo);
             iue.ItemInfo.CurrentSlot = m_instance.m_highlightedSlot;
             iue.ItemInfo.CurrentSlot = m_instance.m_highlightedSlot;
             return true;
@@ -155,6 +156,30 @@ public class InventoryUIManager : MonoBehaviour
         item2.ReturnPos();
         return false;
     }
+    public static void AttemptSwap(Item item1, Item item2)
+    {
+        InventoryContainer container1 = item1.GetContainer();
+        InventoryContainer container2 = item2.GetContainer();
+
+        GameObject newSlot = Instantiate(m_instance.SlotPrefab, m_instance.transform);
+        InventorySlotUI tempSlot = newSlot.GetComponent<InventorySlotUI>();
+        tempSlot.m_container = m_instance.m_Container;
+
+        container1.ClearItem(item1.GetSlot());
+        tempSlot.AddItem(item1);
+        item1.CurrentSlot = tempSlot;
+
+        InventoryUIManager.MoveItemTo(item2, container1,item1.GetSlot());
+        InventoryUIManager.MoveItemTo(item1, container2, item2.GetSlot());
+        Destroy(newSlot);
+    }
+    public static void MoveItemTo(Item i, InventoryContainer c,Vector2 slot, bool swapAllowed = true)
+    {
+        if (c.GetItem(slot) != null && swapAllowed)
+            AttemptSwap(i, c.GetItem(slot).ItemInstance);
+        c.ClearItem(slot);
+        c.AddItem(i, slot);
+    }
     private void MoveItemTo(ItemUIElement iue, InventorySlotUI slot)
     {
         iue.UpdateReturnPos(slot.ItemOffsetPos);
@@ -165,7 +190,7 @@ public class InventoryUIManager : MonoBehaviour
         }
         
         iue.ItemInfo.CurrentSlot.m_container.ClearItem(iue.ItemInfo.CurrentSlot.Coordinate);
-        slot.AddItem(iue.ItemInfo,iue);
+        slot.AddItem(iue.ItemInfo);
         iue.ItemInfo.CurrentSlot = slot;
     }
     private void addItemIcon(InventoryItemData i, Vector2 loc, Dictionary<Vector2,InventorySlotUI> slots, Transform parent,InventoryContainer c)

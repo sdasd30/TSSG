@@ -1,1 +1,1 @@
-{"LastRoomName":"Test_Room_Right","Level":1,"NextLevel":200,"RegisteredIDs":["Player-Test_Room_Left0_2"]}
+{"LastRoomName":"TextboxtriggerTest","Level":1,"NextLevel":200,"RegisteredIDs":[]}

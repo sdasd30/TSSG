@@ -79,5 +79,16 @@ public class DialogueUnit  {
 		}
 	}
 
+	public void skipSequence()
+	{
+		if (currentTB)
+			currentTB.SkipSection();
+		finished = true;
+		foreach (MovementBase bm in FrozenCharacters.Keys)
+		{
+			bm.IsPlayerControl = FrozenCharacters[bm];
+		}
+	}
+
 	void runEvent() {}
 }

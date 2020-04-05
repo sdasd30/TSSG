@@ -103,5 +103,5 @@ MonoBehaviour:
   typeText: 1
   ClearAllSequence: 1
   Skippable: 0
-  soundType: 1
+  soundType: 0
   TextboxString: 

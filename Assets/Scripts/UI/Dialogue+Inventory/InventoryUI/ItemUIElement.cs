@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
+using TMPro;
 public class ItemUIElement : MonoBehaviour, IDragHandler, IEndDragHandler, 
     IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
@@ -12,8 +12,10 @@ public class ItemUIElement : MonoBehaviour, IDragHandler, IEndDragHandler,
 
     private Vector3 mouseoffset = new Vector3();
     private Image m_image;
-    //public InventorySlotUI CurrentSlot;
+    public TextMeshProUGUI uitext;
 
+    //public InventorySlotUI CurrentSlot;
+    private string m_extraString;
     private Vector3 m_returnPos;
     public void Start()
     {
@@ -21,6 +23,8 @@ public class ItemUIElement : MonoBehaviour, IDragHandler, IEndDragHandler,
         m_image = GetComponent<Image>();
         //ItemInfo = GetComponent<Item>();
         m_image.color = Color.gray;
+        m_extraString = ItemInfo.UIString();
+        uitext.text = m_extraString;
     }
     
     public void UpdateReturnPos(Vector3 pos)

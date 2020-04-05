@@ -77,8 +77,10 @@ public class Interactable : MonoBehaviour
 
     internal void OnTriggerEnter(Collider other)
     {
+        Debug.Log("ON trigger enter: " + other.gameObject);
         if (interactableObjectInfo.autoTrigger && other.gameObject.GetComponent<CharacterBase>())
         {
+            Debug.Log("Starting on Trigger");
             TriggerWithCoolDown(other.gameObject);
         }
         if (other.gameObject.GetComponent<CharacterBase>() != null)

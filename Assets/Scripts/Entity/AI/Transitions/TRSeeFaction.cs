@@ -63,8 +63,11 @@ public class TRSeeFaction : Transition
     {
         if (g.ContainsKey("IfSeenInZone", this))
             ZoneName = g.GetVariable("IfSeenInZone", this);
-        if (g.ContainsKey("InvertInZoneCondition", this))
-            TargetZoneCondition = (ZoneCondition)int.Parse(g.GetVariable("InvertInZoneCondition",this));
+        if (g.ContainsKey("TargetZoneCondition", this))
+        {
+            TargetZoneCondition = (ZoneCondition)int.Parse(g.GetVariable("TargetZoneCondition", this));
+        }
+            
         if (g.ContainsKey("TriggeringFaction", this))
             TriggeringFaction = (FactionType)int.Parse(g.GetVariable("TriggeringFaction", this));
         if (g.ContainsKey("Distance", this))
@@ -74,7 +77,7 @@ public class TRSeeFaction : Transition
     public override void OnSave(Goal g)
     {
         g?.SetVariable("IfSeenInZone", ZoneName, this);
-        g?.SetVariable("InvertInZoneCondition", TargetZoneCondition.ToString(), this);
+        g?.SetVariable("TargetZoneCondition", ((int)TargetZoneCondition).ToString(), this);
         g?.SetVariable("TriggeringFaction", ((int)TriggeringFaction).ToString(), this);
         g?.SetVariable("Distance", (Distance).ToString(), this);
     }

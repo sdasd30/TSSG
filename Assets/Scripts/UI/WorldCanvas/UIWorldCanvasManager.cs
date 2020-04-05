@@ -100,22 +100,22 @@ public class UIWorldCanvasManager : MonoBehaviour
     }
     private void checkForNewObjs()
     {
+        Dictionary<System.Type, int> newL = new Dictionary<System.Type, int>();
         foreach (System.Type t in typeCount.Keys)
         {
             Object[] listObjs = GameManager.FindObjectsOfType(t);
-            if (!typeCount.ContainsKey(t))
-                typeCount[t] = 0;
             if (listObjs.Length != typeCount[t])
             {
                 UpdateOnNewObj(t, listObjs);
             }
+            newL[t] = listObjs.Length;
         }
+        typeCount = newL;
         nextCheckTime = Time.timeSinceLevelLoad + check_interval;
     }
 
     private void UpdateOnNewObj(System.Type t, Object [] listObjs)
     {
-        typeCount[t] = listObjs.Length;
         List<Object> newObj = new List<Object>();
         List<Object> oldObj = allAccountedForObjects[t];
         foreach (Object o in listObjs)

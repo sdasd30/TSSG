@@ -9,7 +9,7 @@ public class Item : Interactable
 {
     public bool Equipabble;
     public int MaxStack = 1;
-    
+    public int CurrentStack = 1;
 
     public string displayname;
     public Sprite InventoryIcon;
@@ -18,7 +18,6 @@ public class Item : Interactable
 
 
     public CharData ItemProperties;
-    public GameObject AIBehaviour;
 
     [HideInInspector]
     public bool Rotated = false;
@@ -57,6 +56,13 @@ public class Item : Interactable
         return (s.SlotType == InventorySlotType.NORMAL);
     }
 
+    public virtual string UIString()
+    {
+        string s = "";
+        if (CurrentStack > 1)
+            s = CurrentStack + " / " + MaxStack;
+        return s;
+    }
     public void DestroyItem()
     {
         Debug.Log(m_currentContainer);
@@ -65,9 +71,17 @@ public class Item : Interactable
     }
     public void SetSlotData(InventoryContainer container, Vector2 slotPos)
     {
-        Debug.Log("Setting slot to: " + container);
+        Debug.Log("Setting slot to: " + container + " slot: " + slotPos);
         m_currentContainer = container;
         m_slotPosition = slotPos;
+    }
+    public Vector2 GetSlot()
+    {
+        return m_slotPosition;
+    }
+    public InventoryContainer GetContainer()
+    {
+        return m_currentContainer;
     }
     protected override void onTrigger(GameObject interactor) {
         if (interactor.GetComponent<InventoryHolder>())
@@ -86,7 +100,7 @@ public class Item : Interactable
             gameObject.AddComponent<PersistentItem>();
             ItemProperties = GetComponent<PersistentItem>().data;
         }
-            
+        ItemProperties.PersistentInt["CurrentStack"] = CurrentStack;
         if (m_onSave != null)
             m_onSave(ItemProperties);
         else
@@ -94,6 +108,8 @@ public class Item : Interactable
     }
     public void LoadItems()
     {
+        if (ItemProperties.PersistentInt.ContainsKey("CurrentStack"))
+            CurrentStack = ItemProperties.PersistentInt["CurrentStack"];
         onItemLoad(ItemProperties);
     }
     public virtual void onItemSave(CharData d) { }

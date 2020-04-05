@@ -6,8 +6,14 @@ public class DialogueAction  {
 
 	public virtual bool IsExecutionString(string actionString) {return false;}
 
-	public virtual void PerformAction(string remainder, Textbox originTextbox) {}
+	public virtual string PerformAction(string remainder, Textbox originTextbox) {
+		return "";
+	}
 
+	public virtual string SkipAction(string remainder, Textbox originTextbox)
+	{
+		return PerformAction(remainder, originTextbox);
+	}
 	protected bool MatchStart(string actionString, string key) {
 		if (key.Length > actionString.Length)
 			return false;
@@ -19,25 +25,27 @@ public class DialogueAction  {
 	}
 
 	protected List<string> ExtractArgs(string actionString, string key) {
-		List<string> allArgs = new List<string> ();
+		List<string> rawArgs = new List<string>();
 		if (key.Length > actionString.Length)
-			return allArgs;
+			return rawArgs;
 		string lastArg = "";
 		int numSpecials = 0;
 		for (int i = key.Length; i < actionString.Length; i++) {
 			char nextChar = actionString.ToCharArray () [i];
 			if (nextChar == '>') {
 				numSpecials--;
+				lastArg += actionString.ToCharArray()[i];
 			} else if (nextChar == '<') {
 				numSpecials++;
+				lastArg += actionString.ToCharArray()[i];
 			} else if (nextChar != ' ' || numSpecials > 0) {
 				lastArg += actionString.ToCharArray () [i];
 			} else if (lastArg.Length > 0) {
-				allArgs.Add (lastArg);
+				rawArgs.Add (lastArg);
 				lastArg = "";
 			}
 		}
-		allArgs.Add (lastArg);
-		return allArgs;
+		rawArgs.Add (lastArg);
+		return rawArgs;
 	}
 }
