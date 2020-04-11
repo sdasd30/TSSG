@@ -49,39 +49,41 @@ public class Equipment : Item
 
 
 
-    public override void OnEnterInventory(InventoryContainer s, EquipmentSlot es)
+    public override GameObject OnEnterInventory(InventoryContainer s, EquipmentSlot es)
     {
         base.OnEnterInventory(s, es);
         if (es != null && es.SlotType == InventorySlotType.EQUIPMENT)
         {
-            ItemInstance = Instantiate((GameObject)Resources.Load(ItemProperties.prefabPath),s.transform.position,Quaternion.identity);
-            ItemInstance.transform.SetParent(s.gameObject.transform);
+            SetItemActive(false, true);
+            //ItemInstance = Instantiate((GameObject)Resources.Load(ItemProperties.prefabPath),s.transform.position,Quaternion.identity);
+            //ItemInstance.transform.SetParent(s.gameObject.transform);
             
-            ItemInstance.GetComponent<Item>().ItemProperties = ItemProperties;
-            ItemInstance.GetComponent<Item>().LoadItems();
-            Debug.Log("Assigning current slot to: " + es.coordinate);
-            ItemInstance.GetComponent<Item>().SetSlotData(s,es.coordinate) ;
-            ItemInstance.GetComponent<BasicPhysics>().enabled = false;
-            ItemInstance.GetComponent<CharacterController>().enabled = false;
-            m_onSave = ItemInstance.GetComponent<Item>().onItemSave;
+            //ItemInstance.GetComponent<Item>().ItemProperties = ItemProperties;
+            //ItemInstance.GetComponent<Item>().LoadItems();
+            //Debug.Log("Assigning current slot to: " + es.coordinate);
+            //ItemInstance.GetComponent<Item>().SetSlotData(s,es.coordinate) ;
+            //ItemInstance.GetComponent<BasicPhysics>().enabled = false;
+            //ItemInstance.GetComponent<CharacterController>().enabled = false;
+            //m_onSave = ItemInstance.GetComponent<Item>().onItemSave;
 
-            Destroy(ItemInstance.GetComponent<PersistentItem>());
+            //Destroy(ItemInstance.GetComponent<PersistentItem>());
 
             m_currentContainer = s;
-            ItemInstance.name = es.SlotName;
+            name = es.SlotName;
 
-            ItemInstance.GetComponent<Equipment>().AddActionListeners(s.gameObject);
+            GetComponent<Equipment>().AddActionListeners(s.gameObject);
             
-            if (ItemInstance.GetComponent<BasicPhysics>())
-            {
-                ItemInstance.GetComponent<BasicPhysics>().GravityForce = 0f;
-                ItemInstance.GetComponent<SpriteRenderer>().enabled = false;
-                //Debug.Log("Removing spriterenderer");
-            }
+            //if (ItemInstance.GetComponent<BasicPhysics>())
+            //{
+            //    ItemInstance.GetComponent<BasicPhysics>().GravityForce = 0f;
+            //    ItemInstance.GetComponent<SpriteRenderer>().enabled = false;
+            //    //Debug.Log("Removing spriterenderer");
+            //}
             OnEquip(s, es);
-
+            return ItemInstance;
             //OverrideCurrentEquipSprite(s.gameObject);
         }
+        return null;
     }
 
     //protected void OverrideCurrentEquipSprite(GameObject user)
@@ -113,7 +115,7 @@ public class Equipment : Item
     {
         if (go.GetComponent<CharacterBase>() != null)
         {
-            ActionInfo[] at1 = GetComponents<ActionInfo>();
+            ActionInfo[] at1 = GetComponentsInChildren<ActionInfo>();
             foreach (ActionInfo a in at1)
             {
                 a.AddListener(go.GetComponent<CharacterBase>().OnActionProgressed);

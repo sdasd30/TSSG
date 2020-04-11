@@ -16,9 +16,9 @@ public class ActionReload : ActionInfo
 
     protected void Reload(EqpWeapon wep, InventoryHolder ih)
     {
-        int bulletsToReload = wep.ClipSize;
+        int bulletsToReload = wep.ClipSize - wep.CurrentAmmo;
         int rem = ih.RemoveItem(wep.AmmoType.GetComponent<Item>(), bulletsToReload);
-        wep.CurrentAmmo += wep.ClipSize;
+        wep.CurrentAmmo += rem;
     }
 }
 

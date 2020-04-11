@@ -7,19 +7,30 @@ public class UIWorldUISystem : MonoBehaviour
 
     public GameObject CanvasObject;
     public string TargetObjectTypeStr;
+    public bool PlayerCharacterOnly = false;
+    public bool DrawInHUD = false;
     public System.Type TargetObjectType;
 
     // Start is called before the first frame update
     void Start()
     {
-        UIWorldCanvasManager.AddUISystem(this);
+        UIManager.AddUISystem(this);
     }
 
     public virtual void AcceptFunction(GameObject target)
     {
-        UIWorldCanvas wc = GetCanvas(target);
-        if (wc != null && CanvasObject != null)
-            wc.AddUIObject(CanvasObject);
+        if (CanvasObject == null || (PlayerCharacterOnly && (target.GetComponent<MovementBase>() == null ||
+            !target.GetComponent<MovementBase>().IsPlayerControl)))
+            return;
+        if (DrawInHUD)
+        {
+            UIManager.AddToHUD(CanvasObject,target);
+        } else
+        {
+            UIWorldCanvas wc = GetCanvas(target);
+            if (wc != null)
+                wc.AddUIObject(CanvasObject);
+        }
     }
 
     protected UIWorldCanvas GetCanvas(GameObject targetObj)
@@ -27,7 +38,7 @@ public class UIWorldUISystem : MonoBehaviour
         UIWorldCanvasPointer g = targetObj.GetComponent<UIWorldCanvasPointer>();
         if (g == null)
         {
-            GameObject newCanvas = Instantiate(UIWorldCanvasManager.GetWorldCanvasPrefab());
+            GameObject newCanvas = Instantiate(UIManager.GetWorldCanvasPrefab());
             newCanvas.name = targetObj.name + "_WorldCanvas";
             UIWorldCanvasPointer newPointer = targetObj.AddComponent<UIWorldCanvasPointer>();
             newPointer.pointedObject = newCanvas;

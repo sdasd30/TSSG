@@ -113,10 +113,10 @@ public class AIBaseMovement : AIInputParentClass
     public void UseItem(string slot, Vector3 input, float timeHold = 0f)
     {
         UseItemInput = input;
-        if (slot == "primary")
+        if (slot == "Primary")
         {
             primaryPressed = true;
-        } else if (slot == "secondary")
+        } else if (slot == "Secondary")
         {
             secondaryPressed = true;
         } else

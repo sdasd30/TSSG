@@ -62,7 +62,7 @@ public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler , IPointerExi
 
     public bool CanFitItem (Item i)
     {
-        bool canFit = m_container.CanFit(Coordinate, i.baseSize);
+        bool canFit = m_container.CanFit(Coordinate, i);
         return canFit;
     }
     public bool CanSwapItem (Item i)

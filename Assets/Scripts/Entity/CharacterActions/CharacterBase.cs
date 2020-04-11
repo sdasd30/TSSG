@@ -47,7 +47,7 @@ public class CharacterBase : MonoBehaviour
     [HideInInspector]
     public float StunTime = 0.0f;
 
-    public Vector3 movement;
+    //public Vector3 movement;
     // Start is called before the first frame update
     internal void Awake()
     {

@@ -29,16 +29,15 @@ public class WeaponStats
     [HideInInspector]
     public bool deflector = false;
     public List<AudioClip> attackSound; //What sounds should play when a projectile is created?
-    public Item AmmoType;
+    public GameObject AmmoType;
     public int AmmoConsumedPerShot = 1;
 }
 
 
 public class ActionGunshot : ActionInfo
 {
-    
+    [SerializeField]    
     public WeaponStats m_weaponStats;
-
 
     private int AmmoLeftInClip;
     private float m_nextTimeCanFire = 0;
@@ -66,17 +65,17 @@ public class ActionGunshot : ActionInfo
     {
         WeaponStats wp = m_weaponStats;
         base.OnAttack();
-        
+        EqpWeapon wep = null;
         if (SourceEqp != null)
         {
-            EqpWeapon wep = (EqpWeapon)SourceEqp;
+            wep = (EqpWeapon)SourceEqp;
             if (wep != null && wp.AmmoConsumedPerShot > wep.CurrentAmmo)
             {
                 m_nextTimeCanFire = Time.timeSinceLevelLoad + wp.firedelay;
                 return;
             }
         }
-        GetComponent<Attackable>().DamageObj(wp.RecoilDamage);
+        m_charBase.GetComponent<Attackable>().DamageObj(wp.RecoilDamage);
         for (int i = 0; i < wp.shots; i++)
         {
             Vector3 rawTargetPoint = new Vector3(1f,0f,0f);
@@ -92,6 +91,8 @@ public class ActionGunshot : ActionInfo
         }
         //if (wp.attackSound != null && wp.attackSound.Count > 0 && AudioManager != null)
         //    AudioManager.playSound(Weapon.attackSound[Random.Range(0, Weapon.attackSound.Count)]);
+        if (wp.AmmoConsumedPerShot > 0 && wep != null)
+            wep.CurrentAmmo -= wp.AmmoConsumedPerShot;
         m_nextTimeCanFire = Time.timeSinceLevelLoad + wp.firedelay;
     }
     protected override void OnConclude()

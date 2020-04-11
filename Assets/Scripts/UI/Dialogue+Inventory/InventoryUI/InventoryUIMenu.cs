@@ -14,11 +14,22 @@ public class InventoryUIMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Container.Dirty)
+        {
+            UpdateInventory();
+            Container.Dirty = false;
+        }
     }
 
     public void CloseInventoryMenu()
     {
         Container.CloseContainer();
     }
+
+    public void UpdateInventory()
+    {
+        CloseInventoryMenu();
+        InventoryUIManager.CreateInventoryGUI(Container);
+    }
+    
 }

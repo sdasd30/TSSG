@@ -71,6 +71,9 @@ public class InventoryHolder : Interactable
             {
                 m_container.AddItem(i, v);
                 i.SetSlotData(m_container, v);
+                i.transform.SetParent(transform);
+                i.transform.localPosition = Vector3.zero;
+                i.SetItemActive(false, true);
                 return true;
             }
         }
@@ -126,6 +129,22 @@ public class InventoryHolder : Interactable
         if (targetContainer == null)
             return;
         InventoryUIManager.MoveItemTo(i, targetContainer, targetSlot, true);
+    }
+
+    public Item GetItemInSlot(string slotname)
+    {
+        Vector2 nullSlot = new Vector2(-1, -1);
+        foreach (InventoryContainer m_container in m_containers.Values)
+        {
+            Vector2 slot = m_container.getSlot(slotname);
+            if (slot != nullSlot)
+            {
+                InventoryItemData i = m_container.GetItem(slot);
+                if (i != null)
+                    return i.EquipmentInstance;
+            }
+        }
+        return null;
     }
     protected override void onTrigger(GameObject interactor)
     {

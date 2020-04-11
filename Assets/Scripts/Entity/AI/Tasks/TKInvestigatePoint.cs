@@ -65,7 +65,7 @@ public class TKInvestigatePoint : Task
 
             if (numTries > MAX_SEARCH_TRIES)
                 break;
-            float angle = (MasterAI.GetComponent<Orientation>().LastZ + Random.Range(90f, 270f)) * Mathf.Deg2Rad;
+            float angle = (MasterAI.GetComponent<Orientation>().ZAngle + Random.Range(90f, 270f)) * Mathf.Deg2Rad;
             float dist = Random.Range(0f, searchRadius);
             Vector3 candidatePos = new Vector3(Mathf.Cos(angle) * dist, 0f, Mathf.Sin(angle) * dist) + centerPoint;
             if (MasterAI.GetComponent<Observer>().ScanRayToPoint(candidatePos).Count < 1)

@@ -16,6 +16,9 @@ GameObject:
   - component: {fileID: 5700898507335731640}
   - component: {fileID: -3106658426092285619}
   - component: {fileID: 6016519497244862448}
+  - component: {fileID: 518452711}
+  - component: {fileID: 5408047298046121180}
+  - component: {fileID: 6969025417917413797}
   m_Layer: 8
   m_Name: eqp_pistol
   m_TagString: Untagged
@@ -30,11 +33,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5997349909625128854}
-  m_LocalRotation: {x: 0.70708084, y: -0.0060593216, z: -0.0060593244, w: 0.70708084}
+  m_LocalRotation: {x: 0.70708084, y: -0.006059408, z: -0.006059438, w: 0.70708084}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 5997349910037686569}
+  - {fileID: 2057986357302766116}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90.981995, y: 89.99999, z: 89.99999}
@@ -105,7 +109,7 @@ MonoBehaviour:
   TerminalVelocity: -1
   GravityForce: -1
   Floating: 0
-  IsTrigger: 0
+  IsTrigger: 1
   m_trueVelocity: {x: 0, y: 0, z: 0}
   IsGrounded: 0
   m_inputedMove: {x: 0, y: 0, z: 0}
@@ -134,10 +138,10 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 0.5
-  m_Radius: 0.5
+  m_Height: 0.4
+  m_Radius: 0.2
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0.1
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
@@ -166,7 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactableObjectInfo:
-    InteractionPrompt: to Interact
+    InteractionPrompt: pick up Pistol
     Priority: 1
     autoTrigger: 1
     TriggerRefresh: 2
@@ -207,9 +211,13 @@ MonoBehaviour:
   MaxUses: 3
   EqpDegradationType: 3
   AIBehaviour: {fileID: 0}
-  PrimaryAction: {fileID: 0}
+  PrimaryAction: {fileID: 6016519497244862448}
   SecondaryAction: {fileID: 0}
-  AmmoType: {fileID: 0}
+  ReloadAction: {fileID: 843769642977889925}
+  AmmoType: {fileID: 7573871140249568161, guid: 49d261c092b3fba4dbf9a61c55aa51c1,
+    type: 3}
+  ClipSize: 8
+  CurrentAmmo: 0
 --- !u!114 &6016519497244862448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,14 +257,15 @@ MonoBehaviour:
     PreUseAnimation: {fileID: 0}
     PostUseAnimation: {fileID: 0}
   m_useButton: 0
+  SourceEqp: {fileID: 0}
   m_weaponStats:
     projectile: {fileID: 0}
     spread: 0
-    firedelay: 0
+    firedelay: 0.5
     randomDelay: 0
     damage: 1
     speed: 10
-    duration: 5
+    duration: 0.05
     shots: 1
     pierce: 0
     stun: 0.2
@@ -270,6 +279,96 @@ MonoBehaviour:
     auto: 0
     deflector: 0
     attackSound: []
+    AmmoType: {fileID: 7573871140249568161, guid: 49d261c092b3fba4dbf9a61c55aa51c1,
+      type: 3}
+    AmmoConsumedPerShot: 1
+--- !u!136 &518452711
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5997349909625128854}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.64
+  m_Height: 1.2800003
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5408047298046121180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5997349909625128854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96a95af505dbc4d4b8114045452a8d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackName: reload
+  m_HitboxInfo: []
+  m_AttackAnimInfo:
+    AnimSpeed: 1
+    StartUpTime: 0.5
+    AttackTime: 0
+    RecoveryTime: 0.5
+    StartUpAnimation: none
+    RecoveryAnimation: none
+  m_MovementInfo:
+    CanMove: 0
+    MovementModifier: 1
+  m_AIInfo:
+    Frequency: 1
+    UniqueAIPrediction: 0
+    AutoAttack: 0
+    AIPredictionHitbox: {x: 0, y: 0, z: 0}
+    AIPredictionOffset: {x: 0, y: 0, z: 0}
+    DrawPredictionHitbox: 0
+  m_SoundInfo:
+    StartupSoundFX: {fileID: 0}
+    AttackSoundFX: {fileID: 0}
+  m_actionIcons:
+    IconOffset: {x: 0, y: 2}
+    PreUseAnimation: {fileID: 0}
+    PostUseAnimation: {fileID: 0}
+  m_useButton: 0
+  SourceEqp: {fileID: 0}
+--- !u!114 &6969025417917413797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5997349909625128854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92acc23af4626be4fa32c868acac10d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    regID: Not Assigned
+    prefabPath: auto
+    name: 
+    pos: {x: 0, y: 0, z: 0}
+    targetDir: 0
+    targetID: 
+    PersistentInt:
+      keys: []
+      values: 
+    PersistentFloats:
+      keys: []
+      values: []
+    PersistentStrings:
+      keys: []
+      values: []
+    PersistentBools:
+      keys: []
+      values: 
+  recreated: 0
+  StartPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &5997349910037686568
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,3 +399,87 @@ Transform:
   m_Father: {fileID: 5997349909625128855}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6725685609059479206
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2057986357302766116}
+  - component: {fileID: 626700157306760526}
+  - component: {fileID: 843769642977889925}
+  m_Layer: 8
+  m_Name: reload
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2057986357302766116
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6725685609059479206}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5997349909625128855}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &626700157306760526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6725685609059479206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f176fa900675a449256a92aa0193c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &843769642977889925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6725685609059479206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96a95af505dbc4d4b8114045452a8d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackName: default
+  m_HitboxInfo: []
+  m_AttackAnimInfo:
+    AnimSpeed: 1
+    StartUpTime: 0.5
+    AttackTime: 0
+    RecoveryTime: 0.5
+    StartUpAnimation: none
+    RecoveryAnimation: none
+  m_MovementInfo:
+    CanMove: 0
+    MovementModifier: 1
+  m_AIInfo:
+    Frequency: 1
+    UniqueAIPrediction: 0
+    AutoAttack: 0
+    AIPredictionHitbox: {x: 0, y: 0, z: 0}
+    AIPredictionOffset: {x: 0, y: 0, z: 0}
+    DrawPredictionHitbox: 0
+  m_SoundInfo:
+    StartupSoundFX: {fileID: 0}
+    AttackSoundFX: {fileID: 0}
+  m_actionIcons:
+    IconOffset: {x: 0, y: 2}
+    PreUseAnimation: {fileID: 0}
+    PostUseAnimation: {fileID: 0}
+  m_useButton: 0
+  SourceEqp: {fileID: 0}

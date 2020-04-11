@@ -81,6 +81,8 @@ public class InputPacket {
             InputKeyDown[InputKey.Inventory] = Input.GetKey("i");
             InputKeyPressed[InputKey.Interact] = Input.GetKeyDown("e");
             InputKeyDown[InputKey.Interact] = Input.GetKey("e");
+            InputKeyDown[InputKey.Reload] = Input.GetKey("r");
+            InputKeyPressed[InputKey.Reload] = Input.GetKeyDown("r");
         }
     }
 }

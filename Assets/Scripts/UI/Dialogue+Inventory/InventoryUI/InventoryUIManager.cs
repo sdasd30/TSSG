@@ -11,6 +11,7 @@ public class InventoryUIManager : MonoBehaviour
     public GameObject InvPrefab;
     public GameObject SlotPrefab;
     public GameObject ItemIconPrefab;
+    public GameObject ItemMenuPrefab;
     public Canvas MainInventoryCanvas;
 
     private InventorySlotUI m_highlightedSlot;
@@ -19,6 +20,7 @@ public class InventoryUIManager : MonoBehaviour
     private Dictionary<InventoryContainer,GameObject> m_containerPrefabs;
     private Dictionary<InventoryHolder,int> m_openHolder;
     private InventoryContainer m_Container;
+    
 
     public static InventoryUIManager Instance
     {
@@ -45,7 +47,17 @@ public class InventoryUIManager : MonoBehaviour
         m_openHolder = new Dictionary<InventoryHolder, int>();
         m_Container = GetComponent<InventoryContainer>();
     }
-
+    public static bool IsMenuOpen()
+    {
+        return (m_instance.m_containerPrefabs.Count != 0);
+    }
+    public static void CreateItemMenu(ItemUIElement iue)
+    {
+        if (iue.transform.Find("ItemMenu(Clone)") != null)
+            return;
+        GameObject newMenu = Instantiate(m_instance.ItemMenuPrefab, iue.transform);
+        newMenu.GetComponent<ItemMenu>().HighlightedItem = iue.ItemInfo;
+    }
     public static GameObject CreateInventoryGUI(InventoryContainer ic)
     {
         GameObject go = Instantiate(m_instance.InvPrefab, m_instance.MainInventoryCanvas.transform);
@@ -129,8 +141,7 @@ public class InventoryUIManager : MonoBehaviour
     }
     public static void DropItem(ItemUIElement item)
     {
-        item.ItemInfo.CurrentSlot.m_container.ClearItem(item.ItemInfo.CurrentSlot.Coordinate);
-        
+        item.ItemInfo.CurrentSlot.m_container.DropItem(item.ItemInfo.CurrentSlot.Coordinate);
     }
     public static bool AttemptSwap(ItemUIElement item1, ItemUIElement item2)
     {
@@ -176,7 +187,7 @@ public class InventoryUIManager : MonoBehaviour
     public static void MoveItemTo(Item i, InventoryContainer c,Vector2 slot, bool swapAllowed = true)
     {
         if (c.GetItem(slot) != null && swapAllowed)
-            AttemptSwap(i, c.GetItem(slot).ItemInstance);
+            AttemptSwap(i, c.GetItem(slot).EquipmentInstance);
         c.ClearItem(slot);
         c.AddItem(i, slot);
     }
@@ -195,15 +206,15 @@ public class InventoryUIManager : MonoBehaviour
     }
     private void addItemIcon(InventoryItemData i, Vector2 loc, Dictionary<Vector2,InventorySlotUI> slots, Transform parent,InventoryContainer c)
     {
-        //if ((GameObject)Resources.Load(i.ItemInstance.ItemProperties.prefabPath) == null)
+        //if ((GameObject)Resources.Load(i.EquipmentInstance.ItemProperties.prefabPath) == null)
         //    return;
-        //GameObject tempItem = Instantiate((GameObject)Resources.Load(i.ItemInstance.ItemProperties.prefabPath)); 
+        //GameObject tempItem = Instantiate((GameObject)Resources.Load(i.EquipmentInstance.ItemProperties.prefabPath)); 
         GameObject go = Instantiate(ItemIconPrefab, parent);
         
         go.transform.localPosition = new Vector3((loc.x) * 50f, -50 - (loc.y - 1) * 50f
                 , 3f);
 
-        go.GetComponent<ItemUIElement>().ItemInfo = i.ItemInstance;
+        go.GetComponent<ItemUIElement>().ItemInfo = i.EquipmentInstance;
         
         go.GetComponent<ItemUIElement>().ItemInfo.CurrentSlot = slots[loc];
         if (i.InvIcon != null)

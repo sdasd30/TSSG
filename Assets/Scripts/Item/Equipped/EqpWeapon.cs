@@ -9,14 +9,28 @@ public class EqpWeapon : Equipment
     public ActionInfo ReloadAction;
 
     public GameObject AmmoType;
-    public int ClipSize = 8;
+    public int ClipSize = 0;
     public int CurrentAmmo = 0;
 
+    public bool CanReload(GameObject user)
+    {
+        return !((ClipSize == 0 || AmmoType == null) ||
+            (ClipSize == CurrentAmmo) ||
+            user.GetComponent<InventoryHolder>().GetItemCount(AmmoType.GetComponent<Item>()) == 0);
+    }
+    public override void AddItemOptions(ItemMenu itemMenu)
+    {
+        base.AddItemOptions(itemMenu);
+        if (ClipSize > 0)
+        {
+            itemMenu.AddOption(UIMenuAttemptReload, "Reload");
+        }
+    }
 
     public override void OnPrimaryUse(InputPacket input,GameObject user) {
         if (PrimaryAction != null)
         {
-            int i = ItemProperties.PersistentInt["CurrentAmmo"];
+            int i = CurrentAmmo;
             if (PrimaryAction.GetComponent<ActionGunshot>() != null)
             {
                 int ammoConsumed = PrimaryAction.GetComponent<ActionGunshot>().m_weaponStats.AmmoConsumedPerShot;
@@ -48,7 +62,11 @@ public class EqpWeapon : Equipment
             
     }
 
-    private void AttemptReload(InputPacket input, GameObject user)
+    private void UIMenuAttemptReload(Item i)
+    {
+        AttemptReload(new InputPacket(), i.GetContainer().gameObject);
+    }
+    public void AttemptReload(InputPacket input, GameObject user)
     {
         ReloadAction.SourceEqp = this;
         user.GetComponent<CharacterBase>().TryAction(ReloadAction, OnRegisterHit);

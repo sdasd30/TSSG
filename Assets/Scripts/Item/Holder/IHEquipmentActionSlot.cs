@@ -7,8 +7,8 @@ using UnityEngine;
 [RequireComponent(typeof(InventoryContainer))]
 public class IHEquipmentActionSlot : InputHandler
 {
-    public string LeftMouseItem = "primary";
-    public string RightMouseItem = "secondary";
+    public string LeftMouseItem = "Primary";
+    public string RightMouseItem = "Secondary";
     [System.Serializable] public class DictionaryOfInputKeyAndString : SerializableDictionary<InputKey, string> { }
     public DictionaryOfInputKeyAndString ButtonActions;
     private InventoryContainer m_container;
@@ -20,12 +20,18 @@ public class IHEquipmentActionSlot : InputHandler
 
     public override void HandleInput(InputPacket ip)
     {
-        if (m_container == null)
+        if (m_container == null || InventoryUIManager.IsMenuOpen()) 
             return;
         if (ip.leftMousePress)
             m_container.EquipmentSlotUseUpdatePlayer(LeftMouseItem, ip);
         if (ip.rightMousePress)
             m_container.EquipmentSlotUseUpdatePlayer(RightMouseItem, ip);
+        if (ip.InputKeyPressed.ContainsKey(InputKey.Reload) && ip.InputKeyPressed[InputKey.Reload])
+        {
+            bool reloaded = m_container.EquipmentReload(LeftMouseItem, ip);
+            if (!reloaded)
+                m_container.EquipmentReload(RightMouseItem, ip);
+        }
         foreach (InputKey keyID in ButtonActions.Keys)
         {
             if (ip.InputKeyPressed.ContainsKey(keyID) && ip.InputKeyPressed[keyID])

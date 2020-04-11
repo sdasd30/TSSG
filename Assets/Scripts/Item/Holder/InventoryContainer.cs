@@ -7,8 +7,9 @@ using UnityEngine.UI;
 public class InitialItemData
 {
     public Vector2 inventoryLocation;
-    public CharData ItemProperties;
+    public GameObject Item;
     public int CurrentStack = 1;
+    public CharData ItemProperties;
 }
 [System.Serializable]
 public class EquipmentSlot
@@ -16,6 +17,10 @@ public class EquipmentSlot
     public string SlotName;
     public InventorySlotType SlotType;
     public Vector2 coordinate;
+    public bool CanFitItem(Item i) {
+        Equipment e = i as Equipment;
+        return (e != null); 
+    }
 }
 public enum InventorySlotType
 {
@@ -34,7 +39,7 @@ public class InventoryItemData
     public delegate void OnExitReturnFunc(InventoryContainer i, EquipmentSlot es);
     [HideInInspector]
     public OnExitReturnFunc exitFunc;
-    public Item ItemInstance;
+    public Item EquipmentInstance;
     public Sprite InvIcon;
 
     public InventoryItemData(Item i, CharData itemData = null) {
@@ -42,7 +47,7 @@ public class InventoryItemData
         displayName = (i.displayname.Length > 0) ? i.displayname : i.name;
         size = i.baseSize;
         exitFunc = i.OnExitInventory;
-        ItemInstance = i;
+        EquipmentInstance = i;
         InvIcon = i.InventoryIcon;
     }
 }
@@ -57,6 +62,7 @@ public class InventoryContainer : MonoBehaviour
     public List<EquipmentSlot> slotData;
     public string InventoryName;
     public InventoryHolder Holder;
+    public bool Dirty = false;
 
     private bool m_displaying;
     private List<Vector2> m_freeSlots;
@@ -93,14 +99,16 @@ public class InventoryContainer : MonoBehaviour
             ToggleDisplay();
     }
     
-    public bool CanFit(Vector2 itemPos, Vector2 itemSize)
+    public bool CanFit(Vector2 itemPos, Item i)
     {
-        if (!hasSpace(itemPos, itemSize))
+        if (!hasSpace(itemPos, i.baseSize))
+            return false;
+        if (eqpSlotInfo.ContainsKey(itemPos) && !eqpSlotInfo[itemPos].CanFitItem(i))
             return false;
         foreach (Vector2 coord in items.Keys)
         {
             if (isOverlap(coord,items[coord].size,
-                itemPos, itemSize))
+                itemPos, i.baseSize))
                 return false;
         }
         return true;
@@ -174,54 +182,113 @@ public class InventoryContainer : MonoBehaviour
         }
         return new Vector2(-1, -1);
     }
-    public void AddItem(Item i , Vector2 pos)
+
+    public void AddItem(Item i , Vector2 pos, bool autoStack = true)
     {
+        GameObject instance = null;
+        if (autoStack )
+        {
+            int stackLeft = i.CurrentStack;
+            foreach (Vector2 v in items.Keys)
+            {
+                InventoryItemData myI = items[v];
+                if (myI.displayName == i.displayname)
+                {
+                    Item itm = myI.EquipmentInstance;
+                    int oldN = itm.CurrentStack;
+                    itm.CurrentStack = Mathf.Min(itm.MaxStack, itm.CurrentStack + stackLeft);
+                    stackLeft -= (itm.CurrentStack - oldN);
+                    if (stackLeft <= 0)
+                    {
+                        Destroy(i.gameObject);
+                        return;
+                    }
+                }
+            }
+            i.CurrentStack = stackLeft;
+        }
         //Debug.Log("Adding item: " + i + " to inventory: " + pos + " for:" + gameObject);
         if (eqpSlotInfo.ContainsKey(pos))
         {
-            i.OnEnterInventory(this, eqpSlotInfo[pos]);
+            instance = i.OnEnterInventory(this, eqpSlotInfo[pos]);
         } else
         {
-            i.OnEnterInventory(this, null);
+            instance = i.OnEnterInventory(this, null);
         }
         if (items.ContainsKey(pos))
         {
             if (items[pos].displayName == i.displayname)
             {
-                items[pos].ItemInstance.CurrentStack += i.CurrentStack;
+                items[pos].EquipmentInstance.CurrentStack += i.CurrentStack;
                 return;
             }
             items.Remove(pos);
         }
-        items.Add(pos, new InventoryItemData(i));
+        i.transform.SetParent(transform);
+        i.transform.localPosition = Vector3.zero;
+        InventoryItemData iid = new InventoryItemData(i);
+        if (instance != null)
+            iid.EquipmentInstance = instance.GetComponent<Item>();
+        items.Add(pos, iid);
+        Dirty = true;
+
         m_freeSlots.Remove(pos);
 
         Holder.GetComponent<AICharacter>()?.OnItemGet(i);
+    }
+    public void DropItem(Vector2 v)
+    {
+        Debug.Log("Attempting to drop item at position: " + v);
+        if (!items.ContainsKey(v))
+            return;
+        if (eqpSlotInfo.ContainsKey(v))
+        {
+            items[v].exitFunc(this, eqpSlotInfo[v]);
+            Holder.GetComponent<AICharacter>()?.OnItemLost(items[v]);
+        }
+        else
+        {
+            items[v].exitFunc(this, null);
+            Holder.GetComponent<AICharacter>()?.OnItemLost(items[v]);
+        }
+        items[v].EquipmentInstance.SetItemActive(true, false);
+        items.Remove(v);
+        m_freeSlots.Add(v);
+        m_freeSlots.Sort((a, b) => (a.x + a.y * 10).CompareTo(b.x + b.y * 10));
+        Dirty = true;
+
     }
     public int RemoveItem(Item i, int amount = 1)
     {
         int remainingToRemove = amount;
         int numRemoved = 0;
+        List<Vector2> toRemove = new List<Vector2>();
         foreach (Vector2 v in items.Keys)
         {
             InventoryItemData myI = items[v];
             if (myI.displayName == i.displayname)
             {
-                if (myI.ItemInstance.CurrentStack <= remainingToRemove)
+                if (myI.EquipmentInstance.CurrentStack <= remainingToRemove)
                 {
-                    numRemoved += myI.ItemInstance.CurrentStack;
-                    remainingToRemove -= myI.ItemInstance.CurrentStack;
-                    ClearItem(v);
-                    if (remainingToRemove == 0)
+                    numRemoved += myI.EquipmentInstance.CurrentStack;
+                    remainingToRemove -= myI.EquipmentInstance.CurrentStack;
+                    toRemove.Add(v);
+                    if (remainingToRemove <= 0)
                         return numRemoved;
                 } else
                 {
                     numRemoved += remainingToRemove;
-                    myI.ItemInstance.CurrentStack -= remainingToRemove;  
+                    myI.EquipmentInstance.CurrentStack -= remainingToRemove;  
                     return numRemoved;
                 }
             }
         }
+        foreach (Vector2 v in toRemove)
+        {
+            ClearItem(v);
+            Dirty = true;
+        }
+            
         return numRemoved;
     }
     public int GetItemCount( Item i )
@@ -232,7 +299,7 @@ public class InventoryContainer : MonoBehaviour
             InventoryItemData myI = items[v];
             if (myI.displayName == i.displayname)
             {
-                stack += myI.ItemInstance.CurrentStack;
+                stack += myI.EquipmentInstance.CurrentStack;
             }
         }
         return stack;
@@ -254,6 +321,7 @@ public class InventoryContainer : MonoBehaviour
         items.Remove(v);
         m_freeSlots.Add(v);
         m_freeSlots.Sort((a, b) => (a.x + a.y*10).CompareTo(b.x + b.y*10));
+        Dirty = true;
     }
     
     public Vector2 findFreeSlot(Item i)
@@ -264,12 +332,12 @@ public class InventoryContainer : MonoBehaviour
         {
             InventoryItemData myI = items[v];
             if (myI.displayName == i.displayname &&
-                myI.ItemInstance.CurrentStack + i.CurrentStack <= myI.ItemInstance.MaxStack)
+                myI.EquipmentInstance.CurrentStack + i.CurrentStack <= myI.EquipmentInstance.MaxStack)
                 return v;
         }
         foreach (Vector2 v in m_freeSlots)
         {
-            if (CanFit(v, i.baseSize))
+            if (CanFit(v, i))
                 return v;
         }
         return new Vector2(-1,-1);
@@ -291,17 +359,26 @@ public class InventoryContainer : MonoBehaviour
         items.Clear();
         foreach (InitialItemData iid in initItemData)
         {
-            //Debug.Log("Attempting to load: " + iid);
-            if ((GameObject)Resources.Load(iid.ItemProperties.prefabPath) == null)
-                continue;
-            GameObject go = Instantiate((GameObject)Resources.Load(iid.ItemProperties.prefabPath));
+            GameObject prefab;
+            if (iid.Item != null)
+            {
+                prefab = iid.Item;
+                iid.ItemProperties.prefabPath = prefab.GetComponent<PersistentItem>().data.prefabPath;
+            } else {
+                //Debug.Log("Attempting to load: " + iid);
+                if ((GameObject)Resources.Load(iid.ItemProperties.prefabPath) == null)
+                    continue;
+                prefab = Resources.Load(iid.ItemProperties.prefabPath) as GameObject;
+            }
+            GameObject go = Instantiate(prefab);
             go.GetComponent<Item>().ItemProperties = iid.ItemProperties;
+            go.GetComponent<Item>().CurrentStack = Mathf.Max(1,Mathf.Min(go.GetComponent<Item>().MaxStack, iid.CurrentStack));
             go.GetComponent<Item>().LoadItems();
             AddItem(go.GetComponent<Item>(), iid.inventoryLocation);
-            Destroy(go);
         }
         //Debug.Log("InventoryInitialized");
         m_inventoryInitialized = true;
+        Dirty = true;
     }
 
     public virtual bool canAcceptItem(Item i)
@@ -350,7 +427,22 @@ public class InventoryContainer : MonoBehaviour
         }
         return true;
     }
-
+    public virtual bool EquipmentReload(string slotOrItemName, InputPacket input)
+    {
+        Transform t = transform.Find(slotOrItemName);
+        if (t == null)
+        {
+            return false;
+        }
+        Equipment e = t.gameObject.GetComponent<Equipment>();
+        var weapon = e as EqpWeapon;
+        if (e == null)
+            return false;
+        if (!weapon.CanReload(gameObject))
+            return false;
+        weapon.AttemptReload(input, gameObject);
+        return true;
+    }
     private string convertToSaveList(Dictionary<Vector2, InventoryItemData> saveItems)
     {
         string saveList = "";
@@ -358,15 +450,16 @@ public class InventoryContainer : MonoBehaviour
         {
             InitialItemData newItem = new InitialItemData();
             newItem.inventoryLocation = v;
-            newItem.CurrentStack = items[v].ItemInstance.CurrentStack;
+            newItem.CurrentStack = items[v].EquipmentInstance.CurrentStack;
             newItem.ItemProperties = new CharData();
-            items[v].ItemInstance.SaveItems();
-            newItem.ItemProperties = items[v].ItemInstance.ItemProperties;
+            items[v].EquipmentInstance.SaveItems();
+            newItem.ItemProperties = items[v].EquipmentInstance.ItemProperties;
 
             saveList += JsonUtility.ToJson(newItem) + "\n";
         }
         return saveList;
     }
+
     private void storeData(CharData d)
     {
         string s = convertToSaveList(items);

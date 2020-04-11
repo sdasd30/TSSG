@@ -105,7 +105,7 @@ public class MovementBase : MonoBehaviour
 
     internal void Update()
     {
-        transform.rotation = Quaternion.Euler(90, transform.localRotation.y,GetComponent<Orientation>().LastZ);
+        transform.rotation = Quaternion.Euler(90, transform.localRotation.y,GetComponent<Orientation>().ZAngle);
         InputPacket ip = new InputPacket();
         if (m_canMove)
         {

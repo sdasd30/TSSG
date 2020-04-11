@@ -2,26 +2,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIWorldCanvasManager : MonoBehaviour
+public enum HUDCorner { UPPERLEFT,UPPERRIGHT,LOWERLEFT,LOWERRIGHT};
+public class UIManager : MonoBehaviour
 {
     public delegate void IsAcceptUISystem(GameObject targetObject);
     Dictionary<UIWorldUISystem, IsAcceptUISystem> currentUICheckFunctions;
 
-    public GameObject WorldCanvasPrefab;
+    [SerializeField]
+    private GameObject WorldCanvasPrefab;
+    [SerializeField]
+    private Transform HUDTransformUpperLeft;
+    [SerializeField]
+    private Transform HUDTransformUpperRight;
+    [SerializeField]
+    private Transform HUDTransformLowerLeft;
+    [SerializeField]
+    private Transform HUDTransformLowerRight;
     private Dictionary<System.Type, int> typeCount;
     private Dictionary<System.Type, List<UIWorldUISystem>> checkedTypes;
     private Dictionary<System.Type, List<Object>> allAccountedForObjects;
     private float nextCheckTime;
     private const float check_interval = 0.25f;
 
-    private static UIWorldCanvasManager m_instance;
-    public static UIWorldCanvasManager Instance
+    private static UIManager m_instance;
+    public static UIManager Instance
     {
         get { return m_instance; }
         set { m_instance = value; }
     }
 
 
+    public static void AddToHUD(GameObject prefab, GameObject target, HUDCorner corner = HUDCorner.UPPERLEFT)
+    {
+        Transform p;
+        if (corner == HUDCorner.UPPERLEFT)
+            p = m_instance.HUDTransformUpperLeft;
+        else if (corner == HUDCorner.UPPERRIGHT)
+            p = m_instance.HUDTransformUpperRight;
+        else if (corner == HUDCorner.LOWERLEFT)
+            p = m_instance.HUDTransformLowerLeft;
+        else
+            p = m_instance.HUDTransformLowerRight;
+        GameObject newUI = Instantiate(prefab, p);
+        newUI.GetComponent<WUIBase>().Target = target;
+    }
     private void Awake()
     {
 

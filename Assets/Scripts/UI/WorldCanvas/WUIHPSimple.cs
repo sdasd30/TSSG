@@ -5,10 +5,13 @@ using UnityEngine.UI;
 
 public class WUIHPSimple : WUIBase
 {
-    
-    public Text DispText;
+    [SerializeField]
+    private Text DispText;
+    [SerializeField]
+    private Slider HPSlider;
     
     private float lastHealth;
+
 
     private void Update()
     {
@@ -17,6 +20,8 @@ public class WUIHPSimple : WUIBase
         {
             lastHealth = h;
             DispText.text = "HP: " + lastHealth + " / " + Target.GetComponent<Attackable>().MaxHealth;
+            if (HPSlider != null)
+                HPSlider.value = (lastHealth / Target.GetComponent<Attackable>().MaxHealth);
         }
     }
 }

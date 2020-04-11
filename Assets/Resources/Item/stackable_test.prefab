@@ -121,7 +121,7 @@ CharacterController:
   m_Height: 0.2
   m_Radius: 0.2
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0.1
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactableObjectInfo:
-    InteractionPrompt: to Interact
+    InteractionPrompt: to pick up TESTITEM
     Priority: 1
     autoTrigger: 1
     TriggerRefresh: 2

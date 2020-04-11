@@ -20,10 +20,10 @@ public class Interactor : MonoBehaviour
     void Start()
     {
         OverlapInteractions = new List<Interactable>();
-        m_interactionHitbox = Instantiate(ListHitboxes.Instance.InteractBox,transform).GetComponent<InteractionTrigger>();
-        m_interactionHitbox.transform.parent = transform;
-        m_interactionHitbox.MasterInteractor = this;
-        m_orient = GetComponent<Orientation>();
+        //m_interactionHitbox = Instantiate(ListHitboxes.Instance.InteractBox,transform).GetComponent<InteractionTrigger>();
+        //m_interactionHitbox.transform.parent = transform;
+        //m_interactionHitbox.MasterInteractor = this;
+        //m_orient = GetComponent<Orientation>();
 
         Vector3 newPos = transform.position + (Vector3)HitboxOffset;
         //Debug.Log("Instantiated at: " + newPos);
@@ -32,15 +32,30 @@ public class Interactor : MonoBehaviour
         go.transform.localPosition = HitboxOffset;
         go.GetComponent<InteractionTrigger>().MasterInteractor = this;
     }
-
+    void Update()
+    {
+        List<Interactable> newI = new List<Interactable>();
+        foreach (Interactable i in OverlapInteractions)
+        {
+            if (i == null)
+                continue;
+            if (i.transform.parent == transform)
+                continue;
+            newI.Add(i);
+        }
+        OverlapInteractions = newI;
+    }
     public void OnAttemptInteract()
     {
         float minDistance = 4000;
         int maxPriority = -1;
         Interactable bestInteractable = null;
+        List<Interactable> newI = new List<Interactable>();
         foreach(Interactable i in OverlapInteractions)
         {
             if (i == null)
+                continue;
+            if (i.transform.parent == transform)
                 continue;
             if (i.interactableObjectInfo.Priority > maxPriority || 
                 ( i.interactableObjectInfo.Priority == maxPriority && 
@@ -50,7 +65,9 @@ public class Interactor : MonoBehaviour
                 maxPriority = i.interactableObjectInfo.Priority;
                 bestInteractable = i;
             }
+            newI.Add(i);
         }
+        OverlapInteractions = newI;
         if (bestInteractable != null)
         {
             bestInteractable.onPress(gameObject);

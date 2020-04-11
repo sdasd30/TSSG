@@ -16,7 +16,7 @@ public class Orientation : MonoBehaviour
     [HideInInspector]
     public Direction CurrentDirection = Direction.DOWN;
 
-    public float LastZ = 0f;
+    public float ZAngle = 0f;
     // Use this for initialization
     internal void Awake()
     {
@@ -42,19 +42,19 @@ public class Orientation : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(new Vector3(90f, 90f, 0f));
         }
-        LastZ = transform.rotation.y;
+        ZAngle = transform.rotation.y;
     }
     public void SetDirection(Vector3 directionVector)
     {
         float angle = Mathf.Atan2(directionVector.z, directionVector.x);
         transform.rotation = Quaternion.Euler(new Vector3(90f, angle, 0f));
-        LastZ = -angle;
+        ZAngle = -angle;
     }
     public void FacePoint(Vector3 facePoint)
     {
         float angle = Mathf.Atan2(transform.position.z - facePoint.z, facePoint.x - transform.position.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(90f, angle, 0f));
-        LastZ = -angle;
+        ZAngle = -angle;
     }
     public void FaceVector(Vector3 targetVector)
     {
@@ -64,7 +64,7 @@ public class Orientation : MonoBehaviour
     {
         float angle = Mathf.Atan2(-targetVector.y, targetVector.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(90f, angle, 0f));
-        LastZ = -angle;
+        ZAngle = -angle;
     }
     public void SetDirection (bool facingLeft)
     {
@@ -201,7 +201,7 @@ public class Orientation : MonoBehaviour
     public bool FacingPoint(Vector3 point, float tolerance)
     {
         float angle = AngleToPoint(point);
-        float myCurrentAngle = LastZ;
+        float myCurrentAngle = ZAngle;
         if (myCurrentAngle > 180)
             myCurrentAngle = -(360 - myCurrentAngle);
         return (Mathf.Abs(angle - myCurrentAngle) < tolerance ||

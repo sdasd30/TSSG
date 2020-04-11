@@ -5,7 +5,7 @@ using UnityEngine;
 public enum ItemUseMode {PRIMARY,SECONDARY}
 public class TKUseItem : Task
 {
-    public string UseItemSlot = "primary";
+    public string UseItemSlot = "Primary";
     public ItemUseMode UseSecondary;
 
     public override void OnActiveUpdate()

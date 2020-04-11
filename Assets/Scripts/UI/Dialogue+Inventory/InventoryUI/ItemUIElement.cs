@@ -25,6 +25,7 @@ public class ItemUIElement : MonoBehaviour, IDragHandler, IEndDragHandler,
         m_image.color = Color.gray;
         m_extraString = ItemInfo.UIString();
         uitext.text = m_extraString;
+        uitext.raycastTarget = false;
     }
     
     public void UpdateReturnPos(Vector3 pos)
@@ -78,7 +79,7 @@ public class ItemUIElement : MonoBehaviour, IDragHandler, IEndDragHandler,
         //Debug.Log("button down: " + eventData.button);
         if (eventData.button.ToString() == "Right")
         {
-            
+            InventoryUIManager.CreateItemMenu(this);
         } else
         {
             Vector2 newPos = Input.mousePosition - mouseoffset;
@@ -95,7 +96,7 @@ public class ItemUIElement : MonoBehaviour, IDragHandler, IEndDragHandler,
         if (eventData.button.ToString() == "Left")
         {
             m_image.color = Color.gray;
-            m_image.raycastTarget = true;
+            
             if (InventoryUIManager.GetCurrentCell() != null &&
                 InventoryUIManager.AttemptMoveItem(this))
             {
@@ -110,6 +111,7 @@ public class ItemUIElement : MonoBehaviour, IDragHandler, IEndDragHandler,
                 ReturnPos();
             }
             InventoryUIManager.SetHeldItem(null);
+            m_image.raycastTarget = true;
         }        
     }
 

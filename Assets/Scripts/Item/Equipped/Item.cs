@@ -16,7 +16,6 @@ public class Item : Interactable
     public delegate void LoadFunction(CharData d);
     public LoadFunction m_onSave;
 
-
     public CharData ItemProperties;
 
     [HideInInspector]
@@ -30,7 +29,6 @@ public class Item : Interactable
 
     protected InventoryContainer m_currentContainer;
     protected Vector2 m_slotPosition;
-
 
 
     // Start is called before the first frame update
@@ -47,8 +45,8 @@ public class Item : Interactable
     {
         
     }
-
-    public virtual void OnEnterInventory(InventoryContainer s, EquipmentSlot es) { }
+    public virtual void AddItemOptions(ItemMenu itemMenu) { }
+    public virtual GameObject OnEnterInventory(InventoryContainer s, EquipmentSlot es) { return null; }
 
     public virtual void OnExitInventory(InventoryContainer s, EquipmentSlot es) { }
 
@@ -65,13 +63,11 @@ public class Item : Interactable
     }
     public void DestroyItem()
     {
-        Debug.Log(m_currentContainer);
-        Debug.Log(m_slotPosition);
         m_currentContainer.ClearItem(m_slotPosition);
     }
     public void SetSlotData(InventoryContainer container, Vector2 slotPos)
     {
-        Debug.Log("Setting slot to: " + container + " slot: " + slotPos);
+        //Debug.Log("Setting slot to: " + container + " slot: " + slotPos);
         m_currentContainer = container;
         m_slotPosition = slotPos;
     }
@@ -88,11 +84,14 @@ public class Item : Interactable
         {
             
             bool added = interactor.GetComponent<InventoryHolder>().AddItemIfFree(this);
-            if (added)
-                Destroy(gameObject);
+            
         }
     }
 
+    public override bool ShouldDisplayPrompt()
+    {
+        return (m_currentContainer == null);
+    }
     public void SaveItems()
     {
         if (ItemProperties == null)
@@ -115,4 +114,21 @@ public class Item : Interactable
     public virtual void onItemSave(CharData d) { }
 
     public virtual void onItemLoad(CharData d) { }
+
+    public void SetItemActive(bool active, bool held = true)
+    {
+        //Debug.Log("Assigning current slot to: " + es.coordinate);
+        GetComponent<BasicPhysics>().SetEnabled(active);
+        GetComponent<CharacterController>().enabled = active;
+
+        if (GetComponent<PersistentItem>() != null)
+            GetComponent<PersistentItem>().enabled = !held;
+        if (!held)
+            transform.SetParent(null);
+        if (GetComponent<BasicPhysics>())
+        {
+            GetComponent<BasicPhysics>().GravityForce = (active) ? -1.0f : 0.0f;
+            GetComponent<SpriteRenderer>().enabled = active;
+        }
+    }
 }

@@ -16,7 +16,6 @@ public class BasicPhysics : MonoBehaviour
     public float TerminalVelocity = -1f;
     public float GravityForce = -1.0f;
     public bool Floating = false;
-    public bool IsTrigger = false;
 
     // Particles
     //public bool DrawParticles = true;
@@ -52,12 +51,16 @@ public class BasicPhysics : MonoBehaviour
     private float m_gravityCancelTime = 0f;
     private float m_oldFloatingTime = 0f;
     private bool m_oldFloating = false;
-
+    private bool m_isEnabled = true;
     public void SetPosition(Vector3 pos)
     {
         m_controller.transform.position = pos;
         transform.position = pos;
         m_agent.transform.position = pos;
+    }
+    public void SetEnabled(bool enabled)
+    {
+        m_isEnabled = enabled;
     }
     internal void Awake()
     {
@@ -85,23 +88,28 @@ public class BasicPhysics : MonoBehaviour
     // Update is called once per frame
     internal void FixedUpdate()
     {
-        
-        DecelerateAutomatically(VELOCITY_MINIMUM_THRESHOLD);
-        m_accumulatedVelocity = Vector2.zero;
-        ProcessMovement();
-        UpdateFloating();
-        if (m_agent != null )
+        if (m_isEnabled)
         {
-            m_agent.nextPosition = transform.position;
-            //m_agent.velocity = m_controller.velocity;
+            DecelerateAutomatically(VELOCITY_MINIMUM_THRESHOLD);
+            m_accumulatedVelocity = Vector2.zero;
+            ProcessMovement();
+            UpdateFloating();
+            if (m_agent != null)
+            {
+                m_agent.nextPosition = transform.position;
+                //m_agent.velocity = m_controller.velocity;
+            }
         }
+        
     }
     internal void Update()
     {
-        
-        m_trueVelocity = (transform.position - m_lastPosition) / Time.deltaTime;
-        m_lastPosition = transform.position;
-        IsGrounded = m_controller.isGrounded;
+        if (m_isEnabled)
+        {
+            m_trueVelocity = (transform.position - m_lastPosition) / Time.deltaTime;
+            m_lastPosition = transform.position;
+            IsGrounded = m_controller.isGrounded;
+        }
     }
 
     internal void LateUpdate()

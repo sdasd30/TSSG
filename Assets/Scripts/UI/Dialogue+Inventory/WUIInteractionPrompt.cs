@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UIInteractionPrompt : WUIBase
+public class WUIInteractionPrompt : WUIBase
 {
+    [SerializeField]
     private TextMeshProUGUI m_promptUI;
     private int m_lastLength = 0;
     void Start()
@@ -23,7 +24,10 @@ public class UIInteractionPrompt : WUIBase
                 if (io.OverlapInteractions.Count > 0)
                 {
                     Interactable i = io.OverlapInteractions[io.OverlapInteractions.Count - 1];
-                    m_promptUI.text = "Press ' Interact ' " + i.interactableObjectInfo.InteractionPrompt;
+                    if (i.ShouldDisplayPrompt())
+                        m_promptUI.text = "Press ' Interact ' " + i.GetInteractionPrompt();
+                    else
+                        m_promptUI.text = "";
                 } else
                 {
                     m_promptUI.text = "";
