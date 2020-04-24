@@ -38,6 +38,9 @@ public class HitboxInfo {
 	public float FreezeTime = 0.0f;
 	public float Delay = 0.0f;
 
+    public NoiseType MyNoiseType;
+    public float NoiseRange = 10.0f;
+
     [HideInInspector]
     public List<OnRegisterHit> hitCallback = new List<OnRegisterHit>();
     [HideInInspector]

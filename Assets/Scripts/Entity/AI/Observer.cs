@@ -17,6 +17,16 @@ public class Observer : MonoBehaviour {
 
 	Dictionary<Observable,float> m_lastTimeSeen;
 
+    public void ListenToNoise(NoiseForTrigger na)
+    {
+        if (GetComponent<AITaskManager>() != null)
+        {
+            Object thisNoise = (Object)this;
+            List<Object> listNoises = new List<Object>();
+            listNoises.Add(thisNoise);
+            GetComponent<AITaskManager>().triggerEvent("sound", listNoises);
+        }
+    }
     public List<GameObject> ScanRayToPoint(Vector3 targetPoint)
     {
         List<GameObject> newHitList = new List<GameObject>();
@@ -111,13 +121,13 @@ public class Observer : MonoBehaviour {
     
     internal void OnSight(Observable o) {
         //ExecuteEvents.Execute<ICustomMessageTarget> (gameObject, null, (x, y) => x.OnSight (o));
-	    GetComponent<AICharacter> ()?.OnSight (o);
+	    GetComponent<AITaskManager> ()?.OnSight (o);
 		o.addObserver (this);
 		VisibleObjs.Add (o);
 	}
     internal void outOfSight(Observable o)
     {
-        GetComponent<AICharacter>()?.outOfSight(o);
+        GetComponent<AITaskManager>()?.OutOfSight(o);
         o.removeObserver(this);
     }
 	public bool IsVisible(Observable o) {

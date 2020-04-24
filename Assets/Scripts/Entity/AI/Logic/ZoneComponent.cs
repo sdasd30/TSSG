@@ -16,16 +16,16 @@ public class ZoneComponent : LogicalObject
 
     internal void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<AICharacter>() != null)
+        if (other.gameObject.GetComponent<AITaskManager>() != null)
         {
-            MasterZone.OnAddChar(other.GetComponent<AICharacter>());
+            MasterZone.OnAddChar(other.GetComponent<AITaskManager>());
         }
     }
     internal void OnTriggerExit(Collider other)
     {
-        if (MasterZone.OverlapCharacters.Contains(other.gameObject.GetComponent<AICharacter>()))
+        if (MasterZone.OverlapCharacters.Contains(other.gameObject.GetComponent<AITaskManager>()))
         {
-            MasterZone.OnRemoveChar(other.GetComponent<AICharacter>());
+            MasterZone.OnRemoveChar(other.GetComponent<AITaskManager>());
         }
     }
     void OnDrawGizmos()

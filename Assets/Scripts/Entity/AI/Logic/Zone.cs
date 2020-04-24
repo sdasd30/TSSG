@@ -5,7 +5,7 @@ using UnityEngine;
 public class Zone : LogicalObject
 {
 
-    public List<AICharacter> OverlapCharacters;
+    public List<AITaskManager> OverlapCharacters;
 
     private List<BoxCollider> m_childColliders;
     private int m_lastKnowChildCount = 0;
@@ -43,20 +43,20 @@ public class Zone : LogicalObject
     internal void OnTriggerEnter(Collider other)
     {
         //Debug.Log("Trigger Zone enter:");
-        if (other.gameObject.GetComponent<AICharacter>() != null)
+        if (other.gameObject.GetComponent<AITaskManager>() != null)
         {
-            OnAddChar(other.GetComponent<AICharacter>());
+            OnAddChar(other.GetComponent<AITaskManager>());
         }
     }
     internal void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.GetComponent<AICharacter>() != null)
+        if (other.gameObject.GetComponent<AITaskManager>() != null)
         {
-            OnRemoveChar(other.GetComponent<AICharacter>());
+            OnRemoveChar(other.GetComponent<AITaskManager>());
         }
     }
 
-    public void OnAddChar(AICharacter aic)
+    public void OnAddChar(AITaskManager aic)
     {
         if (!OverlapCharacters.Contains(aic))
         {
@@ -65,7 +65,7 @@ public class Zone : LogicalObject
         }
     }
 
-    public void OnRemoveChar(AICharacter aic)
+    public void OnRemoveChar(AITaskManager aic)
     {
         if (OverlapCharacters.Contains(aic))
         {
@@ -89,7 +89,7 @@ public class Zone : LogicalObject
         }
         return false;
     }
-    public bool IsHaveObject(AICharacter aic)
+    public bool IsHaveObject(AITaskManager aic)
     {
         return OverlapCharacters.Contains(aic);
     }

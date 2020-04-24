@@ -18,6 +18,9 @@ public class HitScanInfo
     public float HitboxDuration = 0.5f;
     public Vector3 Knockback = new Vector3(10.0f, 10.0f);
     public ElementType Element = ElementType.PHYSICAL;
+
+    public NoiseType MyNoiseType;
+    public float NoiseRange = 10.0f;
 }
 
 

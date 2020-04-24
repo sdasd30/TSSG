@@ -31,6 +31,9 @@ public class WeaponStats
     public List<AudioClip> attackSound; //What sounds should play when a projectile is created?
     public GameObject AmmoType;
     public int AmmoConsumedPerShot = 1;
+
+    public NoiseType noiseType;
+    public float noiseRange;
 }
 
 
@@ -115,6 +118,8 @@ public class ActionGunshot : ActionInfo
             hsi.MaxRange = m_weaponStats.hitScanRange;
             hsi.HitboxDuration = m_weaponStats.duration;
             hsi.Knockback = new Vector3(10f * m_weaponStats.knockbackMult, 0f);
+            hsi.MyNoiseType = m_weaponStats.noiseType;
+            hsi.NoiseRange = m_weaponStats.noiseRange;
             m_hitboxMaker.createLineHB(hsi);
         } else
         {
@@ -128,6 +133,8 @@ public class ActionGunshot : ActionInfo
             pi.Stun = m_weaponStats.stun;
             pi.HitboxDuration = m_weaponStats.duration;
             pi.Knockback = new Vector3(10f * m_weaponStats.knockbackMult, 0f);
+            pi.MyNoiseType = m_weaponStats.noiseType;
+            pi.NoiseRange = m_weaponStats.noiseRange;
             if (delay == 0f) {
                 m_hitboxMaker.CreateProjectile(pi);
             } else {

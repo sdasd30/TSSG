@@ -8,7 +8,7 @@ public class WUIAIDebug : WUIBase
 
     public Text DispText;
 
-    private AICharacter m_AI;
+    private AITaskManager m_AI;
     private AITaskManager m_Task;
     private string m_lastDisplayedString;
     // Start is called before the first frame update
@@ -22,7 +22,7 @@ public class WUIAIDebug : WUIBase
     {
         if (m_AI == null)
         {
-            m_AI = Target.GetComponent<AICharacter>();
+            m_AI = Target.GetComponent<AITaskManager>();
             m_Task = Target.GetComponent<AITaskManager>();
         }
             

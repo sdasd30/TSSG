@@ -21,7 +21,7 @@ public class TRZone : Transition
             if (ZoneName == "noZone")
                 return; //TODO, check for No Zone.
 
-            bool IfSeenInZone = ZoneManager.IsHaveObject(MasterAI.GetComponent<AICharacter>(),ZoneName);
+            bool IfSeenInZone = ZoneManager.IsHaveObject(MasterAI.GetComponent<AITaskManager>(),ZoneName);
 
             if (IfSeenInZone && !InvertIfSeenInZoneCondition)
             {

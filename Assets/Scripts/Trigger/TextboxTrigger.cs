@@ -22,7 +22,7 @@ public class TextboxTrigger : Interactable {
 	void Update () { destroyAfterUse (); }
 
 	void OnDrawGizmos() {
-		Gizmos.color = new Color (1, 0, 1, .5f);
+		Gizmos.color = new Color (1, 0, 1, .3f);
 		Gizmos.DrawCube (transform.position, transform.localScale);
 	}
 	internal void OnTriggerEnter(Collider other)

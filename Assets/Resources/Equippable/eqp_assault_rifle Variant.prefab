@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1938978845340064285
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5834935573282659341, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: AmmoType
+      value: 
+      objectReference: {fileID: 6779796941620617522, guid: d157ffc9ccb7fcd42ba7c9601675cc38,
+        type: 3}
+    - target: {fileID: 5834935573282659341, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: ClipSize
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086038, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_Name
+      value: eqp_assault_rifle
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.70708084
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.006059408
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.006059438
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70708084
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90.981995
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 89.99999
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086039, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 89.99999
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278556184147086042, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 3318101986601800320, guid: 73b19f8afbc522f449fcb46b2922c752,
+        type: 3}
+    - target: {fileID: 6297665024437250736, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_weaponStats.AmmoType
+      value: 
+      objectReference: {fileID: 6779796941620617522, guid: d157ffc9ccb7fcd42ba7c9601675cc38,
+        type: 3}
+    - target: {fileID: 6297665024437250736, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_weaponStats.firedelay
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6297665024437250736, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_weaponStats.damage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6297665024437250736, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_weaponStats.spread
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6297665024437250736, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_weaponStats.shots
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6297665024437250736, guid: 8325212c228de0c4ead2129bd1c522cf,
+        type: 3}
+      propertyPath: m_weaponStats.hitScanRange
+      value: 20
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8325212c228de0c4ead2129bd1c522cf, type: 3}

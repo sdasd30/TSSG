@@ -458,6 +458,14 @@ public class Hitbox : MonoBehaviour
         IsResetKnockback = hbi.ResetKnockback;
         if (hbi.FollowCharacter)
             SetFollow(parent, hbi.HitboxOffset);
+
+        if (hbi.MyNoiseType != NoiseType.NONE)
+        {
+            if (GetComponent<NoiseAI>() == null)
+                gameObject.AddComponent<NoiseAI>();
+            NoiseAI noise = GetComponent<NoiseAI>();
+            noise.PlaySound(hbi.MyNoiseType, hbi.NoiseRange);
+        }
         Init();
     }
 }

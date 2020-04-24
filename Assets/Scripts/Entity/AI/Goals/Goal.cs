@@ -5,9 +5,10 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class Goal : MonoBehaviour
 {
-    protected AICharacter m_masterAI;
+    protected AITaskManager m_masterAI;
 
     private float m_goalPriority;
+    private Dictionary<string, List<AITaskCallback>> m_events;
 
     public virtual float GoalPriority { get { return m_goalPriority; } private set { m_goalPriority = value; } }
 
@@ -38,7 +39,7 @@ public class Goal : MonoBehaviour
     {
         m_goalPriority = newP;
     }
-    public void SetMasterAI(AICharacter master)
+    public void SetMasterAI(AITaskManager master)
     {
         m_masterAI = master;
     }
@@ -92,6 +93,7 @@ public class Goal : MonoBehaviour
     }
 
     protected virtual void init() {
+        m_events = new Dictionary<string, List<AITaskCallback>>();
         if (GoalVariables == null)
             GoalVariables = new StringDictionary();
         initVariableDictionary();
@@ -126,5 +128,35 @@ public class Goal : MonoBehaviour
     public bool ContainsKey(string key, Transition origin)
     {
         return GoalVariables.ContainsKey(origin.GetType() + "-" + origin.ParentGoal.name + "-" + key);
+    }
+
+    public virtual void triggerEvent(string eventName, List<Object> args)
+    {
+        if (!m_events.ContainsKey(eventName))
+            return;
+        foreach (AITaskCallback f in m_events[eventName])
+        {
+            f(args);
+        }
+    }
+    private void m_registerEvent(string eventName, AITaskCallback callbackFunction)
+    {
+        if (!m_events.ContainsKey(eventName))
+            m_events[eventName] = new List<AITaskCallback>();
+        m_events[eventName].Add(callbackFunction);
+    }
+    private void m_deregisterEvent(string eventName, AITaskCallback callbackFunction)
+    {
+        if (!m_events.ContainsKey(eventName))
+            return;
+        List<AITaskCallback> m_newList = new List<AITaskCallback>();
+        foreach (AITaskCallback f in m_events[eventName])
+        {
+            if (f != callbackFunction)
+            {
+                m_newList.Add(f);
+            }
+        }
+        m_events[eventName] = m_newList;
     }
 }

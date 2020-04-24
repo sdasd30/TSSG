@@ -26,4 +26,12 @@ public class Observable : MonoBehaviour {
 			observers.Remove (obs);
 		}
 	}
+
+    public void broadCasttoObserver(string eventName, List<Object> args)
+    {
+        foreach( Observer o in observers)
+        {
+            o.GetComponent<AITaskManager>()?.triggerEvent(eventName, args);
+        }
+    }
 }

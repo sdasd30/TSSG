@@ -53,6 +53,5 @@ public class GoalExecuteOnStart : Goal
         {
             GoalVariables["ExecutePrefab"] = "NoPrefabSet";
         }
-
     }
 }

@@ -2,25 +2,86 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void AITaskCallback(List<Object> arguments);
+
 public class AITaskManager : MonoBehaviour {
 
-	public Task m_currentTask;
+    public List<Goal> GoalList;
 
-	Dictionary<TaskType, List<Task>> MyTasks;
-
-	Dictionary<TaskType, List<Transition>> GenericTransitions;
+    public Goal m_currentGoal;
+    public Task m_currentTask;
 
 
     public string debugLastEvent = "";
     public string debugLastTransition = "initial";
+
+    private Dictionary<TaskType, List<Task>> MyTasks;
+	private Dictionary<TaskType, List<Transition>> GenericTransitions;
+
+    private List<string> m_GoalObjectNames;
+
+    private float m_currentPriority;
+    private string m_currentBehaviourName;
+    private Dictionary<string, List<AITaskCallback>> m_events;
+
+    public void ProposeNewBehaviour(AIBehaviour b)
+    {
+        if (b.BehaviourPrefab == null)
+            return;
+        if (m_currentGoal == null)
+        {
+            SetBehaviour(b.BehaviourPrefab, b.ParentGoal, b.PriorityScore);
+            return;
+        }
+        if (b.PriorityScore * b.ParentGoal.GoalPriority >
+            m_currentPriority * m_currentGoal.GoalPriority)
+        {
+            SetBehaviour(b.BehaviourPrefab, b.ParentGoal, b.PriorityScore);
+        }
+    }
+    public void AddNewBehaviour(AIBehaviour b)
+    {
+        if (b.BehaviourPrefab == null)
+            return;
+        if (m_currentGoal == null)
+        {
+            SetBehaviour(b.BehaviourPrefab, b.ParentGoal, b.PriorityScore);
+            return;
+        }
+        SetBehaviour(b.BehaviourPrefab, b.ParentGoal, b.PriorityScore);
+    }
+    public void SetBehaviour(GameObject g, Goal originGoal, float priorityScore)
+    {
+        AddBehaviour(g, originGoal, priorityScore);
+        m_currentPriority = priorityScore;
+        m_currentBehaviourName = g.name;
+        m_currentGoal = originGoal;
+    }
+
+
     // Use this for initialization
     void Awake () {
-		GenericTransitions = new Dictionary<TaskType, List<Transition>> ();
+        m_events = new Dictionary<string, List<AITaskCallback>>();
+        reloadGoals();
+        GetComponent<PersistentItem>()?.InitializeSaveLoadFuncs(storeData, loadData);
+        Goal[] gList = GetComponentsInChildren<Goal>();
+        foreach (Goal g in gList)
+            GoalList.Add(g);
+        gList = GetComponents<Goal>();
+        foreach (Goal g in gList)
+            GoalList.Add(g);
+
+        GenericTransitions = new Dictionary<TaskType, List<Transition>> ();
 		reloadTasks ();
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    void Start()
+    {
+        OnStart();
+    }
+
+    // Update is called once per frame
+    void Update () {
         if (m_currentTask != null)
         {
             m_currentTask.OnUpdate();
@@ -49,6 +110,39 @@ public class AITaskManager : MonoBehaviour {
     public float getDistanceToPoint(Vector3 tgt)
     {
         return Vector3.Distance(transform.position, tgt);
+    }
+
+    public void triggerEvent(string eventName, List<Object> args)
+    {
+        foreach (Goal g in GoalList)
+        {
+            g.triggerEvent(eventName, args);
+        }
+        if (!m_events.ContainsKey(eventName))
+            return;
+        foreach (AITaskCallback f in m_events[eventName]) {
+            f(args);
+        }
+    }
+    public void registerEvent(string eventName, AITaskCallback callbackFunction)
+    {
+        if (!m_events.ContainsKey(eventName))
+            m_events[eventName] = new List<AITaskCallback>();
+        m_events[eventName].Add(callbackFunction);
+    }
+    public void deregisterEvent(string eventName, AITaskCallback callbackFunction)
+    {
+        if (!m_events.ContainsKey(eventName))
+            return;
+        List<AITaskCallback> m_newList = new List<AITaskCallback>();
+        foreach (AITaskCallback f in m_events[eventName])
+        {
+            if (f != callbackFunction)
+            {
+                m_newList.Add(f);
+            }
+        }
+        m_events[eventName] = m_newList;
     }
 
     public List<Task> AddBehaviour(GameObject g, Goal originGoal, float priority = 1.0f)
@@ -117,7 +211,12 @@ public class AITaskManager : MonoBehaviour {
 
     public void OnHit(HitInfo hb) {
         debugLastEvent = "hit by: " + hb.Creator.name;
-		if (m_currentTask != null) {
+        foreach (Goal g in GoalList)
+        {
+            g.OnHit(hb);
+        }
+
+        if (m_currentTask != null) {
 			m_currentTask.OnHit (hb);
 			foreach (Transition t in GenericTransitions[m_currentTask.MyTaskType]) {
 				t.OnHit (hb);
@@ -126,6 +225,11 @@ public class AITaskManager : MonoBehaviour {
 	}
 	public void OnSight(Observable o) {
         debugLastEvent = "saw: " + o.gameObject.name;
+        foreach (Goal g in GoalList)
+        {
+            g.OnSight(o);
+        }
+
         if (m_currentTask != null) {
 			m_currentTask.OnSight (o);
 			foreach (Transition t in GenericTransitions[m_currentTask.MyTaskType]) {
@@ -136,6 +240,11 @@ public class AITaskManager : MonoBehaviour {
     public void OutOfSight(Observable o)
     {
         debugLastEvent = "lost sight: " + o.gameObject.name;
+        foreach (Goal g in GoalList)
+        {
+            g.OutOfSight(o);
+        }
+
         if (m_currentTask != null)
         {
             m_currentTask.OutOfSight(o);
@@ -148,6 +257,11 @@ public class AITaskManager : MonoBehaviour {
 
     public void OnStart()
     {
+        foreach (Goal g in GoalList)
+        {
+            g.OnStart();
+        }
+
         if (m_currentTask != null)
         {
             m_currentTask.OnStart();
@@ -160,6 +274,11 @@ public class AITaskManager : MonoBehaviour {
     public void OnTime()
     {
         debugLastEvent = "on time: ";
+        foreach (Goal g in GoalList)
+        {
+            g.OnTime();
+        }
+
         if (m_currentTask != null)
         {
             m_currentTask.OnTime();
@@ -172,6 +291,11 @@ public class AITaskManager : MonoBehaviour {
     public void OnEnterZone(Zone z)
     {
         debugLastEvent = "enter zone: " + z.gameObject.name;
+        foreach (Goal g in GoalList)
+        {
+            g.OnEnterZone(z);
+        }
+
         if (m_currentTask != null)
         {
             m_currentTask.OnEnterZone(z);
@@ -184,6 +308,11 @@ public class AITaskManager : MonoBehaviour {
     public void OnExitZone(Zone z)
     {
         debugLastEvent = "exit zone: " + z.gameObject.name;
+        foreach (Goal g in GoalList)
+        {
+            g.OnExitZone(z);
+        }
+
         if (m_currentTask != null)
         {
             m_currentTask.OnExitZone(z);
@@ -213,9 +342,9 @@ public class AITaskManager : MonoBehaviour {
 	}
 	
 	private bool shouldTransitionToTask(Task t) {
-		if (GetComponent<AICharacter>().m_currentGoal == null || t.ParentGoal == GetComponent<AICharacter>().m_currentGoal)
+		if (GetComponent<AITaskManager>().m_currentGoal == null || t.ParentGoal == GetComponent<AITaskManager>().m_currentGoal)
 			return true;
-		return t.ParentGoal.GoalPriority * t.TaskPriority > GetComponent<AICharacter>().m_currentGoal.GoalPriority * m_currentTask.TaskPriority;
+		return t.ParentGoal.GoalPriority * t.TaskPriority > GetComponent<AITaskManager>().m_currentGoal.GoalPriority * m_currentTask.TaskPriority;
 	}
 	private void AddTask(Task t) {
 		t.Init ();
@@ -275,5 +404,75 @@ public class AITaskManager : MonoBehaviour {
             t.MasterAI = this;
             t.OnSave(t.ParentGoal);
         }
+    }
+
+    private void storeData(CharData d)
+    {
+        d.SetString("CurrentBehaviour", m_currentBehaviourName);
+        if (m_currentGoal != null)
+            d.SetString("CurrentGoal", m_currentGoal.gameObject.name);
+        else
+            d.SetString("CurrentGoal", "none");
+        d.SetFloat("CurrentBehaviourPriority", m_currentPriority);
+        string goalList = "";
+        foreach (Goal g in GoalList)
+        {
+            goalList += g.ExportString();
+        }
+        d.SetString("GoalList", goalList);
+        //Debug.Log("Saving item: " + d.PersistentStrings["GoalList"]);
+    }
+
+    private void loadData(CharData d)
+    {
+        //Debug.Log("Loading a new Character: last goal: " + d.PersistentStrings["CurrentGoal"]);
+        string savedItems = d.GetString("GoalList");
+        var arr = savedItems.Split('\n');
+        foreach (string s in arr)
+        {
+            if (s.Length > 0)
+            {
+                var goalArr = s.Split('|');
+                if (System.Type.GetType(goalArr[0]) != null)
+                {
+                    GameObject newGoal = Instantiate(ListAIObjects.Instance.GenericGoal, transform);
+                    System.Type goalType = System.Type.GetType(goalArr[0]);
+                    newGoal.AddComponent(goalType);
+                    ((Goal)newGoal.GetComponent(goalType)).InitializeVars(goalArr);
+                }
+            }
+        }
+        if (d.GetString("CurrentGoal") != "none")
+        {
+            GameObject g = (GameObject)Resources.Load(d.GetString("CurrentBehaviour"));
+            Transform t = transform.Find(d.GetString("CurrentGoal"));
+            if (g != null && t != null)
+                SetBehaviour(g, t.gameObject.GetComponent<Goal>(), d.GetFloat("CurrentBehaviourPriority"));
+        }
+        reloadGoals();
+        OnStart();
+    }
+
+    private void reloadGoals()
+    {
+        Goal[] gList = GetComponentsInChildren<Goal>();
+        GoalList = new List<Goal>();
+
+        foreach (Goal g in gList)
+        {
+            g.SetMasterAI(this);
+            GoalList.Add(g);
+        }
+    }
+
+    private GameObject findBehaviour(string name)
+    {
+        foreach (Goal g in GoalList)
+        {
+            Transform t = g.gameObject.transform.Find(name);
+            if (t != null)
+                return t.gameObject;
+        }
+        return null;
     }
 }

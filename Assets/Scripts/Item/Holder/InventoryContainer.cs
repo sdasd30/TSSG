@@ -234,7 +234,7 @@ public class InventoryContainer : MonoBehaviour
 
         m_freeSlots.Remove(pos);
 
-        Holder.GetComponent<AICharacter>()?.OnItemGet(i);
+        Holder.GetComponent<AITaskManager>()?.OnItemGet(i);
     }
     public void DropItem(Vector2 v)
     {
@@ -244,12 +244,12 @@ public class InventoryContainer : MonoBehaviour
         if (eqpSlotInfo.ContainsKey(v))
         {
             items[v].exitFunc(this, eqpSlotInfo[v]);
-            Holder.GetComponent<AICharacter>()?.OnItemLost(items[v]);
+            Holder.GetComponent<AITaskManager>()?.OnItemLost(items[v]);
         }
         else
         {
             items[v].exitFunc(this, null);
-            Holder.GetComponent<AICharacter>()?.OnItemLost(items[v]);
+            Holder.GetComponent<AITaskManager>()?.OnItemLost(items[v]);
         }
         items[v].EquipmentInstance.SetItemActive(true, false);
         items.Remove(v);
@@ -312,10 +312,10 @@ public class InventoryContainer : MonoBehaviour
         if (eqpSlotInfo.ContainsKey(v))
         {
             items[v].exitFunc(this, eqpSlotInfo[v]);
-            Holder.GetComponent<AICharacter>()?.OnItemLost(items[v]);
+            Holder.GetComponent<AITaskManager>()?.OnItemLost(items[v]);
         } else {
             items[v].exitFunc(this, null);
-            Holder.GetComponent<AICharacter>()?.OnItemLost(items[v]);
+            Holder.GetComponent<AITaskManager>()?.OnItemLost(items[v]);
         }
         
         items.Remove(v);

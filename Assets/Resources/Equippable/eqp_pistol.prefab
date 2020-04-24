@@ -109,7 +109,6 @@ MonoBehaviour:
   TerminalVelocity: -1
   GravityForce: -1
   Floating: 0
-  IsTrigger: 1
   m_trueVelocity: {x: 0, y: 0, z: 0}
   IsGrounded: 0
   m_inputedMove: {x: 0, y: 0, z: 0}
@@ -214,7 +213,7 @@ MonoBehaviour:
   PrimaryAction: {fileID: 6016519497244862448}
   SecondaryAction: {fileID: 0}
   ReloadAction: {fileID: 843769642977889925}
-  AmmoType: {fileID: 7573871140249568161, guid: 49d261c092b3fba4dbf9a61c55aa51c1,
+  AmmoType: {fileID: 8233513571816934276, guid: 522f92c179220794ea35ee2b203deb82,
     type: 3}
   ClipSize: 8
   CurrentAmmo: 0
@@ -279,9 +278,11 @@ MonoBehaviour:
     auto: 0
     deflector: 0
     attackSound: []
-    AmmoType: {fileID: 7573871140249568161, guid: 49d261c092b3fba4dbf9a61c55aa51c1,
+    AmmoType: {fileID: 8233513571816934276, guid: 522f92c179220794ea35ee2b203deb82,
       type: 3}
     AmmoConsumedPerShot: 1
+    noiseType: 0
+    noiseRange: 0
 --- !u!136 &518452711
 CapsuleCollider:
   m_ObjectHideFlags: 0

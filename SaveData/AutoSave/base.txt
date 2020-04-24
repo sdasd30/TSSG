@@ -1,1 +1,1 @@
-{"LastRoomName":"","Level":1,"NextLevel":200,"RegisteredIDs":[]}
+{"LastRoomName":"TestBehaviourPath","Level":1,"NextLevel":200,"RegisteredIDs":[]}

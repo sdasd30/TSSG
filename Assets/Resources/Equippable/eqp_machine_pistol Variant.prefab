@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2059554480918885099
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -3106658426092285619, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: ClipSize
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: -3106658426092285619, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: AmmoType
+      value: 
+      objectReference: {fileID: 8233513571816934276, guid: 522f92c179220794ea35ee2b203deb82,
+        type: 3}
+    - target: {fileID: 5997349909625128854, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_Name
+      value: eqp_machine_pistol
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.70708084
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.006059408
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.006059438
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70708084
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90.981995
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 89.99999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128855, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 89.99999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997349909625128858, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -225469705524022669, guid: 73b19f8afbc522f449fcb46b2922c752,
+        type: 3}
+    - target: {fileID: 6016519497244862448, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_weaponStats.spread
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6016519497244862448, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_weaponStats.firedelay
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6016519497244862448, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_weaponStats.damage
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6016519497244862448, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_weaponStats.AmmoType
+      value: 
+      objectReference: {fileID: 8233513571816934276, guid: 522f92c179220794ea35ee2b203deb82,
+        type: 3}
+    - target: {fileID: 6016519497244862448, guid: e496205b088677b46a62f4a2d02b1207,
+        type: 3}
+      propertyPath: m_weaponStats.auto
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e496205b088677b46a62f4a2d02b1207, type: 3}

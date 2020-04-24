@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4189904628870630941
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.70708084
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.006059408
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.006059438
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70708084
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90.981995
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 89.99999
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767270, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 89.99999
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767271, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_Name
+      value: eqp_rocket
+      objectReference: {fileID: 0}
+    - target: {fileID: 1742204606149767275, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -5629194940795328781, guid: 73b19f8afbc522f449fcb46b2922c752,
+        type: 3}
+    - target: {fileID: 1759122635109404673, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_weaponStats.OnDeathCreate.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1759122635109404673, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_weaponStats.projectile
+      value: 
+      objectReference: {fileID: 8876631203398853246, guid: a5c7253048174034b92cc63f0cf3ce30,
+        type: 3}
+    - target: {fileID: 1759122635109404673, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_weaponStats.AmmoType
+      value: 
+      objectReference: {fileID: 6194497286476787583, guid: 716c69127ede60f47ae5c169178b1235,
+        type: 3}
+    - target: {fileID: 1759122635109404673, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_weaponStats.OnDeathCreate.Array.data[0].Item
+      value: 
+      objectReference: {fileID: 715994477026459634, guid: 05fd9eedd29140f42a17eb6c5162104d,
+        type: 3}
+    - target: {fileID: 1759122635109404673, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_weaponStats.OnDeathCreate.Array.data[1].Item
+      value: 
+      objectReference: {fileID: 8548057531607664229, guid: 0c52a8b6d11f2a54a86c192d43f73e4f,
+        type: 3}
+    - target: {fileID: 1759122635109404673, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_weaponStats.hitScanRange
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1759122635109404673, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_weaponStats.speed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1759122635109404673, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_weaponStats.OnDeathCreate.Array.data[0].Probability
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1759122635109404673, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: m_weaponStats.OnDeathCreate.Array.data[1].Probability
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2302956462445291196, guid: 7a3c6938a89425a4b98f685ab68f3071,
+        type: 3}
+      propertyPath: AmmoType
+      value: 
+      objectReference: {fileID: 6194497286476787583, guid: 716c69127ede60f47ae5c169178b1235,
+        type: 3}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7a3c6938a89425a4b98f685ab68f3071, type: 3}

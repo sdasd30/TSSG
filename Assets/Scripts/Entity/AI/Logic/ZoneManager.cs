@@ -39,7 +39,7 @@ public class ZoneManager : MonoBehaviour
         }
         return false;
     }
-    public static bool IsHaveObject(AICharacter aic, string zone)
+    public static bool IsHaveObject(AITaskManager aic, string zone)
     {
 
         if (m_instance.m_registeredZones.ContainsKey(zone))
