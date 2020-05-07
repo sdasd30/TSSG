@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Zone : LogicalObject
+public class Zone : MonoBehaviour
 {
-
+    public string LogicalName;
     public List<AITaskManager> OverlapCharacters;
 
     private List<BoxCollider> m_childColliders;

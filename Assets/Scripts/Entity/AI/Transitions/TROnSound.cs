@@ -8,12 +8,12 @@ public class TROnSound : Transition
 
     private void Start()
     {
-        MasterAI.registerEvent("sound", OnSound);
+        MasterAI.registerEvent(typeof(AIEVSound), OnSound);
     }
-    private void OnSound(List<Object> soundHeard)
+    private void OnSound(AIEvent OnSound)
     {
-        System.Object sound = soundHeard[0];
-        NoiseForTrigger nft = (NoiseForTrigger)sound;
+        AIEVSound ev = (AIEVSound)OnSound;
+        NoiseForTrigger nft = ev.Noise;
         if (nft != null && nft.noiseType == TriggerOnNoiseType)
         {
             TriggerTransition();

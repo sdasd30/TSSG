@@ -6,10 +6,10 @@ public class TRItemRemoved : Transition
 {
     public Item PrefabOfItem;
 
-    public override void OnItemLost(InventoryItemData i)
+    public override void OnItemLost(Item i)
     {
         base.OnItemLost(i);
-        if (i.itemName == PrefabOfItem.name)
+        if (i.displayname == PrefabOfItem.name)
             TriggerTransition();
     }
 }

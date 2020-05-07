@@ -105,6 +105,12 @@ public class UIManager : MonoBehaviour
         System.Type targetType = newUISystem.TargetObjectType;
         if (targetType == null && newUISystem.TargetObjectTypeStr.Length > 0)
             targetType = System.Type.GetType(newUISystem.TargetObjectTypeStr);
+        if (targetType == null)
+        {
+            Debug.Log("Could not load UI for target type: " + newUISystem.TargetObjectTypeStr);
+            return;
+        }
+            
         if (!typeCount.ContainsKey(targetType))
         {
             typeCount[targetType] = 0;

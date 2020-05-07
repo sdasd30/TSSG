@@ -6,13 +6,44 @@ using UnityEngine.EventSystems;
 [RequireComponent (typeof (Orientation))]
 public class Observer : MonoBehaviour {
 
-	public float detectionRange = 15.0f;
+    private Dictionary<string, Relationship> m_relationshipsByID = new Dictionary<string, Relationship>();
+
+    private class QueuedObservationCheck
+    {
+        private AIEvent m_event;
+        private List<System.Object> m_eventArgs;
+        private float m_triggerTime;
+        private Observer.ObservationCheck m_evalFunction;
+        private Observable m_observable;
+        public QueuedObservationCheck(AIEvent aiEvent, float timeDelay, Observer.ObservationCheck evalFunction, Observable obs)
+        {
+            m_event = aiEvent;
+            m_triggerTime = Time.timeSinceLevelLoad + timeDelay;
+            m_evalFunction = evalFunction;
+            m_observable = obs;
+        }
+        public bool IsTriggered()
+        {
+            return Time.timeSinceLevelLoad > m_triggerTime;
+        }
+        public void OnTrigger(Observer observer)
+        {
+            if (m_evalFunction(m_observable, observer))
+                observer.GetComponent<AITaskManager>()?.triggerEvent(m_event);
+        }
+    }
+
+    public delegate bool ObservationCheck(Observable me, Observer obs);
+
+    public float detectionRange = 15.0f;
     public float detectionAngle = 40.0f;
 
 	public List<Observable> VisibleObjs = new List<Observable>();
-	float nextScan;
-	float scanInterval = 0.5f;
-	float postLineVisibleTime = 3.0f;
+	private float nextScan;
+	private float scanInterval = 0.5f;
+	private float postLineVisibleTime = 3.0f;
+
+    private List<QueuedObservationCheck> m_currentObservationChecks = new List<QueuedObservationCheck>();
     Orientation m_orient;
 
 	Dictionary<Observable,float> m_lastTimeSeen;
@@ -21,10 +52,8 @@ public class Observer : MonoBehaviour {
     {
         if (GetComponent<AITaskManager>() != null)
         {
-            Object thisNoise = (Object)this;
-            List<Object> listNoises = new List<Object>();
-            listNoises.Add(thisNoise);
-            GetComponent<AITaskManager>().triggerEvent("sound", listNoises);
+            AIEVSound newSound = new AIEVSound(na);
+            GetComponent<AITaskManager>().triggerEvent(newSound);
         }
     }
     public List<GameObject> ScanRayToPoint(Vector3 targetPoint)
@@ -52,12 +81,25 @@ public class Observer : MonoBehaviour {
 
 	void Update() {
         DebugDrawLoS();
+        float t = Time.timeSinceLevelLoad;
         if (Time.timeSinceLevelLoad > nextScan) {
             
             scanForEnemies ();
 		}
 	}
 
+    private void ProcessQueuedChecks()
+    {
+        List<QueuedObservationCheck> newList = new List<QueuedObservationCheck>();
+        foreach (QueuedObservationCheck quc in m_currentObservationChecks)
+        {
+            if (quc.IsTriggered())
+                quc.OnTrigger(this);
+            else
+                newList.Add(quc);
+        }
+        m_currentObservationChecks = newList;
+    }
     private void DebugDrawLoS()
     {
         Vector3 myPos = transform.position;
@@ -145,8 +187,44 @@ public class Observer : MonoBehaviour {
         float cDist = Vector3.Distance(point, myPos);
         return cDist < detectionRange && GetComponent<Orientation>().FacingPoint(point,detectionAngle/2f);          
     }
-	/*private bool SeeThroughTag( GameObject obj ) {
+    /*private bool SeeThroughTag( GameObject obj ) {
 		return (obj.CompareTag ("JumpThru") || (obj.transform.parent != null &&
 			obj.transform.parent.CompareTag ("JumpThru")));
 	}*/
+    public void queueObservationCallback(AIEvent aievent, float timeDelay, ObservationCheck evalFunction, Observable obs)
+    {
+        QueuedObservationCheck qcheck = new QueuedObservationCheck(aievent, timeDelay, evalFunction, obs);
+        m_currentObservationChecks.Add(qcheck);
+    }
+
+    public bool ContainsImpression(string targetID, Noun i)
+    {
+        if (!m_relationshipsByID.ContainsKey(targetID))
+            return false;
+        return m_relationshipsByID[targetID].containsImpression(i);
+    }
+    public float GetImpressionModifiers(string targetID, Noun i)
+    {
+        if (!m_relationshipsByID.ContainsKey(targetID))
+            return 0.0f;
+        return m_relationshipsByID[targetID].GetImpressionModifiers(i);
+    }
+    public void AddModifier(string targetID, Noun n, ImpressionModifier newDM)
+    {
+        if (!m_relationshipsByID.ContainsKey(targetID))
+            m_relationshipsByID[targetID] = new Relationship(this);
+        m_relationshipsByID[targetID].AddModifier(n, newDM);
+    }
+    public void ClearModifier(string targetID, Noun n, ImpressionModifier newDM)
+    {
+        if (!m_relationshipsByID.ContainsKey(targetID))
+            return;
+        m_relationshipsByID[targetID].ClearModifier(n, newDM);
+    }
+
+    public bool IsA(LogObjHolder target, LogicalConcept obj)
+    {
+        return true;
+    }
 }
+

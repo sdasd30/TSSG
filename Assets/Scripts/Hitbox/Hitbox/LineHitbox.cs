@@ -128,6 +128,7 @@ public class LineHitbox : Hitbox {
         {
             fh.SetFaction(gameObject);
         }
+        hitCallback = hsi.hitCallback;
         AddElement(hsi.Element);
         Stun = hsi.Stun;
         Init();

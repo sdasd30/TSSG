@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ZoneComponent : LogicalObject
+public class ZoneComponent : MonoBehaviour
 {
     Zone MasterZone;
 

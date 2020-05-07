@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class TRSeeLogicalObject : Transition
 {
-    public string ObjectSeen = "none";
+    public string LogicalObjectName;
+    public float threashold = 0.5f;
     public string IfSeenInZone = "NONE";
     public bool TriggerIfInZone = true;
     public TransitionDistanceCriteria DistanceCriteria;
@@ -12,7 +13,7 @@ public class TRSeeLogicalObject : Transition
 
     public override void OnSight(Observable o)
     {
-        if (o.GetComponent<LogicalObject>() && o.GetComponent<LogicalObject>().LogicalName == ObjectSeen)
+        if (false) 
         {
             if (IfSeenInZone != "NONE")
             {
@@ -35,10 +36,11 @@ public class TRSeeLogicalObject : Transition
             TriggerTransition();
         }
     }
+   
     public override void OnLoad(Goal g)
     {
-        if (g.ContainsKey("ObjectSeen", this))
-            ObjectSeen = g.GetVariable("ObjectSeen", this);
+        //if (g.ContainsKey("ObjectSeen", this))
+        //    ObjectSeen = g.GetVariable("ObjectSeen", this);
         if (g.ContainsKey("IfSeenInZone", this))
             IfSeenInZone = g.GetVariable("IfSeenInZone", this);
         if (g.ContainsKey("TriggerIfInZone", this))
@@ -52,10 +54,19 @@ public class TRSeeLogicalObject : Transition
 
     public override void OnSave(Goal g)
     {
-        g?.SetVariable("ObjectSeen", ObjectSeen, this);
+        //g?.SetVariable("ObjectSeen", ObjectSeen, this);
         g?.SetVariable("IfSeenInZone", IfSeenInZone, this);
         g?.SetVariable("TriggerIfInZone", (TriggerIfInZone)?"TRUE":"FALSE", this);
         g?.SetVariable("WithinDistance", (WithinDistance).ToString(), this);
     }
 
+
+    private bool isObjectSeen(GameObject lo)
+    {
+        if (LogicManager.IsA(lo,LogicalObjectName,MasterAI.GetComponent<Observer>(),threashold))
+            return false;
+        //if (lo.GetComponent<Impression>() == null || MasterAI.GetComponent<Observer>() == null)
+        //    return true;
+        return true;
+    }
 }

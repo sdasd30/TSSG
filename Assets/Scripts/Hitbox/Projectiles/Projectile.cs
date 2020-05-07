@@ -118,6 +118,7 @@ public class Projectile : Hitbox
         Duration = pi.HitboxDuration;
         AddElement(pi.Element);
         Knockback = Orientation.OrientToVectorZ(pi.Knockback, deg);
+        hitCallback = pi.hitCallback;
         if (fh != null)
             fh.SetFaction(gameObject);
         Creator = parent;

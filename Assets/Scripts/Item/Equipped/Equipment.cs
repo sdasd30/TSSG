@@ -8,15 +8,14 @@ public enum EquipmentDegradationType
 }
 public class Equipment : Item
 {
-    [HideInInspector]
-    public GameObject EquipmentPiecePrefab;
-    private string m_equipmentPieceType = "";
-    private GameObject ItemInstance;
-
     public int MaxUses = 3;
     public EquipmentDegradationType EqpDegradationType;
     public GameObject AIBehaviour;
 
+    [HideInInspector]
+    public GameObject EquipmentPiecePrefab;
+    private string m_equipmentPieceType = "";
+    private GameObject ItemInstance;
 
     private int timesUsed = 0;
     private float m_timeOfLastDegrade = 0;

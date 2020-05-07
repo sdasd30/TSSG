@@ -82,7 +82,7 @@ public class Task : MonoBehaviour {
                 t.OnItemGet(i);
         }
     }
-    public void OnItemLost(InventoryItemData i)
+    public void OnItemLost(Item i)
     {
         foreach (Transition t in TransitionsFrom)
         {

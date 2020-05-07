@@ -21,6 +21,8 @@ public class HitScanInfo
 
     public NoiseType MyNoiseType;
     public float NoiseRange = 10.0f;
+    [HideInInspector]
+    public List<OnRegisterHit> hitCallback = new List<OnRegisterHit>();
 }
 
 

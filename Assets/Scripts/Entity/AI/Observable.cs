@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Observable : MonoBehaviour {
 
-	//Character watcher:
 	List<Observer> observers = new List<Observer>();
-	//public PhysicsSS movt;
+	List<Noun> m_impressions = new List<Noun>();
+
 	// Use this for initialization
 	void Start () {
 		//movt = GetComponent<PhysicsSS>();
@@ -27,11 +27,42 @@ public class Observable : MonoBehaviour {
 		}
 	}
 
-    public void broadCasttoObserver(string eventName, List<Object> args)
-    {
-        foreach( Observer o in observers)
-        {
-            o.GetComponent<AITaskManager>()?.triggerEvent(eventName, args);
-        }
-    }
+	public void BroadcastToObserver(AIEvent newEvent)
+	{
+		foreach (Observer o in observers)
+		{
+			processImpressionChange(newEvent,o);
+			newEvent.IsObservationEvent = true;
+			newEvent.ToBroadCastSawEvent = false;
+			newEvent.ObservedObj = gameObject;
+			o.GetComponent<AITaskManager>()?.triggerEvent(newEvent);
+		}
+	}
+
+	public void AddImpression(Noun n)
+	{
+		if (n == null)
+		{
+			Debug.LogError("Attempted to add null Impression to : " + gameObject.name + " could not find Impression");
+			return;
+		}
+		if (m_impressions.Contains(n))
+			RemoveImpression(n);
+		m_impressions.Add(n);
+	}
+	public void RemoveImpression(Noun n)
+	{
+		if (n == null)
+		{
+			Debug.LogError("Attempted to remove null Impression to : " + gameObject.name);
+			return;
+		}
+		if (m_impressions.Contains(n))
+			m_impressions.Remove(n);
+	}
+	private void processImpressionChange(AIEvent ev, Observer perspective)
+	{
+		foreach(Noun n in m_impressions)
+			n?.ReactToEvent(ev, perspective);
+	}
 }

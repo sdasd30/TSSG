@@ -458,7 +458,7 @@ public class Hitbox : MonoBehaviour
         IsResetKnockback = hbi.ResetKnockback;
         if (hbi.FollowCharacter)
             SetFollow(parent, hbi.HitboxOffset);
-
+        hitCallback = hbi.hitCallback;
         if (hbi.MyNoiseType != NoiseType.NONE)
         {
             if (GetComponent<NoiseAI>() == null)

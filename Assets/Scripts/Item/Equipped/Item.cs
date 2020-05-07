@@ -7,7 +7,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CharacterController))]
 public class Item : Interactable
 {
-    public bool Equipabble;
     public int MaxStack = 1;
     public int CurrentStack = 1;
 
@@ -18,6 +17,8 @@ public class Item : Interactable
 
     public CharData ItemProperties;
 
+    [HideInInspector]
+    public bool Equipabble;
     [HideInInspector]
     public bool Rotated = false;
     [HideInInspector]

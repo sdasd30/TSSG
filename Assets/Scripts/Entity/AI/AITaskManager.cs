@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void AITaskCallback(List<Object> arguments);
+public delegate void AITaskCallback(List<System.Object> arguments);
+public delegate void AIEventCallback(AIEvent newEvent);
 
 public class AITaskManager : MonoBehaviour {
 
@@ -22,7 +23,7 @@ public class AITaskManager : MonoBehaviour {
 
     private float m_currentPriority;
     private string m_currentBehaviourName;
-    private Dictionary<string, List<AITaskCallback>> m_events;
+    private Dictionary<System.Type, List<AIEventCallback>> m_events;
 
     public void ProposeNewBehaviour(AIBehaviour b)
     {
@@ -61,7 +62,7 @@ public class AITaskManager : MonoBehaviour {
 
     // Use this for initialization
     void Awake () {
-        m_events = new Dictionary<string, List<AITaskCallback>>();
+        m_events = new Dictionary<System.Type, List<AIEventCallback>>();
         reloadGoals();
         GetComponent<PersistentItem>()?.InitializeSaveLoadFuncs(storeData, loadData);
         Goal[] gList = GetComponentsInChildren<Goal>();
@@ -112,37 +113,44 @@ public class AITaskManager : MonoBehaviour {
         return Vector3.Distance(transform.position, tgt);
     }
 
-    public void triggerEvent(string eventName, List<Object> args)
+    public void triggerEvent(AIEvent newAIEvent)
     {
+        
         foreach (Goal g in GoalList)
         {
-            g.triggerEvent(eventName, args);
+            g.triggerEvent(newAIEvent);
         }
-        if (!m_events.ContainsKey(eventName))
+        if (!m_events.ContainsKey(newAIEvent.EventType))
             return;
-        foreach (AITaskCallback f in m_events[eventName]) {
-            f(args);
+        foreach (AIEventCallback f in m_events[newAIEvent.EventType])
+        {
+            f(newAIEvent);
+        }
+        if (newAIEvent.ToBroadCastSawEvent && !newAIEvent.IsObservationEvent)
+        {
+            newAIEvent.IsObservationEvent = true;
+            GetComponent<Observable>()?.BroadcastToObserver(newAIEvent);
         }
     }
-    public void registerEvent(string eventName, AITaskCallback callbackFunction)
+    public void registerEvent(System.Type eventType, AIEventCallback callbackFunction)
     {
-        if (!m_events.ContainsKey(eventName))
-            m_events[eventName] = new List<AITaskCallback>();
-        m_events[eventName].Add(callbackFunction);
+        if (!m_events.ContainsKey(eventType))
+            m_events[eventType] = new List<AIEventCallback>();
+        m_events[eventType].Add(callbackFunction);
     }
-    public void deregisterEvent(string eventName, AITaskCallback callbackFunction)
+    public void deregisterEvent(System.Type eventType, AIEventCallback callbackFunction)
     {
-        if (!m_events.ContainsKey(eventName))
+        if (!m_events.ContainsKey(eventType))
             return;
-        List<AITaskCallback> m_newList = new List<AITaskCallback>();
-        foreach (AITaskCallback f in m_events[eventName])
+        List<AIEventCallback> m_newList = new List<AIEventCallback>();
+        foreach (AIEventCallback f in m_events[eventType])
         {
             if (f != callbackFunction)
             {
                 m_newList.Add(f);
             }
         }
-        m_events[eventName] = m_newList;
+        m_events[eventType] = m_newList;
     }
 
     public List<Task> AddBehaviour(GameObject g, Goal originGoal, float priority = 1.0f)
@@ -184,21 +192,10 @@ public class AITaskManager : MonoBehaviour {
                 Destroy(t.gameObject);
         }
     }
-    public void OnItemGet(Item i)
+
+    public void OnItemLost(Item i)
     {
-        debugLastEvent = "item received: " + i.name;
-        if (m_currentTask != null)
-        {
-            m_currentTask.OnItemGet(i);
-            foreach (Transition t in GenericTransitions[m_currentTask.MyTaskType])
-            {
-                t.OnItemGet(i);
-            }
-        }
-    }
-    public void OnItemLost(InventoryItemData i)
-    {
-        debugLastEvent = "item lost: " + i.itemName;
+        debugLastEvent = "item lost: " + i.name;
         if (m_currentTask != null)
         {
             m_currentTask.OnItemLost(i);
@@ -207,6 +204,7 @@ public class AITaskManager : MonoBehaviour {
                 t.OnItemLost(i);
             }
         }
+        //GetComponent<Observable>()?.broadcasttoObserver("saw_OnItemLost", gameObject, i.gameObject);
     }
 
     public void OnHit(HitInfo hb) {
@@ -222,7 +220,11 @@ public class AITaskManager : MonoBehaviour {
 				t.OnHit (hb);
 			}
 		}
-	}
+        List<System.Object> args = new List<System.Object>();
+        args.Add((Object)gameObject);
+        args.Add(hb);
+        //GetComponent<Observable>()?.broadcasttoObserver("saw_OnHit", args);
+    }
 	public void OnSight(Observable o) {
         debugLastEvent = "saw: " + o.gameObject.name;
         foreach (Goal g in GoalList)
@@ -236,7 +238,8 @@ public class AITaskManager : MonoBehaviour {
 				t.OnSight (o);
 			}
 		}
-	}
+        //GetComponent<Observable>()?.broadcasttoObserver("saw_OnSight", gameObject, o.gameObject);
+    }
     public void OutOfSight(Observable o)
     {
         debugLastEvent = "lost sight: " + o.gameObject.name;
@@ -253,6 +256,7 @@ public class AITaskManager : MonoBehaviour {
                 t.OutOfSight(o);
             }
         }
+        //GetComponent<Observable>()?.broadcasttoObserver("saw_OutOfSight", gameObject, o.gameObject);
     }
 
     public void OnStart()
@@ -304,6 +308,7 @@ public class AITaskManager : MonoBehaviour {
                 t.OnEnterZone(z);
             }
         }
+        //GetComponent<Observable>()?.broadcasttoObserver("saw_OnEnterZone", gameObject, z.gameObject);
     }
     public void OnExitZone(Zone z)
     {
@@ -321,6 +326,7 @@ public class AITaskManager : MonoBehaviour {
                 t.OnExitZone(z);
             }
         }
+        //GetComponent<Observable>()?.broadcasttoObserver("saw_OnExitZone", gameObject, z.gameObject);
     }
     public void TransitionToTask(Task t) {
 		if (!shouldTransitionToTask(t))

@@ -50,7 +50,7 @@ public class Transition : MonoBehaviour {
 
     public virtual void OnItemGet(Item i) { }
 
-    public virtual void OnItemLost(InventoryItemData i) { }
+    public virtual void OnItemLost(Item i) { }
 
     public void TriggerTransition() {
 		if (TypeOfTransition == TransitionType.FROM_THIS_TASK) {

@@ -428,4 +428,9 @@ public class CharacterBase : MonoBehaviour
     {
         IsAutonomous = d.GetBool("IsAutonomous",true);
     }
+
+    private void broadCastActionStart()
+    {
+        GetComponent<Observable>()?.BroadcastToObserver(new AIEVObservedAction(gameObject,m_currentAction));
+    }
 }

@@ -31,10 +31,9 @@ public class HitboxMaker : MonoBehaviour
             return null;
         }
         var go = GameObject.Instantiate(ListHitboxes.Instance.HitboxLine, transform.position, Quaternion.identity);
+        hsi.hitCallback.Add(RegisterHit);
         LineHitbox lh = go.GetComponent<LineHitbox>();
         lh.InitFromLineInfo(hsi, gameObject, GetComponent<FactionHolder>());
-
-        //ExecuteEvents.Execute<ICustomMessageTarget>(gameObject, null, (x, y) => x.OnHitboxCreate(line));
         return lh;
     }
 
@@ -45,7 +44,7 @@ public class HitboxMaker : MonoBehaviour
             return null;
         }
         var go = GameObject.Instantiate(ListHitboxes.Instance.Hitbox, transform.position, Quaternion.identity);
-
+        hbi.hitCallback.Add(RegisterHit);
 		Hitbox newBox = go.GetComponent<Hitbox>();
         newBox.InitFromHitboxInfo(hbi,gameObject,GetComponent<FactionHolder>());
 		return newBox;
@@ -79,6 +78,7 @@ public class HitboxMaker : MonoBehaviour
             newBox.SetFollow (gameObject,offset);
         //if (applyProps)
         //    ExecuteEvents.Execute<ICustomMessageTarget> (gameObject, null, (x, y) => x.OnHitboxCreate(newBox));
+        
         newBox.Init();
         return newBox;
     }
@@ -164,6 +164,7 @@ public class HitboxMaker : MonoBehaviour
         {
             go = GameObject.Instantiate(ListHitboxes.Instance.StandardProjectile, transform.position, Quaternion.identity);
         }
+        pi.hitCallback.Add(RegisterHit);
         go.GetComponent<Projectile>().InitFromProjectileInfo(pi, gameObject, GetComponent<FactionHolder>());
         return go.GetComponent<Projectile>();
     }
@@ -207,9 +208,9 @@ public class HitboxMaker : MonoBehaviour
 
 	public void RegisterHit(GameObject otherObj, HitInfo hi, HitResult hr)
 	{
-		//if (m_charBase)
-  //          m_charBase.RegisterHit (otherObj,hi,hr);
+        GetComponent<AITaskManager>()?.triggerEvent(new AIEVHitConfirm(otherObj, hi, hr));
 	}
+
     public void QueueProjectile(ProjectileInfo pi, float delay)
     {
         m_queuedProjectiles.Add(pi, Time.timeSinceLevelLoad + delay);

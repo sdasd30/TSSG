@@ -8,7 +8,7 @@ public class Goal : MonoBehaviour
     protected AITaskManager m_masterAI;
 
     private float m_goalPriority;
-    private Dictionary<string, List<AITaskCallback>> m_events;
+    private Dictionary<System.Type, List<AIEventCallback>> m_events;
 
     public virtual float GoalPriority { get { return m_goalPriority; } private set { m_goalPriority = value; } }
 
@@ -93,7 +93,7 @@ public class Goal : MonoBehaviour
     }
 
     protected virtual void init() {
-        m_events = new Dictionary<string, List<AITaskCallback>>();
+        m_events = new Dictionary<System.Type, List<AIEventCallback>>();
         if (GoalVariables == null)
             GoalVariables = new StringDictionary();
         initVariableDictionary();
@@ -130,33 +130,42 @@ public class Goal : MonoBehaviour
         return GoalVariables.ContainsKey(origin.GetType() + "-" + origin.ParentGoal.name + "-" + key);
     }
 
-    public virtual void triggerEvent(string eventName, List<Object> args)
+    //public virtual void triggerEvent(string eventName, List<System.Object> args)
+    //{
+    //    if (!m_events.ContainsKey(eventName))
+    //        return;
+    //    foreach (AITaskCallback f in m_events[eventName])
+    //    {
+    //        f(args);
+    //    }
+    //}
+    public virtual void triggerEvent(AIEvent aie)
     {
-        if (!m_events.ContainsKey(eventName))
+        if (!m_events.ContainsKey(aie.EventType))
             return;
-        foreach (AITaskCallback f in m_events[eventName])
+        foreach (AIEventCallback f in m_events[aie.EventType])
         {
-            f(args);
+            f(aie);
         }
     }
-    private void m_registerEvent(string eventName, AITaskCallback callbackFunction)
+    public void registerEvent(System.Type eventType, AIEventCallback callbackFunction)
     {
-        if (!m_events.ContainsKey(eventName))
-            m_events[eventName] = new List<AITaskCallback>();
-        m_events[eventName].Add(callbackFunction);
+        if (!m_events.ContainsKey(eventType))
+            m_events[eventType] = new List<AIEventCallback>();
+        m_events[eventType].Add(callbackFunction);
     }
-    private void m_deregisterEvent(string eventName, AITaskCallback callbackFunction)
+    public void deregisterEvent(System.Type eventType, AIEventCallback callbackFunction)
     {
-        if (!m_events.ContainsKey(eventName))
+        if (!m_events.ContainsKey(eventType))
             return;
-        List<AITaskCallback> m_newList = new List<AITaskCallback>();
-        foreach (AITaskCallback f in m_events[eventName])
+        List<AIEventCallback> m_newList = new List<AIEventCallback>();
+        foreach (AIEventCallback f in m_events[eventType])
         {
             if (f != callbackFunction)
             {
                 m_newList.Add(f);
             }
         }
-        m_events[eventName] = m_newList;
+        m_events[eventType] = m_newList;
     }
 }

@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TRLogicalConcept : Transition
+public class LogObjHolder : MonoBehaviour
 {
-    public string ObjectSeen = "none";
-    public string InZone = "NONE";
-    public bool WithinZone = true;
-    
     // Start is called before the first frame update
     void Start()
     {

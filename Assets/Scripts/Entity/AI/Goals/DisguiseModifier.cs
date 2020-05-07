@@ -1,0 +1,50 @@
+﻿using UnityEngine;
+public class ImpressionModifier 
+{
+    public string ID;
+    public virtual int CurrentStack { get { return m_currentStack; } private set { m_currentStack = value; } }
+    private int m_currentStack = 0;
+    private float m_expirationDate;
+    private bool m_isRefreshable = true;
+    private int m_maxStack = 1;
+    private float m_stackBufferTime = 1.0f;
+
+    private float m_lastApplyTime = 0;
+    private float duration;
+    private float m_baseModValue;
+    private bool m_isTimed = true;
+    public ImpressionModifier(string newID,float modValue, float duration = -1,
+        int m_maxStack = 1, float stack_buffer_time = 1.0f, int starting_stack  = 1, bool m_isRefreshable = true)
+    {
+        ID = newID;
+        m_baseModValue = modValue;
+        this.duration = duration;
+        if (duration < 0)
+            m_isTimed = false;
+        m_expirationDate = Time.timeSinceLevelLoad + duration;
+        this.m_isRefreshable = m_isRefreshable;
+        m_lastApplyTime = Time.timeSinceLevelLoad;
+        this.m_maxStack = m_maxStack;
+        this.m_stackBufferTime = stack_buffer_time;
+        this.m_currentStack = starting_stack;
+    }
+    public bool is_expired()
+    {
+
+        return !m_isTimed || Time.timeSinceLevelLoad > m_expirationDate;
+    }
+    public float getModValue()
+    {
+        return m_currentStack * m_baseModValue;
+    }
+    public void attempt_stack(int stackVal = 1)
+    {
+        if (!m_isRefreshable)
+            return;
+        if (Time.timeSinceLevelLoad < m_lastApplyTime + m_stackBufferTime)
+            return;
+        m_lastApplyTime = Time.timeSinceLevelLoad;
+        m_expirationDate = Time.timeSinceLevelLoad + duration;
+        m_currentStack = Mathf.Min(m_maxStack, m_currentStack + stackVal);
+    }
+}
