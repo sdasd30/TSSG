@@ -84,6 +84,15 @@ public class InventoryHolder : Interactable
         }
         return false;
     }
+    public bool GetItemCount(Noun itemType, InventorySlotType slotType, Observer perspective)
+    {
+        int itemCount = 0;
+        foreach (InventoryContainer m_container in m_containers.Values)
+        {
+            itemCount += m_container.GetItemCount(Noun itemType, InventorySlotType slotType, Observer perspective);
+        }
+        return itemCount;
+    }
     public int GetItemCount(Item i)
     {
         int itemCount = 0;

@@ -363,4 +363,4 @@ MonoBehaviour:
   baseSize: {x: 1, y: 1}
   CurrentSlot: {fileID: 0}
   prefabName: 
-  DisguiseName: DISGCivilian
+  DisguiseName: NOUNCivilian

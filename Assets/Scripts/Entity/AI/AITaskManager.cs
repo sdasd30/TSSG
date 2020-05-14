@@ -120,16 +120,16 @@ public class AITaskManager : MonoBehaviour {
         {
             g.triggerEvent(newAIEvent);
         }
-        if (!m_events.ContainsKey(newAIEvent.EventType))
-            return;
-        foreach (AIEventCallback f in m_events[newAIEvent.EventType])
-        {
-            f(newAIEvent);
-        }
         if (newAIEvent.ToBroadCastSawEvent && !newAIEvent.IsObservationEvent)
         {
             newAIEvent.IsObservationEvent = true;
             GetComponent<Observable>()?.BroadcastToObserver(newAIEvent);
+        }
+        if (!m_events.ContainsKey(newAIEvent.GetType()))
+            return;
+        foreach (AIEventCallback f in m_events[newAIEvent.GetType()])
+        {
+            f(newAIEvent);
         }
     }
     public void registerEvent(System.Type eventType, AIEventCallback callbackFunction)
@@ -226,6 +226,8 @@ public class AITaskManager : MonoBehaviour {
         //GetComponent<Observable>()?.broadcasttoObserver("saw_OnHit", args);
     }
 	public void OnSight(Observable o) {
+        o.GetComponent<Observable>()?.processImpressionChange(new AIEVSeenByObserver(o),GetComponent<Observer>());
+
         debugLastEvent = "saw: " + o.gameObject.name;
         foreach (Goal g in GoalList)
         {

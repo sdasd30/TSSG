@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 1255167358446672250}
   - component: {fileID: 1255167358446672248}
   - component: {fileID: 1255167358446672249}
+  - component: {fileID: -4189121200834120125}
   - component: {fileID: 1255167358446672226}
   - component: {fileID: 597117845759730413}
   - component: {fileID: 1255167358446672227}
@@ -222,6 +223,23 @@ MonoBehaviour:
   MidAirJumps: 0
   m_moveSpeed: 5
   DecelerateInAir: 1
+--- !u!114 &-4189121200834120125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255167358446672251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54ae262720e27452baf2f574fc31d83a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GoalList: []
+  m_currentGoal: {fileID: 0}
+  m_currentTask: {fileID: 0}
+  debugLastEvent: 
+  debugLastTransition: initial
 --- !u!114 &1255167358446672226
 MonoBehaviour:
   m_ObjectHideFlags: 0

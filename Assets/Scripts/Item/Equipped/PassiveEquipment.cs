@@ -12,10 +12,10 @@ public class PassiveEquipment : Item
     public override GameObject OnEnterInventory(InventoryContainer s, EquipmentSlot es)
     {
         base.OnEnterInventory(s, es);
+        
         if (es != null && es.SlotType == InventorySlotType.PASSIVE)
         {
             SetItemActive(false);
-            m_currentContainer = s;
             name = es.SlotName;
             OnEquip(s, es);
         }

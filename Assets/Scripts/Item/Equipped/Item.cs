@@ -47,7 +47,10 @@ public class Item : Interactable
         
     }
     public virtual void AddItemOptions(ItemMenu itemMenu) { }
-    public virtual GameObject OnEnterInventory(InventoryContainer s, EquipmentSlot es) { return null; }
+    public virtual GameObject OnEnterInventory(InventoryContainer s, EquipmentSlot es) {
+        m_currentContainer = s;
+        return null;
+    }
 
     public virtual void OnExitInventory(InventoryContainer s, EquipmentSlot es) { }
 

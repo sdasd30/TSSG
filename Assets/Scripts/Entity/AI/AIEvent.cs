@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class AIEvent
 {
-    public System.Type EventType;
     public GameObject ObservedObj;
     public bool ToBroadCastSawEvent;
     public bool IsObservationEvent = false;
@@ -14,7 +13,7 @@ public class AIEVSound : AIEvent {
     public NoiseForTrigger Noise;
     public AIEVSound(NoiseForTrigger noise)
     {
-        EventType = typeof(AIEVSound);
+        ToBroadCastSawEvent = true;
         Noise = noise;
     }
 }
@@ -26,17 +25,13 @@ public class AIEVHitConfirm : AIEvent
     public HitResult MyHitResult;
     public AIEVHitConfirm(GameObject objectHit, HitInfo hitInfo, HitResult hitResult)
     {
-        EventType = typeof(AIEVHitConfirm);
+        ToBroadCastSawEvent = true;
         MyHitInfo = hitInfo;
         MyHitResult = hitResult;
     }
 }
 
-public class AIEVObserve : AIEvent {
-    public GameObject ObservedObj;
-}
-
-public class AIEVObservedAction : AIEVObserve
+public class AIEVObservedAction : AIEvent
 {
     public ActionInfo ObservedAction;
     public AIEVObservedAction(GameObject observedObj, ActionInfo action)
@@ -52,7 +47,17 @@ public class AIEVItemGet : AIEvent
     public EquipmentSlot Slot;
     public AIEVItemGet(Item newItem, EquipmentSlot slot = null)
     {
+        ToBroadCastSawEvent = true;
         NewItem = newItem;
         Slot = slot;
+    }
+}
+
+public class AIEVSeenByObserver : AIEvent
+{
+    public AIEVSeenByObserver(Observable me)
+    {
+        ToBroadCastSawEvent = false;
+        ObservedObj = me.gameObject;
     }
 }

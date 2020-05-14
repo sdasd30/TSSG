@@ -181,6 +181,7 @@ public class InventoryContainer : MonoBehaviour
         }
         return null;
     }
+    
     public Vector2 GetItemLocation(Item i)
     {
         foreach (Vector2 v in items.Keys)
@@ -304,6 +305,28 @@ public class InventoryContainer : MonoBehaviour
             
         return numRemoved;
     }
+    public int GetItemCount(Noun itemType, InventorySlotType slotType, Observer perspective)
+    {
+        int stack = 0;
+        if (slotType == InventorySlotType.NORMAL)
+        {
+            foreach (InventoryItemData iid in items.Values)
+                if (itemType.IsA(iid.EquipmentInstance.gameObject, perspective) > 0f)
+                    stack += iid.EquipmentInstance.CurrentStack;
+            return stack;
+        }
+        foreach (EquipmentSlot es in slotData)
+        {
+            if (es.SlotType == slotType)
+            {
+                InventoryItemData iid = GetItem(es.coordinate);
+                if (itemType.IsA(iid.EquipmentInstance.gameObject, perspective) > 0f)
+                    stack += iid.EquipmentInstance.CurrentStack;
+            }
+        }
+        return stack;
+    }
+
     public int GetItemCount( Item i )
     {
         int stack = 0;

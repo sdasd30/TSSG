@@ -130,7 +130,7 @@ public class Observer : MonoBehaviour {
 					}
 				}
 				float diff = Mathf.Abs (cDist - minDist);
-				if (cDist - 0.3f < minDist) {
+				if (diff < 0.4f) {
                     Debug.DrawRay(myPos, otherPos - myPos, Color.green);
                     m_lastTimeSeen[o] = lts;
                     if (!VisibleObjs.Contains (o)) {

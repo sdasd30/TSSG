@@ -141,9 +141,9 @@ public class Goal : MonoBehaviour
     //}
     public virtual void triggerEvent(AIEvent aie)
     {
-        if (!m_events.ContainsKey(aie.EventType))
+        if (!m_events.ContainsKey(aie.GetType()))
             return;
-        foreach (AIEventCallback f in m_events[aie.EventType])
+        foreach (AIEventCallback f in m_events[aie.GetType()])
         {
             f(aie);
         }

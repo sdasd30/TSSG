@@ -60,7 +60,7 @@ public class Observable : MonoBehaviour {
 		if (m_impressions.Contains(n))
 			m_impressions.Remove(n);
 	}
-	private void processImpressionChange(AIEvent ev, Observer perspective)
+	public void processImpressionChange(AIEvent ev, Observer perspective)
 	{
 		foreach(Noun n in m_impressions)
 			n?.ReactToEvent(ev, perspective);

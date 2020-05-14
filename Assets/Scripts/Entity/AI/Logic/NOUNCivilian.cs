@@ -8,13 +8,29 @@ public class NOUNCivilian : Noun
     public override void ReactToEvent(AIEvent newEvent, Observer observer)
     {
         base.ReactToEvent(newEvent, observer);
+        Debug.Log("Reacting to event: " + newEvent.GetType().ToString());
         generalDangerDisguiseFactors(newEvent, observer);
     }
     protected void generalDangerDisguiseFactors(AIEvent newEvent, Observer observer)
     {
-        if (newEvent.EventType == typeof(AIEVItemGet))
+        System.Type t = newEvent.GetType();
+        if (t == typeof(AIEVItemGet))
         {
             OnItemGet((AIEVItemGet)newEvent,observer);
+        }
+        else if (t == typeof(AIEVSeenByObserver))
+        {
+            OnSight((AIEVSeenByObserver)newEvent, observer);
+        }
+    }
+
+    protected void OnSight(AIEVSeenByObserver ev, Observer obs)
+    {
+        Debug.Log("On Sight");
+        GameObject observedObj = ev.ObservedObj;
+        if (observedObj.GetComponent<InventoryContainer>() != null)
+        {
+            Debug.Log("Has an inventory");
         }
     }
 
