@@ -4,19 +4,16 @@ using UnityEngine;
 
 public class TRLogicalConcept : Transition
 {
-    public string ObjectSeen = "none";
-    public string InZone = "NONE";
+    public List<LogicStatementComponent> SawItemOfTypes;
     public bool WithinZone = true;
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnTriggerEvent(AIEvent aie)
     {
-        
+        if (aie.GetType() != typeof(AIEVSawRelationshipUpdate))
+            return;
+        AIEVSawRelationshipUpdate newAIE = (AIEVSawRelationshipUpdate)aie;
+        bool b = LogicManager.IsA(newAIE.ObservedObj, SawItemOfTypes, GetComponent<Observer>());
+        if (b)
+            TriggerTransition();
     }
 }

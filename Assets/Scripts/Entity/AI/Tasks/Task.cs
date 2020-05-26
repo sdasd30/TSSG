@@ -123,6 +123,15 @@ public class Task : MonoBehaviour {
                 t.OnExitZone(z);
         }
     }
+
+    public void TriggerEvent(AIEvent aie)
+    {
+        foreach (Transition t in TransitionsFrom)
+        {
+            if (t.isActiveAndEnabled)
+                t.OnTriggerEvent(aie);
+        }
+    }
     public void RequestTransition(Task t) {
 	}
 

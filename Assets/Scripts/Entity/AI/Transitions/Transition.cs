@@ -32,6 +32,8 @@ public class Transition : MonoBehaviour {
 	public void Init() {
 	}
 
+	public virtual void OnTriggerEvent(AIEvent aie) { }
+
 	public virtual void OnUpdate() {}
 
 	public virtual void OnHit(HitInfo hb) {}

@@ -61,3 +61,14 @@ public class AIEVSeenByObserver : AIEvent
         ObservedObj = me.gameObject;
     }
 }
+
+public class AIEVSawRelationshipUpdate : AIEvent
+{
+    public Relationship MyRelationship;
+    public AIEVSawRelationshipUpdate(GameObject observed,Relationship r)
+    {
+        ObservedObj = observed;
+        MyRelationship = r;
+        ToBroadCastSawEvent = false;
+    }
+}

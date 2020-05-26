@@ -37,14 +37,16 @@ public class ImpressionModifier
     {
         return m_currentStack * m_baseModValue;
     }
-    public void attempt_stack(int stackVal = 1)
+    public bool attempt_stack(int stackVal = 1)
     {
         if (!m_isRefreshable)
-            return;
+            return false;
         if (Time.timeSinceLevelLoad < m_lastApplyTime + m_stackBufferTime)
-            return;
+            return false;
         m_lastApplyTime = Time.timeSinceLevelLoad;
         m_expirationDate = Time.timeSinceLevelLoad + duration;
+        int m_old = m_currentStack;
         m_currentStack = Mathf.Min(m_maxStack, m_currentStack + stackVal);
+        return (m_old != m_currentStack);
     }
 }

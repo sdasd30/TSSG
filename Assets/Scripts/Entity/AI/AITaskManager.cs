@@ -115,16 +115,26 @@ public class AITaskManager : MonoBehaviour {
 
     public void triggerEvent(AIEvent newAIEvent)
     {
-        
-        foreach (Goal g in GoalList)
-        {
-            g.triggerEvent(newAIEvent);
-        }
         if (newAIEvent.ToBroadCastSawEvent && !newAIEvent.IsObservationEvent)
         {
             newAIEvent.IsObservationEvent = true;
             GetComponent<Observable>()?.BroadcastToObserver(newAIEvent);
         }
+
+        foreach (Goal g in GoalList)
+        {
+            g.triggerEvent(newAIEvent);
+        }
+
+        if (m_currentTask != null)
+        {
+            m_currentTask.TriggerEvent(newAIEvent);
+            foreach (Transition t in GenericTransitions[m_currentTask.MyTaskType])
+            {
+                t.OnTriggerEvent(newAIEvent);
+            }
+        }
+
         if (!m_events.ContainsKey(newAIEvent.GetType()))
             return;
         foreach (AIEventCallback f in m_events[newAIEvent.GetType()])

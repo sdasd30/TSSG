@@ -5,6 +5,8 @@ using UnityEngine;
 public class Relationship
 {
     private Observer m_observer;
+    private bool m_isDirty;
+    public virtual bool IsDirty { get { return m_isDirty; } private set { m_isDirty = value; } }
     public Relationship(Observer observer)
     {
         m_observer = observer;
@@ -73,10 +75,11 @@ public class Relationship
         {
             if (dm.ID == newDM.ID)
             {
-                dm.attempt_stack(newDM.CurrentStack);
+                m_isDirty = m_isDirty || dm.attempt_stack(newDM.CurrentStack);
                 return;
             }
         }
+        m_isDirty = true;
         m_impressionEvaluation[i].Add(newDM);
         m_typeLookup[i.GetType()] = i;
     }
@@ -91,6 +94,7 @@ public class Relationship
             if (dm.ID != newDM.ID)
                 newL.Add(dm);
         }
+        m_isDirty = true;
         m_impressionEvaluation[i] = newL;
         m_typeLookup[i.GetType()] = null;
     }

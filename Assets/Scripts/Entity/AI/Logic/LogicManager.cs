@@ -134,4 +134,27 @@ public class LogicManager : MonoBehaviour
         return GetVerb(s);
     }
 
+
+    public static bool IsA( GameObject go, List<LogicStatementComponent> logicSet,Observer perspective)
+    {
+        if (logicSet.Count < 1)
+            return false;
+        bool b = IsA(go, logicSet[0].Noun, perspective);
+        if (logicSet[0].NOT)
+            b = !b;
+        logicSet.RemoveAt(0);
+        foreach (LogicStatementComponent l in logicSet)
+        {
+            bool nextBool = IsA(go, l.Noun, perspective);
+            if (l.NOT)
+                nextBool = !nextBool;
+            if (l.LogicOperator == LogicStatementComponent.LogicStatementComponentValue.OR)
+                b = b || nextBool;
+            else if (l.LogicOperator == LogicStatementComponent.LogicStatementComponentValue.AND)
+                b = b && nextBool;
+            else if (l.LogicOperator == LogicStatementComponent.LogicStatementComponentValue.XOR)
+                b = b ^ nextBool;
+        }
+        return b;
+    }
 }

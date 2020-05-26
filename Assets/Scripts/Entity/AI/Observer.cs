@@ -11,7 +11,6 @@ public class Observer : MonoBehaviour {
     private class QueuedObservationCheck
     {
         private AIEvent m_event;
-        private List<System.Object> m_eventArgs;
         private float m_triggerTime;
         private Observer.ObservationCheck m_evalFunction;
         private Observable m_observable;
@@ -82,10 +81,18 @@ public class Observer : MonoBehaviour {
 	void Update() {
         DebugDrawLoS();
         float t = Time.timeSinceLevelLoad;
-        if (Time.timeSinceLevelLoad > nextScan) {
-            
+        if (Time.timeSinceLevelLoad > nextScan) { 
             scanForEnemies ();
 		}
+        foreach (Observable v in VisibleObjs)
+        {
+            if (m_relationshipsByID.ContainsKey(v.gameObject.name))
+            {
+                Relationship r = m_relationshipsByID[v.gameObject.name];
+                if (r.IsDirty)
+                    GetComponent<AITaskManager>()?.triggerEvent(new AIEVSawRelationshipUpdate(v.gameObject,r));
+            }
+        }
 	}
 
     private void ProcessQueuedChecks()
