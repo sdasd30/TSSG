@@ -21,9 +21,9 @@ public class ImpressionModifier
         this.duration = duration;
         if (duration < 0)
             m_isTimed = false;
-        m_expirationDate = Time.timeSinceLevelLoad + duration;
+        m_expirationDate = ScaledTime.TimeElapsed + duration;
         this.m_isRefreshable = m_isRefreshable;
-        m_lastApplyTime = Time.timeSinceLevelLoad;
+        m_lastApplyTime = ScaledTime.TimeElapsed;
         this.m_maxStack = m_maxStack;
         this.m_stackBufferTime = stack_buffer_time;
         this.m_currentStack = starting_stack;
@@ -31,7 +31,7 @@ public class ImpressionModifier
     public bool is_expired()
     {
 
-        return !m_isTimed || Time.timeSinceLevelLoad > m_expirationDate;
+        return !m_isTimed || ScaledTime.TimeElapsed > m_expirationDate;
     }
     public float getModValue()
     {
@@ -41,10 +41,10 @@ public class ImpressionModifier
     {
         if (!m_isRefreshable)
             return false;
-        if (Time.timeSinceLevelLoad < m_lastApplyTime + m_stackBufferTime)
+        if (ScaledTime.TimeElapsed < m_lastApplyTime + m_stackBufferTime)
             return false;
-        m_lastApplyTime = Time.timeSinceLevelLoad;
-        m_expirationDate = Time.timeSinceLevelLoad + duration;
+        m_lastApplyTime = ScaledTime.TimeElapsed;
+        m_expirationDate = ScaledTime.TimeElapsed + duration;
         int m_old = m_currentStack;
         m_currentStack = Mathf.Min(m_maxStack, m_currentStack + stackVal);
         return (m_old != m_currentStack);
