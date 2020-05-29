@@ -18,9 +18,13 @@ public class RHListener : MonoBehaviour
         
     }
 
-    public float ProcessStatementValue(float baseValue, RHListener listener, RHStatement statement)
+    public float ApplyStatementModifiers(float baseValue, RHListener listener, RHStatement statement)
     {
         return baseValue;
+    }
+    public float AddBaseValueModifier(RHSpeaker speaker, RHConversation conversation)
+    {
+        return 0f;
     }
 
     private float GetAuthority(RHSpeaker speaker)

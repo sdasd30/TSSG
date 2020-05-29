@@ -6,7 +6,7 @@ public enum RHType { LOGOS, PATHOS,ETHOS, NONE}
 
 public class RHStatement : MonoBehaviour
 {
-
+    public float Time;
     public RHType RhetoricType;
     private float m_basePower;
 
@@ -22,7 +22,7 @@ public class RHStatement : MonoBehaviour
         
     }
 
-    public virtual float GetBasePower(RHSpeaker speaker, RHListener)
+    public virtual float GetBasePower(RHSpeaker speaker, RHListener listener)
     {
         return m_basePower;
     }

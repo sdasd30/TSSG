@@ -49,16 +49,11 @@ public class RHManager : MonoBehaviour
 
     public static void StartRhetoricBattle(RHConversation conversation,List<RHSpeaker> speakers, List<RHListener> listeners)
     {
-
+        conversation.StartRhetoricBattle(speakers, listeners);
     }
 
-    private static void DisplayStatementOptions(List<RHStatement> statements)
+    public void CreateDialogueOptionList(List<RHStatement> statements, RHConversation baseConversation)
     {
-
-    }
-
-    private void executeStatement(RHConversation conversation, RHSpeaker speaker, RHStatement executedStatement)
-    {
-        conversation.ProcesssStatement(speaker, executedStatement);
+        DialogueOptionInitializer options = new DialogueOptionInitializer();
     }
 }

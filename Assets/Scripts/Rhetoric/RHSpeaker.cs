@@ -18,5 +18,11 @@ public class RHSpeaker : MonoBehaviour
         
     }
 
-    
+    public void StartStatementSelection( List<RHStatement> availableStatements, RHConversation conversation)
+    {
+        if (GetComponent<MovementBase>() != null && GetComponent<MovementBase>().IsPlayerControl)
+        {
+
+        }
+    }
 }
