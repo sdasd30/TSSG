@@ -170,7 +170,7 @@ public class RHStatement : MonoBehaviour
         return m_hoverText;
     }
 
-    public virtual RHStatement GenerateResponse(TKRHResponse task, RHListener l)
+    public virtual RHStatement GenerateResponse( RHListener l)
     {
         RHStatement st = GetEmptyGenerateResponseStatement();
         return st;
@@ -187,6 +187,21 @@ public class RHStatement : MonoBehaviour
         return m_responseString;
     }
 
+    public virtual RHStatement GenerateStandardResponse(RHSpeaker speaker, RHListener listener)
+    {
+        if (RandomChanceRange(1, listener.GetAuthority(speaker), true))
+            return null;
+        RHStatement response = GetEmptyGenerateResponseStatement();
+        float severityEmotionScaling;
+        float authorityResponseScaling;
+        float favorPositiveScaling;
+        float favorNegativeScaling;
+        return response;
+    }
+    private bool RandomChanceRange(float max, float value,bool invert)
+    {
+        return (invert)?Random.Range(0, max) >= value : Random.Range(0,max) < value;
+    }
     private float StandardDamageModifiers(float baseValue, RHListener l, RHType rhtype)
     {
         if (rhtype == RHType.LOGOS)

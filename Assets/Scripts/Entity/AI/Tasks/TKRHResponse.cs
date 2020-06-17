@@ -15,7 +15,7 @@ public class TKRHResponse : Task
         if (aiev == null)
             return;
         RHStatement statementReceived = aiev.statement;
-        RHStatement response = statementReceived.GenerateResponse(this, MasterAI.GetComponent<RHListener>());
+        RHStatement response = statementReceived.GenerateResponse( MasterAI.GetComponent<RHListener>());
         
         aiev.conversation.QueueStatement(response, MasterAI.GetComponent<RHSpeaker>());
     }
