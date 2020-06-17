@@ -19,7 +19,26 @@ public class ScaledTime : MonoBehaviour
 
     private float m_scaledTime = 0.0f;
     private bool m_paused = false;
+    private float m_timeScale = 1.0f;
 
+
+    public static void skipTime(float skipAmount)
+    {
+        m_instance.m_scaledTime += skipAmount;
+    }
+    public static void SetPause(bool isPaused)
+    {
+        m_instance.m_paused = isPaused;
+    }
+
+    public static void SetScale(float scale)
+    {
+        m_instance.m_timeScale = scale;
+    }
+    public static float GetScale()
+    {
+        return m_instance.m_timeScale;
+    }
     void Awake()
     {
         if (m_instance == null)
@@ -32,21 +51,9 @@ public class ScaledTime : MonoBehaviour
             return;
         }
     }
-
-    public static void skipTime(float skipAmount)
-    {
-        m_instance.m_scaledTime += skipAmount;
-    }
-    public static void SetPause(bool isPaused)
-    {
-        m_instance.m_paused = isPaused;
-    }
-    // Start is called before the first frame update
-
-    // Update is called once per frame
     void Update()
     {
         if (!m_paused)
-            m_scaledTime += Time.deltaTime;
+            m_scaledTime += Time.deltaTime * m_timeScale;
     }
 }

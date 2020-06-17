@@ -375,4 +375,3 @@ public class ActionInfo : MonoBehaviour
         return m_charBase.GetComponent<MovementBase>().LastInput;
     }
 }
-

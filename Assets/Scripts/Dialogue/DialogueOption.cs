@@ -8,8 +8,11 @@ public class DialogueOption : MonoBehaviour {
 	public string remainderText = "";
 	public SelectFunction OnSelect;
 	public DialogueOptionBox MasterBox;
+    public bool CloseDialogueWindow;
 
-	public void OnSelection() {
+    public void OnSelection() {
 		OnSelect (this);
-	}
+        if (CloseDialogueWindow)
+            GameObject.Destroy(MasterBox.gameObject);
+    }
 }

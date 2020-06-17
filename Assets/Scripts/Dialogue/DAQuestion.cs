@@ -48,6 +48,6 @@ public class DAQuestion : DialogueAction {
 	private void SelectionFunction(DialogueOption dop) {
 		Debug.Log ("Starting seqeunce: " + dop.remainderText);
 		TextboxManager.StartSequence (dop.remainderText);
-		GameObject.Destroy (dop.MasterBox.gameObject);
+		//GameObject.Destroy (dop.MasterBox.gameObject);
 	}
 }

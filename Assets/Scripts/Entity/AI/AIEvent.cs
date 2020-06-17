@@ -72,3 +72,24 @@ public class AIEVSawRelationshipUpdate : AIEvent
         ToBroadCastSawEvent = false;
     }
 }
+
+public class AIEVConversationStarted : AIEvent
+{
+    public RHConversation conversation;
+    public AIEVConversationStarted(RHConversation c)
+    {
+        conversation = c;
+    }
+}
+public class AIEVStatementReceived : AIEvent
+{
+    public RHConversation conversation;
+    public RHSpeaker speaker;
+    public RHStatement statement;
+    public AIEVStatementReceived(RHConversation c, RHStatement statement, RHSpeaker speaker)
+    {
+        conversation = c;
+        this.speaker = speaker;
+        this.statement = statement;
+    }
+}

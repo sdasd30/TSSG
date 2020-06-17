@@ -26,7 +26,7 @@ public class Textbox : MonoBehaviour {
 	private float m_pauseTime = 0f;
 	private float m_timeSinceStop = 0f;
 	private Vector3 m_lastPos;
-	private string m_processedText;
+	private string m_processedText = "";
 	private int m_lastCharacterIndex;
 	private bool m_isTyping;
 
@@ -68,12 +68,13 @@ public class Textbox : MonoBehaviour {
 			CurrentText = "";
 			m_lastCharacterIndex = 0;
 		} else {
-			CurrentText = m_processedText;
-		}
+            skipAll();
+        }
 	}
 	public void setText(string text) {
 		RawText = text;
 		m_processedText = RawText;
+        CurrentText = "";
 	}
 	public void FreezeCharacter(MovementBase bm, bool isFrozen = true) {
 		if (!FrozenCharacters.ContainsKey (bm))
@@ -175,7 +176,8 @@ public class Textbox : MonoBehaviour {
 			playSound ();
 		}
 		CurrentText += nextChar;
-		m_Text.text = CurrentText;
+        if (m_Text != null)
+		    m_Text.text = CurrentText;
 		m_sinceLastChar = 0f;
 	}
 
@@ -209,11 +211,19 @@ public class Textbox : MonoBehaviour {
 					Destroy (gameObject);
 				}
 			}
-		}
+		} else if (m_Text != null)
+        {
+            m_Text.text = CurrentText;
+        }
 	}
 	private void skipAll()
 	{
-		while (m_lastCharacterIndex < m_processedText.Length)
+        if (m_processedText.Length < 1)
+            return;
+        CurrentText = "";
+        m_lastCharacterIndex = 0;
+
+        while (m_lastCharacterIndex < m_processedText.Length)
 		{
 			if (m_lastCharacterIndex < m_processedText.Length)
 			{
@@ -228,7 +238,7 @@ public class Textbox : MonoBehaviour {
 				}
 			}
 		}
-	}
+    }
 	private void playSound() {
 		/*switch (TypingSound) {
 		case DialogueSound.RECORDED:

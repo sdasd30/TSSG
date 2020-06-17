@@ -134,6 +134,7 @@ public class MovementBase : MonoBehaviour
         }
         m_lastInput = ip;
 
+        
         resetJumps();
         updateAverageVelocity();
     }

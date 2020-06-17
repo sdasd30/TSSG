@@ -124,7 +124,7 @@ public class Task : MonoBehaviour {
         }
     }
 
-    public void TriggerEvent(AIEvent aie)
+    public virtual void TriggerEvent(AIEvent aie)
     {
         foreach (Transition t in TransitionsFrom)
         {

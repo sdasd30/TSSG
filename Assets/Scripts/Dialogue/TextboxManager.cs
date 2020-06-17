@@ -5,6 +5,7 @@ using System.Reflection;
 using UnityEngine.UI;
 using System.Linq;
 using System;
+using TMPro;
 //using Luminosity.IO;
 
 public class TextboxManager : MonoBehaviour {
@@ -21,15 +22,26 @@ public class TextboxManager : MonoBehaviour {
 	public GameObject textboxStaticPrefab;
 	public GameObject textboxFullPrefab;
 	public GameObject SkipTextPrefab;
+    public GameObject hoverTextPrefab;
 
-	public GameObject DialogueBoxPrefab;
+    public GameObject DialogueBoxPrefab;
 	public GameObject DialogueOptionPrefab;
+    public GameObject DialogueOptionWithIconsPrefab;
 
-	public DialogueSound nextSoundType;
+    public DialogueSound nextSoundType;
 	List<DialogueSequence> m_currentSequences;
 
-	//Color TextboxColor;
-	float timeAfter = 2f;
+    public static GameObject TextPrefab { get { return m_instance.m_textPrefab; } }
+    [SerializeField]
+    private GameObject m_textPrefab;
+
+    public static GameObject ImagePrefab { get { return m_instance.m_imagePrefab; } }
+    [SerializeField]
+    private GameObject m_imagePrefab;
+
+
+    //Color TextboxColor;
+    float timeAfter = 2f;
 	float textSpeed = 0.03f;
 	private List<DialogueAction> m_potentialActions;
 
@@ -215,16 +227,17 @@ public class TextboxManager : MonoBehaviour {
         return "D"; // InputManager.GetAction ("Default", action).Bindings [0].Positive.ToString ();
 	}
 
-    public static void StartDialogueOptions(DialogueSelectionInitializer initializer)
+    public static GameObject StartDialogueOptions(DialogueSelectionInitializer initializer)
     {
+
         GameObject go = GameObject.Instantiate(GameObject.FindObjectOfType<TextboxManager>().DialogueBoxPrefab);
         go.GetComponent<DialogueOptionBox>().Prompt = initializer.prompt;
         //go.GetComponent<DialogueOptionBox>().MasterSequence = originTextbox.MasterSequence;
-        Debug.Log("Add options: " + initializer.options.Count);
         foreach (DialogueOptionInitializer dop in initializer.options)
         {
             go.GetComponent<DialogueOptionBox>().AddDialogueOption(dop);
         }
+        return go;
         //originTextbox.MasterSequence.closeSequence();
     }
 }
@@ -241,19 +254,22 @@ public class DialogueSelectionInitializer
     {
         options.Add(doption);
     }
-    public void AddDialogueOption(string promptText, DialogueOption.SelectFunction function)
+    public void AddDialogueOption(string promptText, DialogueOption.SelectFunction function, bool autoClose = true, string hoverText = "")
     {
         DialogueOptionInitializer dop = new DialogueOptionInitializer();
         dop.SelectionText = promptText;
         dop.OnSelect = function;
+        dop.hoverText = hoverText;
+        dop.CloseDialogueWindow = autoClose;
         options.Add(dop);
     }
-    public void AddDialogueOption(string promptText, string remainingSequenceText)
+    public void AddDialogueOption(string promptText, string remainingSequenceText, string hoverText = "")
     {
         DialogueOptionInitializer dop = new DialogueOptionInitializer();
         dop.SelectionText = promptText;
         dop.OnSelect = SelectionFunction;
         dop.remainderText = remainingSequenceText;
+        dop.hoverText = hoverText;
         options.Add(dop);
     }
     private void SelectionFunction(DialogueOption dop)
@@ -268,6 +284,28 @@ public class DialogueOptionInitializer
 {
     public string SelectionText = "";
     public string remainderText = "";
+    public string hoverText = "";
+    public bool CloseDialogueWindow = true;
     public DialogueOption.SelectFunction OnSelect;
     public DialogueOptionBox MasterBox;
+    public List<GameObject> AdditionalIcons;
+    public bool Interactable = true;
+    public DialogueOptionInitializer()
+    {
+        AdditionalIcons = new List<GameObject>();
+    }
+    public void AddIcon(Sprite icon)
+    {
+        GameObject o = GameObject.Instantiate(TextboxManager.ImagePrefab);
+        o.GetComponent<Image>().sprite = icon;
+        AdditionalIcons.Add(o);
+    }
+
+    public void AddTextIcon(string text, Color c)
+    {
+        GameObject o = GameObject.Instantiate(TextboxManager.TextPrefab);
+        o.GetComponent<TextMeshProUGUI>().text = text;
+        o.GetComponent<TextMeshProUGUI>().faceColor = c;
+        AdditionalIcons.Add(o);
+    }
 }
