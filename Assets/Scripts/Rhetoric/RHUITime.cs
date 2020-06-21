@@ -20,6 +20,8 @@ public class RHUITime : MonoBehaviour
     private string m_lastStatementName = "";
     private GameObject m_lastTimePiece;
 
+    private const float DARKEN_FACTOR = 0.5f;
+
     // Update is called once per frame
     void Update()
     {
@@ -35,7 +37,7 @@ public class RHUITime : MonoBehaviour
         conversation = c;
         startingTime = ScaledTime.TimeElapsed;
     }
-    public void AddItem(string name,  float duration, bool passive = false, float timeItemStarts = 0f, bool canStack = false)
+    public void AddItem(string name,  float duration, Color backgroundColor, bool passive = false, float timeItemStarts = 0f, bool canStack = false )
     {
         if (canStack && m_lastStatementName == name)
         {
@@ -45,10 +47,13 @@ public class RHUITime : MonoBehaviour
         GameObject newObj;
         if (passive) {
             newObj = Instantiate(TimeElementPrefab, PassiveScroller.transform);
+            newObj.GetComponent<Image>().color = new Color(backgroundColor.r * DARKEN_FACTOR,backgroundColor.g * DARKEN_FACTOR, backgroundColor.b * DARKEN_FACTOR, 0.75f);
+
             newObj.GetComponent<RectTransform>().sizeDelta = new Vector2(duration * SCALING_FACTOR, 64f);
             
         } else {
             newObj = Instantiate(TimeElementActivePrefab, ActiveTransform.transform);
+            newObj.GetComponent<Image>().color = new Color(backgroundColor.r * DARKEN_FACTOR, backgroundColor.g * DARKEN_FACTOR, backgroundColor.b * DARKEN_FACTOR, 0.75f);
             newObj.GetComponent<RectTransform>().sizeDelta = new Vector2(duration * SCALING_FACTOR, 40f);
             
         }

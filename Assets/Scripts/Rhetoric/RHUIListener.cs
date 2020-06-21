@@ -22,7 +22,13 @@ public class RHUIListener : MonoBehaviour
     private Text TrustText;
 
     private int numTraits = 0;
-
+    public void InitializeUI(RHListener listener, RHConversation conv, RHSpeaker startingSpeaker, Color backgroundColor)
+    {
+        GetComponent<Image>().color = new Color(backgroundColor.r / 2f, backgroundColor.g / 2f, backgroundColor.r / 2f, 0.9f);
+        MoniteringConversation = conv;
+        Speaker = startingSpeaker;
+        Listener = listener;
+    }
     // Update is called once per frame
     void Update()
     {

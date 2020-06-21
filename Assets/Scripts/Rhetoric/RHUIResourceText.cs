@@ -13,28 +13,28 @@ public class RHUIResourceText : MonoBehaviour
     private RectTransform m_iconTransform;
 
     private int lastValue = 0;
-    // Start is called before the first frame update
-    void Start()
+    
+    public void SetSpeaker(RHSpeaker speaker)
     {
-        
+        this.speaker = speaker;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (speaker.CheckResourcesDirty())
+        if (speaker != null && speaker.CheckResourcesDirty())
             updateIcons();
     }
 
     void updateIcons()
     {
-        foreach (RectTransform rt in m_iconTransform)
-            Destroy(rt);
+        foreach (Transform rt in m_iconTransform)
+            Destroy(rt.gameObject);
         foreach(RHResource r in speaker.RHResources)  
         {
             GameObject icon = Instantiate(TextboxManager.ImagePrefab, m_iconTransform);
-            icon.GetComponent<Image>().sprite = RHManager.GetResourceIcon(r.m_resourceType);
-            icon.GetComponent<TextMeshProUGUI>().text = r.m_Amount.ToString();
+            icon.GetComponentInChildren<Image>().sprite = RHManager.GetResourceIcon(r.m_resourceType);
+            icon.GetComponentInChildren<TextMeshProUGUI>().text = r.m_Amount.ToString();
         }
     }
 }

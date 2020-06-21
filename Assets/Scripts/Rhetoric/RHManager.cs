@@ -17,10 +17,13 @@ public class RHManager : MonoBehaviour
     [SerializeField]
     private RHUIHistoryText m_HistoryTextUI;
     [SerializeField]
+    private RHUIResourceText m_ResourceUI;
+    [SerializeField]
     private GameObject m_deadAirPrefab;
     public static GameObject DeadAirPrefab { get { return m_instance.m_deadAirPrefab; } private set { m_instance.m_deadAirPrefab = value; } }
-
-    public SerializableDictionary<RHResourceType, Sprite> m_ResourceIcons = new SerializableDictionary<RHResourceType, Sprite>();
+    [SerializeField]
+    private List<Sprite> m_ResourceIcons = new List<Sprite>();
+    //public static List<Sprite> ResourceIcons { get { return m_instance.m_ResourceIcons; } }
 
     [SerializeField]
     private GameObject m_generateResourcesPrefab;
@@ -150,10 +153,21 @@ public class RHManager : MonoBehaviour
     {
         m_instance.m_SlowText.gameObject.SetActive(isActive);
     }
+    public static void SetResourceUIActive(RHSpeaker speaker)
+    {
+        m_instance.m_ResourceUI.gameObject.SetActive(true);
+        m_instance.m_ResourceUI.SetSpeaker(speaker);
+    }
+    public static void SetResourceUIInActive()
+    {
+        m_instance.m_ResourceUI.gameObject.SetActive(false);
+        m_instance.m_ResourceUI.SetSpeaker(null);
+    }
+
 
     public static Sprite GetResourceIcon(RHResourceType resourceType)
     {
-        return m_instance.m_ResourceIcons[resourceType];
+        return m_instance.m_ResourceIcons[(int)resourceType];
     }
     void Awake()
     {

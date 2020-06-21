@@ -12,13 +12,19 @@ public class DialogueOptionBox : Textbox {
     TextMeshProUGUI m_Prompt;
     [SerializeField]
     Transform m_OptionsTransform;
+    [SerializeField]
+    GameObject m_scrollbar;
 
     List<DialogueOption> m_options;
 
 	// Use this for initialization
 	void Start () {
         m_Prompt.text = Prompt;
-	}
+        if (m_OptionsTransform.childCount < 3)
+            m_scrollbar.SetActive(false);
+        else
+            m_scrollbar.SetActive(true);
+    }
 
 	public void AddDialogueOption(DialogueOptionInitializer dop) {
         GameObject newOption;

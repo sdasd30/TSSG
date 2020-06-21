@@ -9,6 +9,7 @@ public class RHSpeaker : MonoBehaviour
 {
     public bool DebugIncludeAllStatements;
     public List<RHStatement> AvailableStatements;
+    public Color speakerColor = Color.white;
     private List<RHPersonalityTrait> m_traits = new List<RHPersonalityTrait>();
     public virtual List<RHPersonalityTrait> Traits { get { return m_traits; } }
 
@@ -43,12 +44,12 @@ public class RHSpeaker : MonoBehaviour
     }
     public void AddResource(RHResource addedResource)
     {
+        m_resourcesDirty = true;
         foreach (RHResource r in m_resources)
         {
             if (r.m_resourceType == addedResource.m_resourceType)
             {
                 r.m_Amount += addedResource.m_Amount;
-                m_resourcesDirty = true;
                 return;
             }
         }
@@ -87,6 +88,7 @@ public class RHSpeaker : MonoBehaviour
         if (GetComponent<MovementBase>() != null && GetComponent<MovementBase>().IsPlayerControl)
         {
             RHManager.CreateDialogueOptionList(availableStatements, conversation);
+            RHManager.SetResourceUIActive(this);
         }
         foreach (RHPersonalityTrait t in m_traits)
         {

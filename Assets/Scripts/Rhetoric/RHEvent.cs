@@ -8,18 +8,18 @@ public class RHEvent : MonoBehaviour
     [SerializeField]
     private List<RHResource> m_resource = new List<RHResource>();
 
-    public void ExecuteEvent(RHSpeaker speaker, RHListener listener)
+    public void ExecuteEvent(RHSpeaker speaker, RHListener target)
     {
-        modifySpeakerResources(speaker);
+        modifySpeakerResources(target);
     }
 
     public void AddResource(RHResource r)
     {
         m_resource.Add(r);
     }
-    private void modifySpeakerResources(RHSpeaker speaker)
+    private void modifySpeakerResources(RHListener target)
     {
         foreach (RHResource r in m_resource)
-            speaker.AddResource(r);
+            target.GetComponent<RHSpeaker>().AddResource(r);
     }
 }
