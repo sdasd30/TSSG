@@ -12,12 +12,16 @@ public class TKRHResponse : Task
     public override void TriggerEvent(AIEvent aie)
     {
         AIEVStatementReceived aiev = aie as AIEVStatementReceived;
+        
         if (aiev == null)
             return;
-        RHStatement statementReceived = aiev.statement;
-        RHStatement response = statementReceived.GenerateResponse( MasterAI.GetComponent<RHListener>());
-        
-        aiev.conversation.QueueStatement(response, MasterAI.GetComponent<RHSpeaker>());
+        RHStatement newStatement = aiev.statement.GenerateStandardResponse(aiev.speaker, MasterAI.GetComponent<RHListener>());
+        if (newStatement != null)
+            aiev.conversation.QueueStatement(newStatement, MasterAI.GetComponent<RHSpeaker>());
+        //RHStatement statementReceived = aiev.statement;
+        //RHStatement response = statementReceived.GenerateResponse( MasterAI.GetComponent<RHListener>());
+
+        //aiev.conversation.QueueStatement(response, MasterAI.GetComponent<RHSpeaker>());
     }
 
     

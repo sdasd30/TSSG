@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RHListener : MonoBehaviour
 {
-    public float EmotionalIntensity;
+    private float m_emotionalIntensity;
     public delegate float ModifyValueFunction(float baseValue,  RHStatement statement, RHSpeaker speaker);
     public delegate float BaseValueFunction(float baseValue, RHConversation conversation, RHSpeaker speaker);
     private List<RHPersonalityTrait> m_traits = new List<RHPersonalityTrait>();
@@ -33,18 +33,45 @@ public class RHListener : MonoBehaviour
         }
         return baseValue;
     }
-
-    public float GetAuthority(RHSpeaker speaker)
+    public float GetEmotionalIntensity(bool applyPersonalityTraits = false)
     {
-        return GetComponent<Observer>().GetImpressionModifiers(speaker.gameObject.name, new NOUNAuthority());
+        float f = m_emotionalIntensity;
+        foreach (RHPersonalityTrait t in m_traits)
+        {
+            f = t.ModifyEmotion(this, f);
+        }
+        return f;
     }
-    public float GetTrust(RHSpeaker speaker)
+    public void SetEmotionalIntensity(float value)
     {
-        return GetComponent<Observer>().GetImpressionModifiers(speaker.gameObject.name, new NOUNTrustable());
+        m_emotionalIntensity = value;
     }
-    public float GetFavor(RHSpeaker speaker)
+    public float GetAuthority(RHSpeaker speaker, bool applyPersonalityTraits = false)
     {
-        return GetComponent<Observer>().GetImpressionModifiers(speaker.gameObject.name, new NOUNFavorable());
+        NOUNAuthority n = new NOUNAuthority();
+        return ApplyPersonalityTraits(speaker, n, applyPersonalityTraits);
+    }
+    public float GetTrust(RHSpeaker speaker, bool applyPersonalityTraits = false)
+    {
+        NOUNTrustable n = new NOUNTrustable();
+        return ApplyPersonalityTraits(speaker, n, applyPersonalityTraits);
+    }
+    public float GetFavor(RHSpeaker speaker, bool applyPersonalityTraits = false)
+    {
+        NOUNFavorable n = new NOUNFavorable();
+        
+        return ApplyPersonalityTraits(speaker,n, applyPersonalityTraits);
+    }
+    private float ApplyPersonalityTraits(RHSpeaker speaker, Noun n,bool applyPersonalityTraits = false)
+    {
+        float f = GetComponent<Observer>().GetImpressionModifiers(speaker.gameObject.name, n);
+        if (!applyPersonalityTraits)
+            return f;
+        foreach (RHPersonalityTrait t in m_traits)
+        {
+            f = t.ModifyNoun(this, f, speaker, n);
+        }
+        return f;
     }
     public virtual RHResponseString GetResponseString(RHListener listener, RHSpeaker speaker, float effectiveness)
     {

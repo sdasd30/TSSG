@@ -69,7 +69,7 @@ public class RHModifier
             case RHScaleModifier.AUTHORITY:
                 return l.GetAuthority(c.Speakers[0]);
             case RHScaleModifier.EMOTIONS:
-                return l.EmotionalIntensity;
+                return l.GetEmotionalIntensity();
             case RHScaleModifier.TRUST:
                 return l.GetTrust(c.Speakers[0]); ;
             case RHScaleModifier.CURRENT_PERSUASION_LEVEL:

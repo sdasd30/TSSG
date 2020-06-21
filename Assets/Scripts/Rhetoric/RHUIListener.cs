@@ -35,7 +35,7 @@ public class RHUIListener : MonoBehaviour
         FavorText.text = "Favor: " + Listener.GetFavor(Speaker);
         AuthorityText.text = "Authority: " + Listener.GetAuthority(Speaker);
         TrustText.text = "Authority: " + Listener.GetTrust(Speaker);
-        EmotionText.text = "Emotion: " + Listener.EmotionalIntensity;
+        EmotionText.text = "Emotion: " + Listener.GetEmotionalIntensity();
 
         int n = Listener.Traits.Count;
         if (n != numTraits)

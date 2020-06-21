@@ -6,9 +6,9 @@ public class TRRHConversation: Transition
 {
     private void Start()
     {
-        MasterAI.registerEvent(typeof(AIEVConversationStarted), OnStatement);
+        MasterAI.registerEvent(typeof(AIEVConversationStarted), ConversationStarted);
     }
-    private void OnStatement(AIEvent OnSound)
+    private void ConversationStarted(AIEvent ev)
     {
         TriggerTransition();
     }

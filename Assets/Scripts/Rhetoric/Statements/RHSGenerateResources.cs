@@ -5,15 +5,20 @@ using UnityEngine;
 
 public class RHSGenerateResources : RHStatement
 {
-    public List<RHResource> m_Resources;
+    private List<RHResource> m_Resources = new List<RHResource>();
     // Start is called before the first frame update
+    public void addResource(RHResource r)
+    {
+        if (r.m_resourceType != RHResourceType.NONE)
+            m_Resources.Add(r);
+    }
     private void Start()
     {
-        distributeResources();
         init();
     }
     
-    private void distributeResources()
+    
+    public void distributeResources()
     {
         List<RHResource> m_distributedResources = new List<RHResource>();
         int numResourcesToDistribute = 0;
@@ -29,6 +34,7 @@ public class RHSGenerateResources : RHStatement
             RHEvent ev = gameObject.AddComponent<RHEvent>();
             ev.AddResource(rg);
             ev.TimeOffsetFromStatementStart = (Time / (numResourcesToDistribute+1)) * numEventsCreated;
+            m_eventList.Add(ev);
         }
     }
 }

@@ -14,7 +14,9 @@ public class RHSpeaker : MonoBehaviour
 
     [SerializeField]
     private List<RHResource> m_resources = new List<RHResource>();
+    public virtual List<RHResource> RHResources { get { return m_resources; } }
 
+    private bool m_resourcesDirty = false;
     // Start is called before the first frame update
     void Start() {
         if (DebugIncludeAllStatements)
@@ -33,6 +35,7 @@ public class RHSpeaker : MonoBehaviour
                 {
                     r.m_Amount += m_modifySpeakerResources[rh];
                     found = true;
+                    m_resourcesDirty = true;
                     break;
                 }
             }
@@ -45,11 +48,20 @@ public class RHSpeaker : MonoBehaviour
             if (r.m_resourceType == addedResource.m_resourceType)
             {
                 r.m_Amount += addedResource.m_Amount;
+                m_resourcesDirty = true;
                 return;
-                break;
             }
         }
         m_resources.Add(addedResource);
+    }
+    public bool CheckResourcesDirty()
+    {
+        if (m_resourcesDirty)
+        {
+            m_resourcesDirty = false;
+            return true;
+        }
+        return false;
     }
     public bool meetsRequirements(SerializableDictionary<RHResourceType, int> m_requirements)
     {

@@ -20,6 +20,8 @@ public class RHManager : MonoBehaviour
     private GameObject m_deadAirPrefab;
     public static GameObject DeadAirPrefab { get { return m_instance.m_deadAirPrefab; } private set { m_instance.m_deadAirPrefab = value; } }
 
+    public SerializableDictionary<RHResourceType, Sprite> m_ResourceIcons = new SerializableDictionary<RHResourceType, Sprite>();
+
     [SerializeField]
     private GameObject m_generateResourcesPrefab;
     public static GameObject GenerateResourcesPrefab { get { return m_instance.m_generateResourcesPrefab; } private set { m_instance.m_generateResourcesPrefab = value; } }
@@ -30,20 +32,9 @@ public class RHManager : MonoBehaviour
         private set { m_instance = value; }
     }
 
-
-
-    public static void StartRhetoricBattle(RHConversation conversation, RHSpeaker speaker, RHListener listener)
+    public static void StartRhetoricBattle(RHConversation conversation, List<RHSpeaker> participants, RHSpeaker startingSpeaker)
     {
-        List<RHSpeaker> newListSpeakers = new List<RHSpeaker>();
-        newListSpeakers.Add(speaker);
-        List<RHListener> newListListeners = new List<RHListener>();
-        newListListeners.Add(listener);
-        StartRhetoricBattle(conversation, newListSpeakers, newListListeners);
-    }
-
-    public static void StartRhetoricBattle(RHConversation conversation,List<RHSpeaker> speakers, List<RHListener> listeners)
-    {
-        conversation.StartRhetoricBattle(speakers, listeners);
+        conversation.StartRhetoricBattle(participants, startingSpeaker);
     }
 
     public static void CreateDialogueOptionList(List<RHStatement> statements, RHConversation baseConversation,string prompt = "Select your next statement")
@@ -160,6 +151,10 @@ public class RHManager : MonoBehaviour
         m_instance.m_SlowText.gameObject.SetActive(isActive);
     }
 
+    public static Sprite GetResourceIcon(RHResourceType resourceType)
+    {
+        return m_instance.m_ResourceIcons[resourceType];
+    }
     void Awake()
     {
         if (m_instance == null)

@@ -23,9 +23,8 @@ public class RHConversation : MonoBehaviour
     [SerializeField]
     private bool m_debugExecuteOnStartup = false;
     [SerializeField]
-    private RHSpeaker DefaultSpeaker;
-    [SerializeField]
-    private RHListener DefaultListener;
+    private List<RHSpeaker> DefaultParticipants;
+
 
     private Dictionary<RHListener, float> m_listeners;
     public Dictionary<RHListener, float> Listeners { get { return m_listeners; } }
@@ -94,15 +93,17 @@ public class RHConversation : MonoBehaviour
     public void QueueStatement(RHStatement statement, RHSpeaker speaker,bool stack = false)
     {
         if (!m_battleStarted)
+        {
             initializeTime();
+        }
         
         statement.OnStatementQueued(speaker);
-        
-        if (!m_statementQueue.ContainsKey(speaker))
-            m_statementQueue[speaker] = new List<RegisteredStatement>();
         m_statementQueue[speaker].Add( new RegisteredStatement(statement,speaker));
 
         m_timeUI.AddItem(statement.StatementName, statement.Time,false, calculateQueuedStatementExecutionTime(statement),stack);
+        if (!m_battleStarted)
+            AdvanceStatements();
+        m_battleStarted = true;
     }
 
     public void QueueEffect(string name, float startingTime, float duration)
@@ -116,12 +117,13 @@ public class RHConversation : MonoBehaviour
     }
     private void initializeTime()
     {
-        m_battleStarted = true;
+        
         m_nextStatementEnd = 0f;
         m_nextInterestTimeLimit = ScaledTime.TimeElapsed + m_startingInterest;
         RHManager.UITime().SetActive(true);
         m_timeUI = RHManager.UITime().GetComponent<RHUITime>();
         m_timeUI.StartUI(this);
+
     }
     private float calculateQueuedStatementExecutionTime(RHStatement statement)
     {
@@ -162,7 +164,7 @@ public class RHConversation : MonoBehaviour
     private void registerEvent(RHEvent e, RHSpeaker speaker, float startingTime)
     {
         float eventTime = startingTime + e.TimeOffsetFromStatementStart;
-        m_nextEventTime = Mathf.Min(m_nextEventTime, startingTime);
+        m_nextEventTime = Mathf.Min(m_nextEventTime, eventTime);
         if (!m_registeredEvents.ContainsKey(eventTime))
             m_registeredEvents[eventTime] = new List<RegisteredEvent>();
         m_registeredEvents[eventTime].Add(new RegisteredEvent(e,speaker));
@@ -179,8 +181,15 @@ public class RHConversation : MonoBehaviour
                         e.m_event.ExecuteEvent(e.speaker, l);
                 }
             }
-            m_registeredEvents[m_nextEventTime] = null;
-            m_nextEventTime = Mathf.Min(m_registeredEvents.Keys.ToArray());
+            m_registeredEvents.Remove(m_nextEventTime);
+            if (m_registeredEvents.Count > 0)
+            {
+                m_nextEventTime = Mathf.Min(m_registeredEvents.Keys.ToArray());
+            } else
+            {
+                m_nextEventTime = float.MaxValue;
+            }
+            
         }
     }
 
@@ -195,9 +204,10 @@ public class RHConversation : MonoBehaviour
     {
         RegisteredStatement next_statement = null;
         int emptyQueues = 0;
+        RHSpeaker nextSpeaker = null;
         while (emptyQueues < m_speakers.Count)
         {
-            RHSpeaker nextSpeaker = m_speakers[m_nextSpeakerIndex];
+            nextSpeaker = m_speakers[m_nextSpeakerIndex];
             m_nextSpeakerIndex = (m_nextSpeakerIndex + 1) % m_speakers.Count;
             List<RegisteredStatement> queue = m_statementQueue[nextSpeaker];
             if (queue.Count > 0)
@@ -208,35 +218,44 @@ public class RHConversation : MonoBehaviour
             }
             else
             {
-
-
                 emptyQueues++;
             }
         }
         if (next_statement == null) {
             QueueStatement(RHManager.DeadAirPrefab.GetComponent<RHStatement>(),m_speakers[m_nextSpeakerIndex],true);
+            AdvanceStatements();
             return;
         }
         else {
             m_currentStatement = next_statement;
+            registerEvents(m_currentStatement.statement.RHEvents, nextSpeaker, ScaledTime.TimeElapsed);
         }
-
         m_nextStatementEnd = ScaledTime.TimeElapsed + m_currentStatement.statement.Time;
-        
     }
     private void BroadcastStatement(RHSpeaker speaker, RHStatement statement)
     {
         statement.OnStatementExecuted(speaker);
-        registerEvents(statement.RHEvents, speaker, ScaledTime.TimeElapsed);
+        Dictionary<RHListener, float> newListeners = null;
         foreach (RHListener listener in m_listeners.Keys)
         {
             float power = statement.GetPower(speaker, listener, this);
             float diff = listener.ApplyStatementModifiers(power, speaker, statement, this);
-            m_listeners[listener] += diff;
+            if (newListeners != null && !newListeners.ContainsKey(listener))
+                newListeners[listener] = m_listeners[listener];
+            if (diff != 0)
+            {
+                if (newListeners == null)
+                    newListeners = new Dictionary<RHListener, float>();
+                if (!newListeners.ContainsKey(listener))
+                    newListeners[listener] = m_listeners[listener];
+                newListeners[listener] += diff;
+            }
             listener.GetComponent<AITaskManager>()?.triggerEvent(new AIEVStatementReceived(this,statement,speaker));
             RHManager.AddHistoryText(statement.GetResponseString(listener, speaker, diff));
             RHManager.AddHistoryText(listener.GetResponseString(listener, speaker, diff));
         }
+        if (newListeners != null)
+            m_listeners = newListeners;
     }
     private int GetNumberOfOccurances(RHStatement baseStatement)
     {
@@ -308,34 +327,35 @@ public class RHConversation : MonoBehaviour
 
     public virtual void OnConversationFailure(RHListener listener) { }
     
-    public void StartRhetoricBattle(List<RHSpeaker> speakers, List<RHListener> listeners)
-    {
-        if (speakers.Count > 0)
-            this.m_speakers = speakers;
-        else
+    public void StartRhetoricBattle( List<RHSpeaker> participants, RHSpeaker startingSpeaker)
+    { 
+        this.m_listeners = new Dictionary<RHListener, float>();
+        this.m_speakers = new List<RHSpeaker>();
+        if (participants.Count > 0)
         {
-            this.m_speakers = new List<RHSpeaker>();
-            this.m_speakers.Add(DefaultSpeaker);
-        }
-        if (listeners.Count > 0)
-        {
-            this.m_listeners = new Dictionary<RHListener, float>();
-            foreach (RHListener l in listeners)
+            foreach(RHSpeaker s in participants)
             {
-                this.m_listeners.Add(l, startingScore(l));
-                GameObject go = Instantiate(RHManager.PrefabUIListener(), RHManager.ListenersBaseTransform());
-                go.GetComponent<RHUIListener>().MoniteringConversation = this;
-                go.GetComponent<RHUIListener>().Speaker = speakers[0];
-                go.GetComponent<RHUIListener>().Listener = l;
-                l.GetComponent<AITaskManager>()?.triggerEvent(new AIEVConversationStarted(this));
+                this.m_speakers.Add(s);
+                this.m_listeners.Add(s.GetComponent<RHListener>(), startingScore(s.GetComponent<RHListener>()));
+                m_statementQueue[s] = new List<RegisteredStatement>();
             }
-        }            
-        else
-        {
-            this.m_listeners = new Dictionary<RHListener, float>();
-            this.m_listeners.Add(DefaultListener, startingScore(DefaultListener));
+        } else {
+            foreach(RHSpeaker s in DefaultParticipants)
+            {
+                this.m_speakers.Add(s);
+                this.m_listeners.Add(s.GetComponent<RHListener>(), startingScore(s.GetComponent<RHListener>()));
+            }     
         }
-        foreach(RHSpeaker sp in m_speakers)
+
+        foreach (RHListener l in m_listeners.Keys)
+        {
+            GameObject go = Instantiate(RHManager.PrefabUIListener(), RHManager.ListenersBaseTransform());
+            go.GetComponent<RHUIListener>().MoniteringConversation = this;
+            go.GetComponent<RHUIListener>().Speaker = startingSpeaker;
+            go.GetComponent<RHUIListener>().Listener = l;
+            l.GetComponent<AITaskManager>()?.triggerEvent(new AIEVConversationStarted(this));
+        }
+        foreach (RHSpeaker sp in m_speakers)
         {
             List<RHStatement> stlist = GetAvailableStatements(sp);
             sp.OnRhetoricStart(stlist,this, this.m_listeners);
@@ -352,7 +372,7 @@ public class RHConversation : MonoBehaviour
     void Start()
     {
         if (m_debugExecuteOnStartup)
-            RHManager.StartRhetoricBattle(this, DefaultSpeaker, DefaultListener);
+            RHManager.StartRhetoricBattle(this, DefaultParticipants, DefaultParticipants[0]);
     }
 
     void Update()

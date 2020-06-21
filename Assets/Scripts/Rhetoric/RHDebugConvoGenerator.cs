@@ -48,7 +48,7 @@ public class RHDebugConvoGenerator : MonoBehaviour
             {
                 randomizeListener(DefaultListener);
             }
-            RHManager.StartRhetoricBattle(m_conversation.GetComponent<RHConversation>(), DefaultSpeaker, DefaultListener);
+            //RHManager.StartRhetoricBattle(m_conversation.GetComponent<RHConversation>(), DefaultSpeaker, DefaultListener);
         }
             
     }
@@ -65,6 +65,6 @@ public class RHDebugConvoGenerator : MonoBehaviour
 
     private void randomizeListener(RHListener l)
     {
-        l.EmotionalIntensity = Random.Range(m_listenerEmotionsRange.x, m_listenerEmotionsRange.y);
+        l.SetEmotionalIntensity( Random.Range(m_listenerEmotionsRange.x, m_listenerEmotionsRange.y) );
     }
 }
