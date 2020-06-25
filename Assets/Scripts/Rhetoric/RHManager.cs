@@ -40,7 +40,24 @@ public class RHManager : MonoBehaviour
         conversation.StartRhetoricBattle(participants, startingSpeaker);
     }
 
-    public static void CreateDialogueOptionList(List<RHStatement> statements, RHConversation baseConversation,string prompt = "Select your next statement")
+    public static void CreateDialogueOptionList(List<RHStatement> statements, RHSpeaker speaker, RHConversation baseConversation, string prompt = "Select your next statement")
+    {
+
+        DialogueSelectionInitializer dialogue = new DialogueSelectionInitializer(prompt);
+        List<RHStatement> sortedStatements = new List<RHStatement>();
+        sortedStatements = RHManager.SortedList(statements, speaker, baseConversation);
+
+        foreach (RHStatement s in sortedStatements)
+        {
+            DialogueOptionInitializer doi = convertToDialogueOption(s, statements, speaker, baseConversation);
+            dialogue.AddDialogueOption(doi);
+        }
+        void Close(DialogueOption selectedOption) { }
+        dialogue.AddDialogueOption("Close", Close);
+        baseConversation.SetDialogueBox(TextboxManager.StartDialogueOptions(dialogue));
+    }
+
+    public static void CreateDialogueOptionListSortedType(List<RHStatement> statements, RHSpeaker speaker, RHConversation baseConversation,string prompt = "Select your next statement")
     {
 
         DialogueSelectionInitializer dialogue = new DialogueSelectionInitializer(prompt);
@@ -59,12 +76,12 @@ public class RHManager : MonoBehaviour
                 DialogueSelectionInitializer dialogueSubList = new DialogueSelectionInitializer(prompt);
                 foreach (RHStatement s in sortedStatements[t])
                 {
-                    DialogueOptionInitializer doi = convertToDialogueOption(s, baseConversation);
+                    DialogueOptionInitializer doi = convertToDialogueOption(s, statements,speaker, baseConversation);
                     dialogueSubList.AddDialogueOption(doi);
                 }
                 void ReturnToBase(DialogueOption selectedOption)
                 {
-                    CreateDialogueOptionList(statements, baseConversation, prompt);
+                    CreateDialogueOptionListSortedType(statements, speaker,baseConversation, prompt);
                 }
                 dialogueSubList.AddDialogueOption("Back", ReturnToBase);
                 baseConversation.SetDialogueBox(TextboxManager.StartDialogueOptions(dialogueSubList));
@@ -76,12 +93,13 @@ public class RHManager : MonoBehaviour
         baseConversation.SetDialogueBox(TextboxManager.StartDialogueOptions(dialogue));
     }
 
-    private static DialogueOptionInitializer convertToDialogueOption(RHStatement s, RHConversation baseConversation)
+    private static DialogueOptionInitializer convertToDialogueOption(RHStatement s, List<RHStatement> allStatements, RHSpeaker speaker, RHConversation baseConversation)
     {
         DialogueOptionInitializer doi = new DialogueOptionInitializer();
         void SelectionFunction(DialogueOption selectedOption)
         {
             baseConversation.QueueStatement(s, baseConversation.Speakers[0]);
+            RHManager.CreateDialogueOptionList(allStatements, speaker, baseConversation);
         }
         string name = s.StatementName;
         if (name == null || name == "")
@@ -90,7 +108,7 @@ public class RHManager : MonoBehaviour
         doi.hoverText = s.GetHoverText(baseConversation);
         doi.OnSelect = SelectionFunction;
 
-        doi.CloseDialogueWindow = false;
+        doi.CloseDialogueWindow = true;
         string timeStr = s.Time.ToString() + " s";
         doi.AddTextIcon(timeStr, Color.white);
         
@@ -98,7 +116,7 @@ public class RHManager : MonoBehaviour
         {
             float f = s.GetPower(baseConversation.Speakers[0], l, baseConversation);
             doi.AddTextIcon(f.ToString(), Color.red);
-            doi.Interactable = s.IsEnabled(baseConversation.Speakers[0], l, baseConversation);
+            doi.Interactable = s.IsEnabled(baseConversation.Speakers[0],baseConversation);
         }
         return doi;
     }
@@ -164,6 +182,11 @@ public class RHManager : MonoBehaviour
         m_instance.m_ResourceUI.SetSpeaker(null);
     }
 
+    public static List<RHStatement> SortedList(List<RHStatement> initialList,RHSpeaker speaker, RHConversation c)
+    {
+        initialList.Sort((p1, p2) => p1.GetListRankingPriority(speaker,c).CompareTo(p2.GetListRankingPriority(speaker, c)));
+        return initialList;
+    }
 
     public static Sprite GetResourceIcon(RHResourceType resourceType)
     {

@@ -41,6 +41,8 @@ public class RHStatement : MonoBehaviour
     private SerializableDictionary<RHResourceType, int> m_requirements = new SerializableDictionary<RHResourceType, int>();
     [SerializeField]
     private string m_hoverText = "Generic Description";
+    [SerializeField]
+    private float m_listRankingPriority = 1.0f;
 
     [SerializeField]
     private RHResponseString m_responseString;
@@ -140,7 +142,7 @@ public class RHStatement : MonoBehaviour
         }
         return value;
     }
-    public virtual bool IsEnabled(RHSpeaker speaker, RHListener listener, RHConversation c)
+    public virtual bool IsEnabled(RHSpeaker speaker, RHConversation c)
     {
         return speaker.meetsRequirements(m_requirements);
     }
@@ -179,12 +181,12 @@ public class RHStatement : MonoBehaviour
         RHStatement st = GetEmptyGenerateResourcesStatement();
         return st;
     }
-    public RHSGenerateResources GetEmptyGenerateResourcesStatement()
+    
+    public virtual float GetListRankingPriority(RHSpeaker speaker, RHConversation c)
     {
-        GameObject go = Instantiate(RHManager.GenerateResourcesPrefab);
-        RHSGenerateResources st = go.GetComponent<RHSGenerateResources>();
-        Destroy(go);
-        return st;
+        if (IsEnabled(speaker, c))
+            return m_listRankingPriority + 100f;
+        return m_listRankingPriority;
     }
     public virtual RHResponseString GetResponseString(RHListener listener, RHSpeaker speaker, float effectiveness)
     {
@@ -231,6 +233,13 @@ public class RHStatement : MonoBehaviour
             response.distributeResources();
         }
         return response;
+    }
+    private RHSGenerateResources GetEmptyGenerateResourcesStatement()
+    {
+        GameObject go = Instantiate(RHManager.GenerateResourcesPrefab);
+        RHSGenerateResources st = go.GetComponent<RHSGenerateResources>();
+        Destroy(go);
+        return st;
     }
     private bool RandomChanceRange(float max, float value,bool invert)
     {

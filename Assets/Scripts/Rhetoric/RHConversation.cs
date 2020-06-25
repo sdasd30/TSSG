@@ -29,9 +29,10 @@ public class RHConversation : MonoBehaviour
     [SerializeField]
     private Dictionary<RHSpeaker, Color> m_speakerColorMaps ;
 
-    private Dictionary<RHListener, float> m_listeners;
-    public Dictionary<RHListener, float> Listeners { get { return m_listeners; } }
+    private Dictionary<RHListener, float> m_listeners_with_scores;
+    public Dictionary<RHListener, float> Listeners { get { return m_listeners_with_scores; } }
     private List<RHSpeaker> m_speakers;
+    private List<RHListener> m_listeners;
     public List<RHSpeaker> Speakers { get { return m_speakers; } }
 
     private List<RHStatement> m_previousStatements = new List<RHStatement>();
@@ -48,7 +49,7 @@ public class RHConversation : MonoBehaviour
     private RHUITime m_timeUI;    
     private float m_nextEventTime = float.MaxValue;
     private int m_nextSpeakerIndex = 0;
-
+    private float m_lastScaled = 0;
     private class RegisteredStatement
     {
         public RHStatement statement;
@@ -178,7 +179,7 @@ public class RHConversation : MonoBehaviour
         {
             foreach (RegisteredEvent e in m_registeredEvents[m_nextEventTime])
             {
-                foreach(RHListener l in m_listeners.Keys)
+                foreach(RHListener l in m_listeners)
                 {
                     if (e.speaker.gameObject != l.gameObject)
                         e.m_event.ExecuteEvent(e.speaker, l);
@@ -238,31 +239,23 @@ public class RHConversation : MonoBehaviour
     private void BroadcastStatement(RHSpeaker speaker, RHStatement statement)
     {
         statement.OnStatementExecuted(speaker);
-        Dictionary<RHListener, float> newListeners = new Dictionary<RHListener, float>();
-        foreach (RHListener listener in m_listeners.Keys)
+        foreach (RHListener listener in m_listeners)
         {
             if (listener.GetComponent<RHSpeaker>() == speaker)
             {
-                newListeners[listener] = m_listeners[listener];
                 continue;
             }
                 
             float power = statement.GetPower(speaker, listener, this);
             float diff = listener.ApplyStatementModifiers(power, speaker, statement, this);
-            if (newListeners != null && !newListeners.ContainsKey(listener))
-                newListeners[listener] = m_listeners[listener];
             if (diff != 0)
             {
-                if (!newListeners.ContainsKey(listener))
-                    newListeners[listener] = m_listeners[listener];
-                newListeners[listener] += diff;
+                m_listeners_with_scores[listener] += diff;
             }
             listener.GetComponent<AITaskManager>()?.triggerEvent(new AIEVStatementReceived(this,statement,speaker));
             RHManager.AddHistoryText(statement.GetResponseString(listener, speaker, diff));
             RHManager.AddHistoryText(listener.GetResponseString(listener, speaker, diff));
         }
-        if (newListeners != null)
-            m_listeners = newListeners;
     }
     private int GetNumberOfOccurances(RHStatement baseStatement)
     {
@@ -276,7 +269,7 @@ public class RHConversation : MonoBehaviour
     }
     private void OnFinish()
     {
-        foreach (RHListener listener in m_listeners.Keys)
+        foreach (RHListener listener in m_listeners)
         {
             processFinish(listener);
         }
@@ -322,7 +315,7 @@ public class RHConversation : MonoBehaviour
 
     protected virtual void processFinish(RHListener listener)
     {
-        if (m_listeners[listener] > m_threashould)
+        if (m_listeners_with_scores[listener] > m_threashould)
         {
             OnConversationSuccess(listener);
         } else
@@ -337,9 +330,11 @@ public class RHConversation : MonoBehaviour
     
     public void StartRhetoricBattle( List<RHSpeaker> participants, RHSpeaker startingSpeaker)
     { 
-        this.m_listeners = new Dictionary<RHListener, float>();
+        this.m_listeners_with_scores = new Dictionary<RHListener, float>();
+        this.m_listeners = new List<RHListener>();
         this.m_speakers = new List<RHSpeaker>();
         m_speakerColorMaps = new Dictionary<RHSpeaker, Color>();
+        m_lastScaled = ScaledTime.TimeElapsed;
 
         if (participants.Count > 0)
         {
@@ -347,7 +342,8 @@ public class RHConversation : MonoBehaviour
             foreach(RHSpeaker s in participants)
             {
                 this.m_speakers.Add(s);
-                this.m_listeners.Add(s.GetComponent<RHListener>(), startingScore(s.GetComponent<RHListener>()));
+                this.m_listeners_with_scores.Add(s.GetComponent<RHListener>(), startingScore(s.GetComponent<RHListener>()));
+                this.m_listeners.Add(s.GetComponent<RHListener>());
                 m_statementQueue[s] = new List<RegisteredStatement>();
                 if (s.speakerColor == Color.white)
                     m_speakerColorMaps[s] = m_defaultColors[colorIndex];
@@ -359,11 +355,12 @@ public class RHConversation : MonoBehaviour
             foreach(RHSpeaker s in DefaultParticipants)
             {
                 this.m_speakers.Add(s);
-                this.m_listeners.Add(s.GetComponent<RHListener>(), startingScore(s.GetComponent<RHListener>()));
+                this.m_listeners_with_scores.Add(s.GetComponent<RHListener>(), startingScore(s.GetComponent<RHListener>()));
+                this.m_listeners.Add(s.GetComponent<RHListener>());
             }     
         }
 
-        foreach (RHListener l in m_listeners.Keys)
+        foreach (RHListener l in m_listeners)
         {
             if (l.GetComponent<RHSpeaker>() == startingSpeaker)
                 continue;
@@ -374,7 +371,7 @@ public class RHConversation : MonoBehaviour
         foreach (RHSpeaker sp in m_speakers)
         {
             List<RHStatement> stlist = GetAvailableStatements(sp);
-            sp.OnRhetoricStart(stlist,this, this.m_listeners);
+            sp.OnRhetoricStart(stlist,this, this.m_listeners_with_scores);
         }
         m_previousStatements = new List<RHStatement>();
         RHManager.ClearHistory();
@@ -384,6 +381,14 @@ public class RHConversation : MonoBehaviour
 
     public void SetDialogueBox(GameObject go) {
         m_currentDialogueBox = go;
+    }
+    public void ModifyListenerValue(RHListener l, float delta)
+    {
+        if (m_listeners.Contains(l))
+        {
+            m_listeners_with_scores[l] += delta;
+        }
+        return;
     }
     void Start()
     {
@@ -395,8 +400,12 @@ public class RHConversation : MonoBehaviour
     {
         if (!m_battleStarted)
             return;
+        float d = ScaledTime.TimeElapsed - m_lastScaled;
         foreach (RHSpeaker s in m_speakers)
-            s.conversationUpdate(this);
+            foreach(RHListener l in m_listeners)
+                if (l.GetComponent<RHSpeaker>() != s)
+                    s.resourceUpdate(this,l, d);
+        m_lastScaled = ScaledTime.TimeElapsed;
         if (ScaledTime.TimeElapsed >= m_nextStatementEnd)
         {
             callNextStatement();
