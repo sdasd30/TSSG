@@ -5,6 +5,7 @@ using System.Collections.Generic;
 [Serializable]
 public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
 {
+
     [SerializeField]
     private List<TKey> keys = new List<TKey>();
 

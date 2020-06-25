@@ -25,7 +25,7 @@ public class RHSpeaker : MonoBehaviour
         RHPersonalityTrait[] traits = GetComponentsInChildren<RHPersonalityTrait>();
         m_traits.AddRange(traits);
     }
-    public void ModifyResources(SerializableDictionary<RHResourceType, int> m_modifySpeakerResources, bool invert = false)
+    public void ModifyResources(Dictionary<RHResourceType, int> m_modifySpeakerResources, bool invert = false)
     {
         foreach (RHResourceType rh in m_modifySpeakerResources.Keys)
         {
@@ -64,7 +64,7 @@ public class RHSpeaker : MonoBehaviour
         }
         return false;
     }
-    public bool meetsRequirements(SerializableDictionary<RHResourceType, int> m_requirements)
+    public bool meetsRequirements(Dictionary<RHResourceType, int> m_requirements)
     {
         foreach (RHResourceType rh in m_requirements.Keys)
         {

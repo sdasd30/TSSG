@@ -13,4 +13,14 @@ public class RHSDeadAir : RHStatement
     // Update is called once per frame
     void Update()
     { }
+
+    public override RHStatement GenerateStandardResponse(RHSpeaker originalSpeaker, RHListener originalListener)
+    {
+
+        float length = GetResponseLengthFromAuthority(originalListener.GetAuthority(originalSpeaker, true) + 50f);
+        if (length == 0)
+            return null;
+        else
+            return base.GenerateStandardResponse(originalSpeaker, originalListener);
+    }
 }

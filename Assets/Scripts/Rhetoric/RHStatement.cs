@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum RHType { LOGOS, PATHOS,ETHOS, NONE}
 
-public enum RHResourceType { NONE, POSITIVE, NEGATIVE, QUESTION, IDEA, OPINION  }
+public enum RHResourceType { NONE, POSITIVE, NEGATIVE, QUESTION, IDEA, PERSONAL  }
 
 public class RHStatement : MonoBehaviour
 {
@@ -38,7 +38,10 @@ public class RHStatement : MonoBehaviour
     [SerializeField]
     private List<RHModifier> m_modEmotions = new List<RHModifier>();
     [SerializeField]
-    private SerializableDictionary<RHResourceType, int> m_requirements = new SerializableDictionary<RHResourceType, int>();
+    private List<RHResourceType> m_resourceConsumedTypes = new List<RHResourceType>();
+    [SerializeField]
+    private List<int> m_resourceConsumedAmounts = new List<int>();
+
     [SerializeField]
     private string m_hoverText = "Generic Description";
 
@@ -54,10 +57,13 @@ public class RHStatement : MonoBehaviour
 
     public virtual string StatementName { get { return m_statementName; } }
     public virtual RHType RhetoricType { get  { return m_RhetoricType; }}
-    public virtual float Time { get { return m_Time; } }
+    public virtual float Time { get { return m_Time; } set { m_Time = value; } }
 
     protected List<RHEvent> m_eventList = new List<RHEvent>();
     public List<RHEvent> RHEvents { get { return m_eventList; } }
+
+    private Dictionary<RHResourceType, int> m_requirements = new Dictionary<RHResourceType, int>();
+
     private void Start()
     {
         init();
@@ -84,6 +90,10 @@ public class RHStatement : MonoBehaviour
         RHModifier m = new RHModifier("Decay", 0f, 0.85f, RHScaleModifier.INSTANCES_OF_SELF, 0f, RHScaleType.MULTIPLICATION);
         m.statement = this;
         m_modPower.Add(m);
+
+        for(int n = 0; n < m_resourceConsumedAmounts.Count; n++) {
+            m_requirements.Add(m_resourceConsumedTypes[n], m_resourceConsumedAmounts[n]);
+        }
     }
 
     public virtual void OnStatementQueued(RHSpeaker speaker)
@@ -193,11 +203,14 @@ public class RHStatement : MonoBehaviour
 
     public virtual RHStatement GenerateStandardResponse(RHSpeaker originalSpeaker, RHListener originalListener)
     {
-        if (RandomChanceRange(200, 100 + originalListener.GetAuthority(originalSpeaker, true), true))
+        float length = GetResponseLengthFromAuthority(originalListener.GetAuthority(originalSpeaker, true));
+
+        if (length == 0)
             return null;
         RHResource r;
 
         RHSGenerateResources response = GetEmptyGenerateResourcesStatement();
+        response.Time = length;
         Dictionary<float, RHResource> roller = new Dictionary<float, RHResource>();
 
         int intensity = Mathf.RoundToInt(Mathf.Max(1, originalListener.GetEmotionalIntensity() / 30f));
@@ -219,9 +232,9 @@ public class RHStatement : MonoBehaviour
 
         roller = RegisterChance(roller, new RHResource(RHResourceType.POSITIVE, intensity), positiveScore);
         roller = RegisterChance(roller, new RHResource(RHResourceType.NEGATIVE, intensity), negativeScore);
-        //roller = RegisterChance(roller, new RHResource(RHResourceType.NONE, intensity), neutralScore);
-        roller = RegisterChance(roller, new RHResource(RHResourceType.OPINION, intensity), ideaScore);
-        roller = RegisterChance(roller, new RHResource(RHResourceType.OPINION, intensity), opinionScore);
+        roller = RegisterChance(roller, new RHResource(RHResourceType.NONE, intensity), neutralScore);
+        roller = RegisterChance(roller, new RHResource(RHResourceType.PERSONAL, intensity), ideaScore);
+        //roller = RegisterChance(roller, new RHResource(RHResourceType.PERSONAL, intensity), opinionScore);
         roller = RegisterChance(roller, new RHResource(RHResourceType.QUESTION, intensity), questionScore);
 
         r = RollResource(roller);
@@ -232,7 +245,25 @@ public class RHStatement : MonoBehaviour
         }
         return response;
     }
-    private bool RandomChanceRange(float max, float value,bool invert)
+    protected float GetResponseLengthFromAuthority(float AuthorityValue)
+    {
+        if (AuthorityValue > 0.0f)
+        {
+            if (RandomChanceRange(100, Mathf.Max(10f,AuthorityValue) ,false))
+                return 0.0f;
+            else
+                return 5.0f + Random.RandomRange(-1, 1);
+        } else
+        {
+            if (AuthorityValue < -30f && RandomChanceRange(100, 5f, false))
+                return 0.0f;
+            else if (AuthorityValue > -30f && RandomChanceRange(100, 10f, false))
+                return 0.0f;
+
+            return Mathf.RoundToInt((100 + AuthorityValue)/100 * 5f) + 5f + Random.RandomRange(-1,1);
+        }
+    }
+    protected bool RandomChanceRange(float max, float value,bool invert)
     {
         return (invert)?Random.Range(0, max) >= value : Random.Range(0,max) < value;
     }

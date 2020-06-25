@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &8300391198471380543
+--- !u!1001 &8678875107070657273
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 3318670897087358136, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
       propertyPath: m_Name
-      value: Confidence
+      value: TechnicalExplanation Variant
       objectReference: {fileID: 0}
     - target: {fileID: 5180794079618457324, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
@@ -69,27 +69,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
-      propertyPath: m_modPower.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
-        type: 3}
-      propertyPath: m_list.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
-        type: 3}
       propertyPath: m_statementName
-      value: Appeal
+      value: Technical Explanation
       objectReference: {fileID: 0}
     - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
       propertyPath: m_hoverText
-      value: 'Simple Emotional Appeal '
+      value: 'A long, in-depth explanation. Effectiveness depends on Trust. '
       objectReference: {fileID: 0}
     - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
-      propertyPath: m_RhetoricType
+      propertyPath: m_Time
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_basePower
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_requirements.m_numberOfEntries
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -1,86 +1,86 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &2898930587783756816
+--- !u!1001 &6972994329452924933
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2140602243779152004, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 1076628589208619892, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
-      propertyPath: m_statementName
-      value: Confidence
+      propertyPath: m_basePower
+      value: 15
       objectReference: {fileID: 0}
-    - target: {fileID: 2140602243779152004, guid: 8983b1c95462a7842b7c86771fce59b3,
-        type: 3}
-      propertyPath: m_RhetoricType
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2140602243779152004, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 1076628589208619892, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_hoverText
-      value: Simple Assertion of Confidence
+      value: Capitalize on Positive feedback. Consumes 1 Positive Reaction.
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 1076628589208619892, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
+        type: 3}
+      propertyPath: m_statementName
+      value: Emphasis
+      objectReference: {fileID: 0}
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 641.927
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 477.22617
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3806959047483097299, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6718983926707911303, guid: 8983b1c95462a7842b7c86771fce59b3,
+    - target: {fileID: 5655010201236470135, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_Name
-      value: Confidence
+      value: Emphasis
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8983b1c95462a7842b7c86771fce59b3, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 6a5e21eabb932ee4591c5057a3f1cd4e, type: 3}

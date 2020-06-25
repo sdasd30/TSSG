@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &574107730256792393
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2312413942518872554, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_Name
+      value: Comeback
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 641.927
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 477.22617
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331401486137295806, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961731683260877801, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: apply_decay
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961731683260877801, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_hoverText
+      value: An inspiring speech in the face of overwhelming negativity.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961731683260877801, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_resourceConsumedAmounts.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961731683260877801, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_baseFavor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961731683260877801, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_basePower
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961731683260877801, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_Time
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961731683260877801, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_statementName
+      value: Comeback Speech
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b3960c4e0841aa04181e878359c4702f, type: 3}
