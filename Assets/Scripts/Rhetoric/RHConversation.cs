@@ -14,7 +14,18 @@ public class RHConversation : MonoBehaviour
     public virtual float MaxValue { get { return m_maxValue; } private set { m_maxValue = value; } }
     [SerializeField]
     private float m_statRetainAmount = 0.2f;
+    [SerializeField]
+    private List<RHStatement> m_permittedStatements = new List<RHStatement>();
+    [SerializeField]
+    private List<RHStatement> m_bannedStatements = new List<RHStatement>();
 
+    [SerializeField]
+    private List<RHFinishEffect> m_winEffects = new List<RHFinishEffect>();
+    [SerializeField]
+    private List<RHFinishEffect> m_failEffects = new List<RHFinishEffect>();
+
+    [SerializeField]
+    private string m_responsesExcelPath = "";
     [SerializeField]
     private bool m_canSlow = true;
     [SerializeField]
@@ -37,6 +48,7 @@ public class RHConversation : MonoBehaviour
     public List<RHSpeaker> Speakers { get { return m_speakers; } }
 
     private List<RHStatement> m_previousStatements = new List<RHStatement>();
+    private List<RHResponseString> m_registeredResponses = new List<RHResponseString>();
     public List<RHStatement> PreviousStatements { get { return m_previousStatements; } }
 
 
@@ -51,6 +63,7 @@ public class RHConversation : MonoBehaviour
     private float m_nextEventTime = float.MaxValue;
     private int m_nextSpeakerIndex = 0;
     private float m_lastScaled = 0;
+
     private class RegisteredStatement
     {
         public RHStatement statement;
@@ -74,6 +87,7 @@ public class RHConversation : MonoBehaviour
             this.speaker = speaker;
         }
     }
+
     private Dictionary<float, List<RegisteredEvent>> m_registeredEvents = new Dictionary<float, List<RegisteredEvent>>();
 
     public void SetDebug(float timeLimit, float threashould, float maxValue)
@@ -82,8 +96,6 @@ public class RHConversation : MonoBehaviour
         m_threashould = threashould;
         m_maxValue = maxValue;
     }
-    
-    
 
     public List<RHStatement> GetValidStatements(RHSpeaker speaker )
     {
@@ -93,7 +105,7 @@ public class RHConversation : MonoBehaviour
     public void SkipToNextStatment()
     {
         if (m_currentStatement != null)
-            ScaledTime.skipTime(m_nextStatementEnd - ScaledTime.TimeElapsed);
+            ScaledTime.skipTime(m_nextStatementEnd - ScaledTime.UITimeElapsed,true);
     }
     public void QueueStatement(RHStatement statement, RHSpeaker speaker,bool stack = false)
     {
@@ -125,7 +137,7 @@ public class RHConversation : MonoBehaviour
     {
         
         m_nextStatementEnd = 0f;
-        m_nextInterestTimeLimit = ScaledTime.TimeElapsed + m_startingInterest;
+        m_nextInterestTimeLimit = ScaledTime.UITimeElapsed + m_startingInterest;
         RHManager.UITime().SetActive(true);
         m_timeUI = RHManager.UITime().GetComponent<RHUITime>();
         m_timeUI.StartUI(this);
@@ -177,7 +189,7 @@ public class RHConversation : MonoBehaviour
     }
     private void processEvents()
     {
-        if (ScaledTime.TimeElapsed > m_nextEventTime)
+        if (ScaledTime.UITimeElapsed > m_nextEventTime)
         {
             foreach (RegisteredEvent e in m_registeredEvents[m_nextEventTime])
             {
@@ -234,9 +246,9 @@ public class RHConversation : MonoBehaviour
         }
         else {
             m_currentStatement = next_statement;
-            registerEvents(m_currentStatement.statement.RHEvents, nextSpeaker, ScaledTime.TimeElapsed);
+            registerEvents(m_currentStatement.statement.RHEvents, nextSpeaker, ScaledTime.UITimeElapsed);
         }
-        m_nextStatementEnd = ScaledTime.TimeElapsed + m_currentStatement.statement.Time;
+        m_nextStatementEnd = ScaledTime.UITimeElapsed + m_currentStatement.statement.Time;
     }
     private void BroadcastStatement(RHSpeaker speaker, RHStatement statement)
     {
@@ -268,6 +280,14 @@ public class RHConversation : MonoBehaviour
             }
         }
     }
+    private void ProcessHistoryText(RHStatement st, RHSpeaker speaker, RHListener listener, float diff)
+    {
+        foreach (RHResponseString s in m_registeredResponses)
+        {
+            if (s.IsConditionTrue(st, speaker, listener, diff))
+                RHManager.AddHistoryText(s);
+        }
+    }
     private int GetNumberOfOccurances(RHStatement baseStatement)
     {
         int i = 0;
@@ -295,20 +315,25 @@ public class RHConversation : MonoBehaviour
             Destroy(m_currentDialogueBox);
         if (m_destroyAfterFinish)
             Destroy(gameObject);
+
+        ScaledTime.SetScale(1f);
     }
     private void processSlowInput()
     {
         if (Input.GetKeyDown("space"))
         {
-            if (ScaledTime.GetScale() == 1.0f)
+            if (ScaledTime.GetScale(true) == 0.0f)
+            {
+                RHManager.SetPause(false);
+            } else if (ScaledTime.GetScale(true) == 1.0f)
             {
                 RHManager.SetSlowTextActive(true);
-                ScaledTime.SetScale(0.5f);
+                ScaledTime.SetScale(0.5f,true);
             }
             else
             {
                 RHManager.SetSlowTextActive(false);
-                ScaledTime.SetScale(1.0f);
+                ScaledTime.SetScale(1.0f,true);
             }
         }
     }
@@ -321,7 +346,7 @@ public class RHConversation : MonoBehaviour
     }
     protected virtual bool isRhetoricBattleOver()
     {
-        return (ScaledTime.TimeElapsed > m_nextInterestTimeLimit);
+        return (ScaledTime.UITimeElapsed > m_nextInterestTimeLimit);
     }
 
     protected virtual void processFinish(RHListener listener)
@@ -343,17 +368,27 @@ public class RHConversation : MonoBehaviour
         }
     }
 
-    protected virtual void OnConversationSuccess(RHListener listener) {}
-
-    public virtual void OnConversationFailure(RHListener listener) { }
+    protected virtual void OnConversationSuccess(RHListener listener) {
+        foreach( RHFinishEffect rfe in m_winEffects)
+        {
+            rfe.ExecuteFinishEffect(m_speakers[0], listener);
+        }
+    }
+    public virtual void OnConversationFailure(RHListener listener) {
+        foreach (RHFinishEffect rfe in m_failEffects)
+        {
+            rfe.ExecuteFinishEffect(m_speakers[0], listener);
+        }
+    }
     
     public void StartRhetoricBattle( List<RHSpeaker> participants, RHSpeaker startingSpeaker)
-    { 
+    {
+        ScaledTime.SetScale(0f);
         this.m_listeners_with_scores = new Dictionary<RHListener, float>();
         this.m_listeners = new List<RHListener>();
         this.m_speakers = new List<RHSpeaker>();
         m_speakerColorMaps = new Dictionary<RHSpeaker, Color>();
-        m_lastScaled = ScaledTime.TimeElapsed;
+        m_lastScaled = ScaledTime.UITimeElapsed;
 
         if (participants.Count > 0)
         {
@@ -419,13 +454,13 @@ public class RHConversation : MonoBehaviour
     {
         if (!m_battleStarted)
             return;
-        float d = ScaledTime.TimeElapsed - m_lastScaled;
+        float d = ScaledTime.UITimeElapsed - m_lastScaled;
         foreach (RHSpeaker s in m_speakers)
             foreach(RHListener l in m_listeners)
                 if (l.GetComponent<RHSpeaker>() != s)
                     s.resourceUpdate(this,l, d);
-        m_lastScaled = ScaledTime.TimeElapsed;
-        if (ScaledTime.TimeElapsed >= m_nextStatementEnd)
+        m_lastScaled = ScaledTime.UITimeElapsed;
+        if (ScaledTime.UITimeElapsed >= m_nextStatementEnd)
         {
             callNextStatement();
             AdvanceStatements();

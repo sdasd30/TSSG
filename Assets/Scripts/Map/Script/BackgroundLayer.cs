@@ -43,7 +43,7 @@ public class BackgroundLayer : MonoBehaviour {
 			transform.position += new Vector3 (deltaX * ParallaxRatio,deltaY*ParallaxRatio, 0f);
 		}
 		if (IsAutoScroll) {
-			transform.position += AutoScrollSpeed * Time.deltaTime;
+			transform.position += AutoScrollSpeed * ScaledTime.deltaTime;
 		}
 		if (IsLockOnCam) {
 			transform.position = new Vector3 (m_camTransform.position.x, m_camTransform.position.y, transform.position.z);

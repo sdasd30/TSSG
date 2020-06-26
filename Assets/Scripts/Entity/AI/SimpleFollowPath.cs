@@ -18,7 +18,7 @@ public class SimpleFollowPath : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        distTraveled += speed * Time.deltaTime;
+        distTraveled += speed * ScaledTime.deltaTime;
         transform.position = pc.path.GetPointAtDistance(distTraveled);
     }
 }

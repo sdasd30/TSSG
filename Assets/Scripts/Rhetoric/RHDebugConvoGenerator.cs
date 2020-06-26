@@ -44,11 +44,11 @@ public class RHDebugConvoGenerator : MonoBehaviour
         if (m_conversation == null)
         {
             m_conversation = GenerateConversation();
-            if (m_autoGenerateListener)
-            {
-                randomizeListener(DefaultListener);
-            }
-            //RHManager.StartRhetoricBattle(m_conversation.GetComponent<RHConversation>(), DefaultSpeaker, DefaultListener);
+            //if (m_autoGenerateListener)
+            //{
+            //    randomizeListener(DefaultListener,m_conversation.GetComponent<RHConversation>());
+            //}
+            ////RHManager.StartRhetoricBattle(m_conversation.GetComponent<RHConversation>(), DefaultSpeaker, DefaultListener);
         }
             
     }
@@ -59,14 +59,17 @@ public class RHDebugConvoGenerator : MonoBehaviour
         float timeLimit = Random.Range(m_conversationTimeRange.x, m_conversationTimeRange.y);
         float threashould = Random.Range(m_conversationThreashouldRange.x, m_conversationThreashouldRange.y);
         float maxValue = Random.Range(m_conversationMaxRange.x, m_conversationMaxRange.y);
-        o.GetComponent<RHConversation>().SetDebug(timeLimit, threashould, maxValue);
-        DefaultListener.SetEmotionalIntensity(Random.Range(m_listenerEmotionsRange.x, m_listenerEmotionsRange.y));
+        //o.GetComponent<RHConversation>().SetDebug(timeLimit, threashould, maxValue);
+        //DefaultListener.SetEmotionalIntensity(Random.Range(m_listenerEmotionsRange.x, m_listenerEmotionsRange.y));
 
         return o;
     }
 
-    private void randomizeListener(RHListener l)
+    private void randomizeListener(RHListener l, RHConversation c)
     {
         l.SetEmotionalIntensity( Random.Range(m_listenerEmotionsRange.x, m_listenerEmotionsRange.y) );
+        l.ModifyStat(DefaultSpeaker, c, RHStat.AUTHORITY, Random.Range(m_listenerAuthorityRange.x, m_listenerAuthorityRange.y));
+        l.ModifyStat(DefaultSpeaker, c, RHStat.FAVOR, Random.Range(m_listenerFavorRange.x, m_listenerFavorRange.y));
+        l.ModifyStat(DefaultSpeaker, c, RHStat.TRUST, Random.Range(m_listenerTrustRange.x, m_listenerTrustRange.y));
     }
 }

@@ -45,13 +45,13 @@ public class EnemyMove : MonoBehaviour
             FlipPlayer();
         }
         //PHYSICS
-        gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(moveX * playerSpeed * Time.deltaTime, gameObject.GetComponent<Rigidbody2D>().velocity.y);
+        gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(moveX * playerSpeed * ScaledTime.deltaTime, gameObject.GetComponent<Rigidbody2D>().velocity.y);
 
     }
 
     void Jump()
     {
-        GetComponent<Rigidbody2D>().AddForce(Vector2.up * jumpPower * Time.deltaTime);
+        GetComponent<Rigidbody2D>().AddForce(Vector2.up * jumpPower * ScaledTime.deltaTime);
     }
 
     void FlipPlayer()

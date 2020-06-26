@@ -54,6 +54,10 @@ public class Textbox : MonoBehaviour {
 		}*/
 	}
 		
+	public bool IsFinished()
+	{
+		return !m_isTyping || m_lastCharacterIndex >= m_processedText.Length;
+	}
 	public void SetPause(float pt) {
 		m_pauseTime = pt;
 	}
@@ -116,7 +120,7 @@ public class Textbox : MonoBehaviour {
 			retString += remainingParseStr;
 		return retString;
 	}
-	public string ParseSpecialSection(string section) {
+	private string ParseSpecialSection(string section) {
 		string actStr = "";
 		int charNum = 0;
 		char nextChar = section.ToCharArray () [charNum];

@@ -176,7 +176,7 @@ public class ActionInfo : MonoBehaviour
 	public void Progress()
 	{
 		m_inTickFunctions [m_progress] ();
-		m_timeSinceStart += Time.deltaTime;
+		m_timeSinceStart += ScaledTime.deltaTime;
 
         //updateFXQueue ();
         //Debug.Log("mTime: " + m_timeSinceStart + " next: " + m_progressEndTimes[m_progress] + m_AttackDelay);

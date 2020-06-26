@@ -107,7 +107,7 @@ public class RHListener : MonoBehaviour
     }
     public string getModifierString(RHSpeaker s, RHConversation c, bool permanent = false)
     {
-        return "RHConv" + s.gameObject.name + "::conv::" + c.gameObject.name + "Time:" + ScaledTime.TimeElapsed.ToString() + "::perm::" + permanent.ToString();
+        return "RHConv" + s.gameObject.name + "::conv::" + c.gameObject.name + "Time:" + ScaledTime.UITimeElapsed.ToString() + "::perm::" + permanent.ToString();
     }
     private Noun RHStatToNoun(RHStat s)
     {

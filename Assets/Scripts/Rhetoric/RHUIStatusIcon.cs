@@ -19,7 +19,7 @@ public class RHUIStatusIcon : MonoBehaviour
     public void SetTimeLimit(float time)
     {
         m_timeLimit = time;
-        m_nextTimeLimit = ScaledTime.TimeElapsed + time;
+        m_nextTimeLimit = ScaledTime.UITimeElapsed + time;
         m_timeLimitSet = true;
     }
     public void SetImage(Sprite s)
@@ -33,7 +33,7 @@ public class RHUIStatusIcon : MonoBehaviour
 
     private void UpdateTimeBar()
     {
-        float timeSoFar = m_nextTimeLimit - ScaledTime.TimeElapsed;
+        float timeSoFar = m_nextTimeLimit - ScaledTime.UITimeElapsed;
         Vector2 d = m_timeBar.sizeDelta;
         float newF = (timeSoFar/ m_timeLimit) * (m_Image.rectTransform.sizeDelta.y);
         m_timeBar.sizeDelta = new Vector2(d.x, newF);

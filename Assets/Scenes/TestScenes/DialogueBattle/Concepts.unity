@@ -406,7 +406,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &451599454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -746,6 +746,24 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 1505115073958384915, guid: 7621a0767b2b3754a957f61d52e611e2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7621a0767b2b3754a957f61d52e611e2, type: 3}
+--- !u!1 &581024326 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5990485233133771482, guid: 7621a0767b2b3754a957f61d52e611e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 581024325}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &581024327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581024326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ae4d3591de2014479456af9ccfb5299, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &843383574
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -757,6 +775,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1255167358446672251, guid: 8681afb806cbf7d42b3b65c2e7daf519,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1255167358446672254, guid: 8681afb806cbf7d42b3b65c2e7daf519,
         type: 3}
@@ -1333,6 +1356,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RHTestConvoTarget
       objectReference: {fileID: 0}
+    - target: {fileID: 5432550568221812728, guid: 2a0da88979e1cd046b366e32dacc35ec,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a0da88979e1cd046b366e32dacc35ec, type: 3}
 --- !u!1001 &8929666361075079817
@@ -1356,6 +1384,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RHConversationTest
+      objectReference: {fileID: 0}
+    - target: {fileID: 8929666360600915489, guid: 63bb6b85720b16d40b8cb40b8751910c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8929666360600915491, guid: 63bb6b85720b16d40b8cb40b8751910c,
         type: 3}

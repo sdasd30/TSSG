@@ -167,7 +167,7 @@ public class CharacterBase : MonoBehaviour
                 m_anim.Play(HurtAnimation, AutoOrientSprite);
             }
         }
-        StunTime -= Time.deltaTime;
+        StunTime -= ScaledTime.deltaTime;
         if (m_currentAction != null)
             m_currentAction = null;
         if (StunTime <= 0.0f && m_attackable != null && m_attackable.Alive)

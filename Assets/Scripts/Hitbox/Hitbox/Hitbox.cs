@@ -180,7 +180,7 @@ public class Hitbox : MonoBehaviour
             //Debug.Log ("Hitbox destroyed!" + m_duration);
             GameObject.Destroy(gameObject);
         }
-        m_remainingDuration -= Time.deltaTime;
+        m_remainingDuration -= ScaledTime.deltaTime;
     }
     public void ResetDuration()
     {

@@ -25,17 +25,17 @@ public class RHUITime : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float adjustedCurrentX = adjustedTimeXpos(ScaledTime.TimeElapsed);
+        float adjustedCurrentX = adjustedTimeXpos(ScaledTime.UITimeElapsed);
         Vector2 pos = Scroller.GetComponent<RectTransform>().anchoredPosition;
         Scroller.GetComponent<RectTransform>().anchoredPosition = new Vector2(-adjustedCurrentX, pos.y);
-        float timeLeft = conversation.InterestTimeEnd - ScaledTime.TimeElapsed;
+        float timeLeft = conversation.InterestTimeEnd - ScaledTime.UITimeElapsed;
         TimeDisplay.text = PROMPT + ": " +  timeLeft + " sec";
     }
 
     public void StartUI(RHConversation c)
     {
         conversation = c;
-        startingTime = ScaledTime.TimeElapsed;
+        startingTime = ScaledTime.UITimeElapsed;
     }
     public void AddItem(string name,  float duration, Color backgroundColor, bool passive = false, float timeItemStarts = 0f, bool canStack = false )
     {

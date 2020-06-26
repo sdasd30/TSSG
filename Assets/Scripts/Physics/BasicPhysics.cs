@@ -106,7 +106,7 @@ public class BasicPhysics : MonoBehaviour
     {
         if (m_isEnabled)
         {
-            m_trueVelocity = (transform.position - m_lastPosition) / Time.deltaTime;
+            m_trueVelocity = (transform.position - m_lastPosition) / ScaledTime.deltaTime;
             m_lastPosition = transform.position;
             IsGrounded = m_controller.isGrounded;
         }
@@ -163,7 +163,7 @@ public class BasicPhysics : MonoBehaviour
         }
         if (m_controller.isGrounded && noYForces)
             m_velocity.y = 0f;
-        m_gravityCancelTime -= Time.deltaTime;
+        m_gravityCancelTime -= ScaledTime.deltaTime;
         foreach (Force force in forcesToRemove)
             m_forces.Remove(force);
 

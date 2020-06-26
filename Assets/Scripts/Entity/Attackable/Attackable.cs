@@ -106,7 +106,7 @@ public class Attackable : MonoBehaviour
             Destroy(gameObject);
         }
         GetComponent<SpriteRenderer>().color = Color.Lerp(Color.white, Color.black, (m_currDeathTime) / m_deathTime);
-        m_currDeathTime += Time.deltaTime;
+        m_currDeathTime += ScaledTime.deltaTime;
     }
 
     private void CheckResistanceValidities()
@@ -115,7 +115,7 @@ public class Attackable : MonoBehaviour
         {
             if (r.Timed)
             {
-                r.Duration -= Time.deltaTime;
+                r.Duration -= ScaledTime.deltaTime;
                 if (r.Duration <= 0.0f)
                     Resistences.Remove(r);
             }
@@ -235,7 +235,7 @@ public class Attackable : MonoBehaviour
         float angle = Mathf.Atan2(hitVector.y, hitVector.x); //*180.0f / Mathf.PI;
         Vector2 force = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
         force.Scale(new Vector2(kb.magnitude, kb.magnitude));
-        float counterF = m_physics.m_trueVelocity.y * (1 / Time.deltaTime);
+        float counterF = m_physics.m_trueVelocity.y * (1 / ScaledTime.deltaTime);
         if (counterF < 0)
             force.y = force.y - counterF;
 
@@ -247,7 +247,7 @@ public class Attackable : MonoBehaviour
     {
         Resistence r = GetAverageResistences(hbdot.Element);
         float d = hbdot.Damage - (hbdot.Damage * (r.Percentage / 100f));
-        DamageObj(d * Time.deltaTime);
+        DamageObj(d * ScaledTime.deltaTime);
         if (Health <= 0f)
         {
             Killer = hbdot.Creator;
@@ -256,7 +256,7 @@ public class Attackable : MonoBehaviour
         {
             Vector2 kb = hbdot.Knockback - (hbdot.Knockback * Mathf.Min(1f, (r.KnockbackResist / 100f)));
             if (GetComponent<BasicPhysics>() != null)
-                GetComponent<BasicPhysics>().AddToVelocity(kb * Time.deltaTime);
+                GetComponent<BasicPhysics>().AddToVelocity(kb * ScaledTime.deltaTime);
         }
         else
         {
@@ -267,7 +267,7 @@ public class Attackable : MonoBehaviour
             float forceY = Mathf.Sin(angle) * magnitude;
             Vector2 force = new Vector2(-forceX, -forceY);
             if (GetComponent<BasicPhysics>() != null)
-                GetComponent<BasicPhysics>().AddToVelocity(force * Time.deltaTime);
+                GetComponent<BasicPhysics>().AddToVelocity(force * ScaledTime.deltaTime);
         }
     }
     public HitResult TakeHit(Hitbox hb)

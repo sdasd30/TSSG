@@ -294,7 +294,7 @@ public class MovementBase : MonoBehaviour
     public void ApplyJumpVector(Vector2 scale)
     {
         float y = m_jumpVector.y;
-        Vector2 jv = new Vector2(m_jumpVector.x, y); //- Mathf.Max (0, m_physics.TrueVelocity.y / Time.deltaTime));
+        Vector2 jv = new Vector2(m_jumpVector.x, y); //- Mathf.Max (0, m_physics.TrueVelocity.y / ScaledTime.deltaTime));
         jv.x *= scale.x;
         jv.y *= scale.y;
         m_physics.AddSelfForce(jv, 0f);

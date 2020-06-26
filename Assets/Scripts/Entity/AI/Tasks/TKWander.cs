@@ -32,7 +32,7 @@ public class TKWander : Task {
 			float d = Vector2.Distance (new Vector2 (transform.position.x, transform.position.y),
 				          new Vector2 (NextTarget.x, NextTarget.y));
 			if (d < TargetPositionTolerance) {
-				m_currentTimeStopped += Time.deltaTime;
+				m_currentTimeStopped += ScaledTime.deltaTime;
 				if (m_currentTimeStopped > m_nextTimeStop)
 					SetNextTarget ();
 			}

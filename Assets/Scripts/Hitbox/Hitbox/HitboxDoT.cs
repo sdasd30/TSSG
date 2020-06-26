@@ -16,7 +16,7 @@ public class HitboxDoT : Hitbox {
 			foreach(Attackable a in m_overlappingControl) {
 				a.TakeHit (ToHitInfo());
 			}
-			Duration = Duration - Time.deltaTime;
+			Duration = Duration - ScaledTime.deltaTime;
 		} else if (m_hasDuration) {
 			GameObject.Destroy (gameObject);
 		}

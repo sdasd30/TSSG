@@ -44,7 +44,7 @@ public class BulletShooter : InputHandler
         }
         if (coolDown >= 0)
         {
-            coolDown -= 1 * Time.deltaTime;
+            coolDown -= 1 * ScaledTime.deltaTime;
         }
     }
 

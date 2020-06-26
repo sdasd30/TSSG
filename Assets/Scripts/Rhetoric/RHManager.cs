@@ -15,6 +15,8 @@ public class RHManager : MonoBehaviour
     [SerializeField]
     private Transform m_SlowText;
     [SerializeField]
+    private Transform m_PauseText;
+    [SerializeField]
     private RHUIHistoryText m_HistoryTextUI;
     [SerializeField]
     private RHUIResourceText m_ResourceUI;
@@ -156,15 +158,17 @@ public class RHManager : MonoBehaviour
     {
         if (response == null || response.textValue.Length == 0)
             return;
-        AddHistoryText(response.textValue, response.fontColor, response.fontSize);
+        if (response.isPausing)
+            SetPause(true);
+        AddHistoryText(response.textValue, response.fontColor, response.fontSize,response.isPausing);
     }
     public static void AddHistoryText(string s)
     {
         AddHistoryText(s, Color.white);
     }
-    public static void AddHistoryText(string s, Color c, int fontSize = 12)
+    public static void AddHistoryText(string s, Color c, int fontSize = 12,bool isPausing = false)
     {
-        m_instance.m_HistoryTextUI.AddLine(s, c, fontSize);
+        m_instance.m_HistoryTextUI.AddLine(s, c, fontSize,isPausing);
     }
     public static void ClearHistory()
     {
@@ -177,6 +181,12 @@ public class RHManager : MonoBehaviour
     public static void SetSlowTextActive(bool isActive)
     {
         m_instance.m_SlowText.gameObject.SetActive(isActive);
+    }
+    public static void SetPause(bool isPaused)
+    {
+        m_instance.m_PauseText.gameObject.SetActive(isPaused);
+        ScaledTime.SetPause(isPaused, true);
+
     }
     public static void SetResourceUIActive(RHSpeaker speaker)
     {

@@ -38,7 +38,7 @@ public class Spawner : MonoBehaviour
         if (respawnObj)
         {
 
-            currentTime += Time.deltaTime;
+            currentTime += ScaledTime.deltaTime;
             if (currentTime > Interval && m_spawnedItems < Max_Items)
             {
                 float newX = transform.position.x;

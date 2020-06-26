@@ -39,7 +39,7 @@ public class Background : MonoBehaviour {
 			transform.position += new Vector3 (deltaX * paralaxSpeed,deltaY*paralaxSpeed, 0f);
 		}
 		if (autoScroll) {
-			transform.position += innateSpeed * Time.deltaTime;
+			transform.position += innateSpeed * ScaledTime.deltaTime;
 		}
 		if (lockOnCam) {
 			transform.position = new Vector3 (cameraTransform.position.x, cameraTransform.position.y, transform.position.z);
