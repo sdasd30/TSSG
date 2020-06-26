@@ -53,7 +53,10 @@ public class DialogueOptionBox : Textbox {
             hoverText.SetText(dop.hoverText);
         }
         EventSystem.current.SetSelectedGameObject(newOption);
-	}
+        Vector2 v = m_OptionsTransform.gameObject.GetComponent<RectTransform>().sizeDelta;
+        m_OptionsTransform.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(v.x, v.y + 51);
+
+    }
 
 	public void AddDialogueOption(string optionText, DialogueOption.SelectFunction func, string hoverText = "", bool autoClose = true) {
 		GameObject newOption = Instantiate (FindObjectOfType<TextboxManager> ().DialogueOptionPrefab, m_OptionsTransform);
@@ -70,4 +73,13 @@ public class DialogueOptionBox : Textbox {
         }
         EventSystem.current.SetSelectedGameObject(newOption);
 	}
+    public void SetScrollValue(float value)
+    {
+        m_scrollbar.GetComponent<Scrollbar>().value = value;
+    }
+    public float GetScrollValue()
+    {
+        return m_scrollbar.GetComponent<Scrollbar>().value;
+    }
+
 }

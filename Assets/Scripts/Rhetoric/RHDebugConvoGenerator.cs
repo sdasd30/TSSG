@@ -60,6 +60,8 @@ public class RHDebugConvoGenerator : MonoBehaviour
         float threashould = Random.Range(m_conversationThreashouldRange.x, m_conversationThreashouldRange.y);
         float maxValue = Random.Range(m_conversationMaxRange.x, m_conversationMaxRange.y);
         o.GetComponent<RHConversation>().SetDebug(timeLimit, threashould, maxValue);
+        DefaultListener.SetEmotionalIntensity(Random.Range(m_listenerEmotionsRange.x, m_listenerEmotionsRange.y));
+
         return o;
     }
 

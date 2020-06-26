@@ -44,6 +44,8 @@ public class RHStatement : MonoBehaviour
 
     [SerializeField]
     private string m_hoverText = "Generic Description";
+    [SerializeField]
+    private float m_listRankingPriority = 1.0f;
 
     [SerializeField]
     private RHResponseString m_responseString;
@@ -150,7 +152,7 @@ public class RHStatement : MonoBehaviour
         }
         return value;
     }
-    public virtual bool IsEnabled(RHSpeaker speaker, RHListener listener, RHConversation c)
+    public virtual bool IsEnabled(RHSpeaker speaker, RHConversation c)
     {
         return speaker.meetsRequirements(m_requirements);
     }
@@ -189,12 +191,12 @@ public class RHStatement : MonoBehaviour
         RHStatement st = GetEmptyGenerateResourcesStatement();
         return st;
     }
-    public RHSGenerateResources GetEmptyGenerateResourcesStatement()
+    
+    public virtual float GetListRankingPriority(RHSpeaker speaker, RHConversation c)
     {
-        GameObject go = Instantiate(RHManager.GenerateResourcesPrefab);
-        RHSGenerateResources st = go.GetComponent<RHSGenerateResources>();
-        Destroy(go);
-        return st;
+        if (IsEnabled(speaker, c))
+            return m_listRankingPriority + 100f;
+        return m_listRankingPriority;
     }
     public virtual RHResponseString GetResponseString(RHListener listener, RHSpeaker speaker, float effectiveness)
     {
@@ -245,6 +247,7 @@ public class RHStatement : MonoBehaviour
         }
         return response;
     }
+
     protected float GetResponseLengthFromAuthority(float AuthorityValue)
     {
         if (AuthorityValue > 0.0f)
@@ -260,12 +263,20 @@ public class RHStatement : MonoBehaviour
             else if (AuthorityValue > -30f && RandomChanceRange(100, 10f, false))
                 return 0.0f;
 
-            return Mathf.RoundToInt((100 + AuthorityValue)/100 * 5f) + 5f + Random.RandomRange(-1,1);
+            return Mathf.RoundToInt(Mathf.Abs(AuthorityValue)/100 * 5f) + 5f + Random.RandomRange(-1,1);
         }
+    }
+    protected RHSGenerateResources GetEmptyGenerateResourcesStatement()
+    {
+        GameObject go = Instantiate(RHManager.GenerateResourcesPrefab);
+        RHSGenerateResources st = go.GetComponent<RHSGenerateResources>();
+        Destroy(go);
+        return st;
     }
     protected bool RandomChanceRange(float max, float value,bool invert)
     {
-        return (invert)?Random.Range(0, max) >= value : Random.Range(0,max) < value;
+        float n = Random.Range(0, max);
+        return (invert)? n >= value : n < value;
     }
 
     private Dictionary<float, RHResource> RegisterChance(Dictionary<float, RHResource> oldDict, RHResource newStatement, float weight)

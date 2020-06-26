@@ -23,7 +23,7 @@ public class RHPersonalityTrait : MonoBehaviour
     {
         return baseValue;
     }
-    public virtual float OnStatementUsed(float baseValue, RHStatement statement, RHListener l, RHSpeaker speaker, RHConversation conversation)
+    public virtual float OnStatementUsed(float baseValue, RHStatement statement, RHListener l, RHSpeaker speaker, RHConversation conversation, RHStat s = RHStat.CURRENT_PERSUASION_LEVEL)
     {
         return baseValue;
     }

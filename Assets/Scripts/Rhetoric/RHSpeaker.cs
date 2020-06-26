@@ -87,7 +87,7 @@ public class RHSpeaker : MonoBehaviour
     {
         if (GetComponent<MovementBase>() != null && GetComponent<MovementBase>().IsPlayerControl)
         {
-            RHManager.CreateDialogueOptionList(availableStatements, conversation);
+            RHManager.CreateDialogueOptionList(availableStatements,this, conversation);
             RHManager.SetResourceUIActive(this);
         }
         foreach (RHPersonalityTrait t in m_traits)
@@ -95,10 +95,10 @@ public class RHSpeaker : MonoBehaviour
             t.OnSpeakerStart(this, listeners, conversation);
         }
     }
-    public void conversationUpdate(RHConversation c)
+    public void resourceUpdate(RHConversation c,RHListener l, float conversationDelta)
     {
         foreach (RHResource r in m_resources)
-            r.OnUpdate(this, c);
+            r.OnUpdate(this,l, c, conversationDelta);
     }
     private void InitializeDebug()
     {

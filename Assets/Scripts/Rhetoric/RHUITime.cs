@@ -64,9 +64,10 @@ public class RHUITime : MonoBehaviour
             m_nextStartingTime += (+duration) * SCALING_FACTOR;
         } else
         {
+            
+            pushBackStatements(timeItemStarts, duration);
             float t = (timeItemStarts - startingTime) * SCALING_FACTOR;
             newObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(t , 0f);
-            pushBackStatements(timeItemStarts, duration);
         }
         Vector2 v = newObj.GetComponent<RectTransform>().sizeDelta;
         newObj.transform.Find("Label").gameObject.GetComponent<Text>().text = name;
@@ -87,7 +88,7 @@ public class RHUITime : MonoBehaviour
         float durationOffset = duration * SCALING_FACTOR;
         foreach(RectTransform t in ActiveTransform.transform)
         {
-            if (t.anchoredPosition.x > startingX)
+            if (t.anchoredPosition.x + 10f >= startingX)
             {
                 Vector2 v = t.anchoredPosition;
                 t.anchoredPosition = new Vector2(t.anchoredPosition.x + durationOffset, t.anchoredPosition.y);

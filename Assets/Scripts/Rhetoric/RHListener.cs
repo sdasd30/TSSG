@@ -12,7 +12,7 @@ public class RHListener : MonoBehaviour
 
     private Dictionary<RHPersonalityTrait, ModifyValueFunction> statementModifiers = new Dictionary<RHPersonalityTrait, ModifyValueFunction>();
     private Dictionary<RHPersonalityTrait, BaseValueFunction> baseValueModifiers = new Dictionary<RHPersonalityTrait, BaseValueFunction>();
-
+    private Dictionary<RHStat, List<ImpressionModifier>> m_temporaryModifiers = new Dictionary<RHStat, List<ImpressionModifier>>();
     private void Start()
     {
         RHPersonalityTrait[] traits = GetComponentsInChildren<RHPersonalityTrait>();
@@ -25,11 +25,11 @@ public class RHListener : MonoBehaviour
             t.OnListenerStart(this, speaker, conversation);
         }
     }
-    public float ApplyStatementModifiers(float baseValue, RHSpeaker speaker, RHStatement statement, RHConversation conversation)
+    public float ApplyStatementModifiers(float baseValue, RHSpeaker speaker, RHStatement statement, RHConversation conversation, RHStat s)
     {
         foreach (RHPersonalityTrait t in m_traits)
         {
-            baseValue = t.OnStatementUsed(baseValue, statement, this, speaker, conversation);
+            baseValue = t.OnStatementUsed(baseValue, statement, this, speaker, conversation,s);
         }
         return baseValue;
     }
@@ -62,7 +62,68 @@ public class RHListener : MonoBehaviour
         
         return ApplyPersonalityTraits(speaker,n, applyPersonalityTraits);
     }
-    private float ApplyPersonalityTraits(RHSpeaker speaker, Noun n,bool applyPersonalityTraits = false)
+    public virtual RHResponseString GetResponseString(RHListener listener, RHSpeaker speaker, float effectiveness)
+    {
+        return new RHResponseString("");
+    }
+    public void ModifyStat(RHSpeaker s, RHConversation c, RHStat stat, float value, bool permanent = false)
+    {
+        if (stat == RHStat.EMOTIONS)
+        {
+            m_emotionalIntensity += value;
+            return;
+        }
+            
+        string label = getModifierString(s,c,permanent);
+        ImpressionModifier i = new ImpressionModifier(label, value);
+        if (!permanent)
+        {
+            if (!m_temporaryModifiers.ContainsKey(stat))
+                m_temporaryModifiers[stat] = new List<ImpressionModifier>();
+            m_temporaryModifiers[stat].Add(i);
+        }
+        
+        GetComponent<Observer>().AddModifier(s.gameObject.name, RHStatToNoun(stat), i);
+    }
+    public Dictionary<RHStat, float> GetDifferenceStats(RHSpeaker speaker)
+    {
+        Dictionary<RHStat, float> diffs = new Dictionary<RHStat, float>();
+        foreach (RHStat s in m_temporaryModifiers.Keys)
+        {
+            diffs[s] = 0f;
+            foreach (ImpressionModifier im in m_temporaryModifiers[s])
+                diffs[s] += im.getModValue();
+        }
+        return diffs;
+    }
+
+    public void ClearTempStats(RHSpeaker speaker)
+    {
+        foreach (RHStat s in m_temporaryModifiers.Keys)
+        {
+            foreach (ImpressionModifier im in m_temporaryModifiers[s])
+                GetComponent<Observer>().ClearModifier(speaker.gameObject.name, RHStatToNoun(s), im);
+        }
+    }
+    public string getModifierString(RHSpeaker s, RHConversation c, bool permanent = false)
+    {
+        return "RHConv" + s.gameObject.name + "::conv::" + c.gameObject.name + "Time:" + ScaledTime.TimeElapsed.ToString() + "::perm::" + permanent.ToString();
+    }
+    private Noun RHStatToNoun(RHStat s)
+    {
+        switch (s)
+        {
+            case RHStat.AUTHORITY:
+                return new NOUNAuthority();
+            case RHStat.FAVOR:
+                return new NOUNFavorable();
+            case RHStat.TRUST:
+                return new NOUNTrustable();
+            default:
+                return new NOUNAuthority();
+        }
+    }
+    private float ApplyPersonalityTraits(RHSpeaker speaker, Noun n, bool applyPersonalityTraits = false)
     {
         float f = GetComponent<Observer>().GetImpressionModifiers(speaker.gameObject.name, n);
         if (!applyPersonalityTraits)
@@ -72,9 +133,5 @@ public class RHListener : MonoBehaviour
             f = t.ModifyNoun(this, f, speaker, n);
         }
         return f;
-    }
-    public virtual RHResponseString GetResponseString(RHListener listener, RHSpeaker speaker, float effectiveness)
-    {
-        return new RHResponseString("");
     }
 }
