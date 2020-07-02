@@ -32,6 +32,8 @@ public class RHDebugConvoGenerator : MonoBehaviour
 
     private GameObject m_conversation;
 
+    private bool convoGenerated = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,16 +43,20 @@ public class RHDebugConvoGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (m_conversation == null)
+        if (m_conversation == null && !convoGenerated)
         {
             m_conversation = GenerateConversation();
-            //if (m_autoGenerateListener)
-            //{
-            //    randomizeListener(DefaultListener,m_conversation.GetComponent<RHConversation>());
-            //}
-            ////RHManager.StartRhetoricBattle(m_conversation.GetComponent<RHConversation>(), DefaultSpeaker, DefaultListener);
+            if (m_autoGenerateListener)
+            {
+                randomizeListener(DefaultListener, m_conversation.GetComponent<RHConversation>());
+            }
+            List<RHSpeaker> participants = new List<RHSpeaker>();
+            participants.Add(DefaultSpeaker);
+            participants.Add(DefaultListener.GetComponent<RHSpeaker>());
+            RHManager.StartRhetoricBattle(m_conversation.GetComponent<RHConversation>(), participants, DefaultSpeaker);
+            convoGenerated = true;
         }
-            
+
     }
 
     private GameObject GenerateConversation()
@@ -59,9 +65,7 @@ public class RHDebugConvoGenerator : MonoBehaviour
         float timeLimit = Random.Range(m_conversationTimeRange.x, m_conversationTimeRange.y);
         float threashould = Random.Range(m_conversationThreashouldRange.x, m_conversationThreashouldRange.y);
         float maxValue = Random.Range(m_conversationMaxRange.x, m_conversationMaxRange.y);
-        //o.GetComponent<RHConversation>().SetDebug(timeLimit, threashould, maxValue);
-        //DefaultListener.SetEmotionalIntensity(Random.Range(m_listenerEmotionsRange.x, m_listenerEmotionsRange.y));
-
+        o.GetComponent<RHConversation>().SetInitialValues(timeLimit, maxValue, threashould);
         return o;
     }
 

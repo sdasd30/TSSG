@@ -44,11 +44,13 @@ public class RHConversation : MonoBehaviour
     private Dictionary<RHListener, float> m_listeners_with_scores;
     public Dictionary<RHListener, float> Listeners { get { return m_listeners_with_scores; } }
     private List<RHSpeaker> m_speakers;
+    private RHSpeaker m_startingSpeaker;
     private List<RHListener> m_listeners;
     public List<RHSpeaker> Speakers { get { return m_speakers; } }
 
-    private List<RHStatement> m_previousStatements = new List<RHStatement>();
+    
     private List<RHResponseString> m_registeredResponses = new List<RHResponseString>();
+    private List<RHStatement> m_previousStatements = new List<RHStatement>();
     public List<RHStatement> PreviousStatements { get { return m_previousStatements; } }
 
 
@@ -56,26 +58,16 @@ public class RHConversation : MonoBehaviour
     public virtual float InterestTimeEnd { get { return m_nextInterestTimeLimit; } private set { m_nextInterestTimeLimit = value; } }
 
     private bool m_isFinished = false;
+    public bool IsFinished { get { return m_isFinished; } }
     private float m_nextStatementEnd;
     private bool m_battleStarted = false;
     private GameObject m_currentDialogueBox;
     private RHUITime m_timeUI;    
     private float m_nextEventTime = float.MaxValue;
-    private int m_nextSpeakerIndex = 0;
     private float m_lastScaled = 0;
 
-    private class RegisteredStatement
-    {
-        public RHStatement statement;
-        public RHSpeaker speaker;
-        public RegisteredStatement(RHStatement statement, RHSpeaker speaker)
-        {
-            this.statement = statement;
-            this.speaker = speaker;
-        }
-    }
-    private Dictionary<RHSpeaker, List<RegisteredStatement>> m_statementQueue = new Dictionary<RHSpeaker, List<RegisteredStatement>>();
-    private RegisteredStatement m_currentStatement;
+    private RHQueue m_queue;
+    private RHRegisteredStatement m_currentStatement;
 
     private class RegisteredEvent
     {
@@ -90,13 +82,71 @@ public class RHConversation : MonoBehaviour
 
     private Dictionary<float, List<RegisteredEvent>> m_registeredEvents = new Dictionary<float, List<RegisteredEvent>>();
 
-    public void SetDebug(float timeLimit, float threashould, float maxValue)
+    public string MeetsRequirements(RHStatement statement, RHSpeaker speaker)
     {
-        m_nextInterestTimeLimit = timeLimit;
-        m_threashould = threashould;
-        m_maxValue = maxValue;
+        if (m_permittedStatements.Count > 0)
+        {
+            bool found = false;
+            foreach (RHStatement s in m_bannedStatements)
+                if (s.StatementName == statement.StatementName)
+                    found = true;
+            if (!found)
+                return "Not permitted for this conversation";
+        }
+        if (m_bannedStatements.Count > 0)
+        {
+            foreach (RHStatement s in m_bannedStatements)
+                if (s.StatementName == statement.StatementName)
+                    return "Not permitted for this conversation";
+        }
+
+        return statement.MeetsRequirements(speaker,this);
+    }
+    public void SetInitialValues(float timeLimit, float maxPersuasion, float persuasionRequirement)
+    {
+        m_startingInterest = timeLimit;
+        m_maxValue = maxPersuasion;
+        m_threashould = persuasionRequirement;
+    }
+    public void StartRhetoricBattle(List<RHSpeaker> participants, RHSpeaker startingSpeaker)
+    {
+        if (participants.Count == 0)
+        {
+            Debug.LogError("Conversation attempted with 0 participants");
+            return;
+        }
+
+        ScaledTime.SetPause(true, true);
+        m_nextStatementEnd = ScaledTime.UITimeElapsed;
+        m_nextInterestTimeLimit = ScaledTime.UITimeElapsed + m_startingInterest;
+        RHManager.UITime().SetActive(true);
+        m_timeUI = RHManager.UITime().GetComponent<RHUITime>();
+        m_timeUI.StartUI(this);
+
+        m_queue = new RHQueue();
+        ScaledTime.SetScale(0f);
+        m_lastScaled = ScaledTime.UITimeElapsed;
+
+        this.m_listeners_with_scores = new Dictionary<RHListener, float>();
+        this.m_listeners = new List<RHListener>();
+        this.m_speakers = new List<RHSpeaker>();
+        
+        m_speakerColorMaps = new Dictionary<RHSpeaker, Color>();
+        int colorIndex = 0;
+        m_startingSpeaker = startingSpeaker;
+        foreach (RHSpeaker s in participants)
+        {
+            initializeSpeaker(s, colorIndex,startingSpeaker);
+            colorIndex = (colorIndex + 1) % m_defaultColors.Count;
+        }
+        RefreshStatementMenu(m_startingSpeaker);
+        m_previousStatements = new List<RHStatement>();
+        RHManager.ClearHistory();
+        RHManager.SetHistoryTextActive(true);
+        RHManager.AddHistoryText(m_introText);
     }
 
+    
     public List<RHStatement> GetValidStatements(RHSpeaker speaker )
     {
         return speaker.AvailableStatements;
@@ -110,175 +160,144 @@ public class RHConversation : MonoBehaviour
     public void QueueStatement(RHStatement statement, RHSpeaker speaker,bool stack = false)
     {
         if (!m_battleStarted)
-        {
-            initializeTime();
-        }
+            startActiveBattle();
         
         statement.OnStatementQueued(speaker);
-        RegisteredStatement rs = new RegisteredStatement(statement, speaker);
-        m_statementQueue[speaker].Add(rs);
-
-        m_timeUI.AddItem(statement.StatementName, statement.Time, m_speakerColorMaps[speaker],false, calculateQueuedStatementExecutionTime(rs),stack);
+        RHRegisteredStatement rs = new RHRegisteredStatement(statement, speaker,this);
+        m_queue.RegisterStatement(rs);
+        bool clickable = speaker == m_startingSpeaker && ((statement as RHSDeadAir) == null);
+        m_timeUI.AddItem(rs, m_speakerColorMaps[speaker], m_queue.CalculateQueuedStatementExecutionTime(rs, m_nextStatementEnd),stack, clickable);
         if (!m_battleStarted)
-            AdvanceStatements();
+            advanceStatements();
         m_battleStarted = true;
     }
-
-    public void QueueEffect(RHSpeaker speaker, string name, float startingTime, float duration)
+    public void DequeueStatement(RHRegisteredStatement rs)
     {
-        m_timeUI.AddItem(name, duration, m_speakerColorMaps[speaker],true,startingTime,false);
+        rs.statement.OnStatementCancelled(rs.speaker);
+        m_timeUI.RemoveItem(rs);
+        m_queue.RemoveStatement(rs);
     }
-    
+
     public void ModifyInterestTime(float delta)
     {
         m_nextInterestTimeLimit += delta;
     }
-    private void initializeTime()
+    public void ModifyListenerPersuasion(RHListener l, float delta)
     {
-        
-        m_nextStatementEnd = 0f;
-        m_nextInterestTimeLimit = ScaledTime.UITimeElapsed + m_startingInterest;
-        RHManager.UITime().SetActive(true);
-        m_timeUI = RHManager.UITime().GetComponent<RHUITime>();
-        m_timeUI.StartUI(this);
+        if (m_listeners.Contains(l))
+        {
+            m_listeners_with_scores[l] += delta;
+        }
+        return;
+    }    
 
+    public void SetDialogueBox(GameObject go) {
+        m_currentDialogueBox = go;
     }
-    private float calculateQueuedStatementExecutionTime(RegisteredStatement registeredStatement)
+    
+    public void RefreshStatementMenu(RHSpeaker s)
     {
-        float executionTime = m_nextStatementEnd;
-        int tempIndex = m_nextSpeakerIndex;
-        Dictionary<RHSpeaker, int> nextEntry = new Dictionary<RHSpeaker, int>();
-        
-        int emptyQueues = 0;
-        while (emptyQueues < m_speakers.Count)
+        List<RHStatement> stlist = GetAvailableStatements(s);
+        float scroll = 0f;
+        DialogueOptionBox dop = FindObjectOfType<DialogueOptionBox>();
+        if (dop != null)
         {
-            RHSpeaker nextSpeaker = m_speakers[tempIndex];
-            tempIndex = (tempIndex + 1) % m_speakers.Count;
-            List<RegisteredStatement> queue = m_statementQueue[nextSpeaker];
-            if (!nextEntry.ContainsKey(nextSpeaker))
-                nextEntry[nextSpeaker] = 0;
-            if (queue.Count > nextEntry[nextSpeaker])
-            {
-                RegisteredStatement next_statement = queue[nextEntry[nextSpeaker]];
-                if (next_statement == registeredStatement)
-                    break;
-                executionTime += next_statement.statement.Time;
-                nextEntry[nextSpeaker]++;
-                emptyQueues = 0;
-            } else
-            {
-                emptyQueues++;
-            }
+            Destroy(dop.gameObject);
+            scroll = dop.GetScrollValue();
         }
-        return executionTime;
+        RHManager.CreateDialogueOptionList(stlist, s, this, "Select your next statement",scroll);
     }
-    private void registerEvents(List<RHEvent> eList, RHSpeaker speaker, float startingTime)
+    protected virtual List<RHStatement> GetAvailableStatements(RHSpeaker speaker)
     {
-        foreach(RHEvent e in eList)
+        return speaker.AvailableStatements;
+    }
+    protected virtual bool isRhetoricBattleFinished()
+    {
+        if (ScaledTime.UITimeElapsed > m_nextInterestTimeLimit)
+            return true;
+        foreach (RHListener l in m_listeners)
+            if (l.GetComponent<RHSpeaker>() != m_startingSpeaker && m_listeners_with_scores[l] < MaxValue)
+                return false;
+        return true;
+    }
+
+    protected virtual bool processFinish(RHListener listener, RHUIFinishWindow uif)
+    {
+        foreach (RHSpeaker s in m_speakers)
         {
-            registerEvent(e, speaker, startingTime);
+            Dictionary<RHStat, float> d = listener.GetDifferenceStats(s);
+            foreach (RHStat stat in d.Keys)
+                listener.ModifyStat(s, this, stat, d[stat] * m_statRetainAmount, true);
+            listener.ClearTempStats(s);
+        }
+
+        if (m_listeners_with_scores[listener] > m_threashould)
+        {
+            OnConversationSuccess(listener, uif);
+            return true;
+        }
+        else
+        {
+            OnConversationFailure(listener, uif);
+            return false;
         }
     }
-    private void registerEvent(RHEvent e, RHSpeaker speaker, float startingTime)
+    protected virtual void OnConversationSuccess(RHListener listener, RHUIFinishWindow uif)
     {
-        float eventTime = startingTime + e.TimeOffsetFromStatementStart;
-        m_nextEventTime = Mathf.Min(m_nextEventTime, eventTime);
-        if (!m_registeredEvents.ContainsKey(eventTime))
-            m_registeredEvents[eventTime] = new List<RegisteredEvent>();
-        m_registeredEvents[eventTime].Add(new RegisteredEvent(e,speaker));
-    }
-    private void processEvents()
-    {
-        if (ScaledTime.UITimeElapsed > m_nextEventTime)
+        foreach (RHFinishEffect rfe in m_winEffects)
         {
-            foreach (RegisteredEvent e in m_registeredEvents[m_nextEventTime])
-            {
-                foreach(RHListener l in m_listeners)
-                {
-                    if (e.speaker.gameObject != l.gameObject)
-                        e.m_event.ExecuteEvent(e.speaker, l);
-                }
-            }
-            m_registeredEvents.Remove(m_nextEventTime);
-            if (m_registeredEvents.Count > 0)
-            {
-                m_nextEventTime = Mathf.Min(m_registeredEvents.Keys.ToArray());
-            } else
-            {
-                m_nextEventTime = float.MaxValue;
-            }
-            
+            uif.AddListenerResult( rfe.ExecuteFinishEffect(m_startingSpeaker, listener));
+        }
+    }
+    protected virtual void OnConversationFailure(RHListener listener, RHUIFinishWindow uif)
+    {
+        foreach (RHFinishEffect rfe in m_failEffects)
+        {
+            uif.AddListenerResult(rfe.ExecuteFinishEffect(m_startingSpeaker, listener));
         }
     }
 
-    private void callNextStatement()
+    void Update()
     {
-        if (m_currentStatement != null) { 
-            BroadcastStatement(m_currentStatement.speaker, m_currentStatement.statement);
-            m_previousStatements.Add(m_currentStatement.statement);
-        }
-    }
-    private void AdvanceStatements()
-    {
-        RegisteredStatement next_statement = null;
-        int emptyQueues = 0;
-        RHSpeaker nextSpeaker = null;
-        while (emptyQueues < m_speakers.Count)
-        {
-            nextSpeaker = m_speakers[m_nextSpeakerIndex];
-            m_nextSpeakerIndex = (m_nextSpeakerIndex + 1) % m_speakers.Count;
-            List<RegisteredStatement> queue = m_statementQueue[nextSpeaker];
-            if (queue.Count > 0)
-            {
-                next_statement = new RegisteredStatement(queue[0].statement,nextSpeaker);        
-                m_statementQueue[nextSpeaker].RemoveAt(0);
-                break;
-            }
-            else
-            {
-                emptyQueues++;
-            }
-        }
-        if (next_statement == null) {
-            QueueStatement(RHManager.DeadAirPrefab.GetComponent<RHStatement>(),m_speakers[m_nextSpeakerIndex],true);
-            AdvanceStatements();
+        if (!m_battleStarted)
             return;
-        }
-        else {
-            m_currentStatement = next_statement;
-            registerEvents(m_currentStatement.statement.RHEvents, nextSpeaker, ScaledTime.UITimeElapsed);
-        }
-        m_nextStatementEnd = ScaledTime.UITimeElapsed + m_currentStatement.statement.Time;
-    }
-    private void BroadcastStatement(RHSpeaker speaker, RHStatement statement)
-    {
-        statement.OnStatementExecuted(speaker);
-        foreach (RHListener listener in m_listeners)
+
+        UpdateParticipants();
+        
+        if (ScaledTime.UITimeElapsed >= m_nextStatementEnd)
         {
-            if (listener.GetComponent<RHSpeaker>() == speaker)
-            {
-                continue;
-            }
-            listener.GetComponent<AITaskManager>()?.triggerEvent(new AIEVStatementReceived(this, statement, speaker));
-            
-            for (int i =0; i < 5; i++ )
-            {
-                RHStat s = (RHStat)i;
-                float power = statement.GetPower(speaker, listener, this,s);
-                if (power == 0)
-                    continue;
-                float diff = listener.ApplyStatementModifiers(power, speaker, statement, this, s);
-                if (s == RHStat.CURRENT_PERSUASION_LEVEL)
-                {
-                    m_listeners_with_scores[listener] += diff;
-                    RHManager.AddHistoryText(statement.GetResponseString(listener, speaker, diff));
-                    RHManager.AddHistoryText(listener.GetResponseString(listener, speaker, diff));
-                } else
-                {
-                    listener.ModifyStat(speaker, this, s, diff);
-                }
-            }
+            callNextStatement();
+            advanceStatements();
         }
+        if (isRhetoricBattleFinished())
+            OnFinish();
+
+        processEvents();
+        
+        processSlowInput();
+    }
+
+    private void initializeSpeaker(RHSpeaker s, int colorIndex, RHSpeaker startingSpeaker)
+    {
+        this.m_speakers.Add(s);
+        RHListener l = s.GetComponent<RHListener>();
+        this.m_listeners_with_scores.Add(l, startingScore(l));
+        this.m_listeners.Add(l);
+        m_queue.RegisterSpeaker(s);
+        if (s.speakerColor == Color.white)
+            m_speakerColorMaps[s] = m_defaultColors[colorIndex];
+        else
+            m_speakerColorMaps[s] = s.speakerColor;
+
+        List<RHStatement> stlist = GetAvailableStatements(s);
+        s.OnRhetoricStart(stlist, this, this.m_listeners);
+
+        if (s == startingSpeaker)
+            return;
+
+        GameObject go = Instantiate(RHManager.PrefabUIListener(), RHManager.ListenersBaseTransform());
+        go.GetComponent<RHUIListener>().InitializeUI(l, this, startingSpeaker, m_speakerColorMaps[l.GetComponent<RHSpeaker>()]);
+        l.GetComponent<AITaskManager>()?.triggerEvent(new AIEVConversationStarted(this));
     }
     private void ProcessHistoryText(RHStatement st, RHSpeaker speaker, RHListener listener, float diff)
     {
@@ -291,24 +310,21 @@ public class RHConversation : MonoBehaviour
     private int GetNumberOfOccurances(RHStatement baseStatement)
     {
         int i = 0;
-        foreach( RHStatement s in m_previousStatements)
+        foreach (RHStatement s in m_previousStatements)
         {
             if (s.StatementName == baseStatement.StatementName)
                 i++;
         }
         return i;
     }
-    private void OnFinish()
+    public void CloseConversation()
     {
-        foreach (RHListener listener in m_listeners)
-        {
-            processFinish(listener);
-        }
         RHManager.UITime().SetActive(false);
         RHManager.UITime().GetComponent<RHUITime>().ClearItems();
         RHManager.ClearHistory();
         RHManager.SetHistoryTextActive(false);
         RHManager.SetResourceUIInActive();
+        RHManager.FinishBox.gameObject.SetActive(false);
 
         m_isFinished = true;
         if (m_currentDialogueBox != null)
@@ -318,160 +334,142 @@ public class RHConversation : MonoBehaviour
 
         ScaledTime.SetScale(1f);
     }
+    private void OnFinish()
+    {
+        RHUIFinishWindow finWin = RHManager.FinishBox.GetComponent<RHUIFinishWindow>();
+        
+        RHManager.FinishBox.gameObject.SetActive(true);
+        bool success = true;
+        foreach (RHListener listener in m_listeners)
+        {
+            success = success && processFinish(listener,finWin);
+        }
+        finWin.SetConversation(this, success);
+        
+    }
     private void processSlowInput()
     {
+        if (!m_canSlow)
+            return;
         if (Input.GetKeyDown("space"))
         {
             if (ScaledTime.GetScale(true) == 0.0f)
             {
                 RHManager.SetPause(false);
-            } else if (ScaledTime.GetScale(true) == 1.0f)
+            }
+            else if (ScaledTime.GetScale(true) == 1.0f)
             {
                 RHManager.SetSlowTextActive(true);
-                ScaledTime.SetScale(0.5f,true);
+                ScaledTime.SetScale(0.5f, true);
             }
             else
             {
                 RHManager.SetSlowTextActive(false);
-                ScaledTime.SetScale(1.0f,true);
+                ScaledTime.SetScale(1.0f, true);
             }
         }
     }
-    private float startingScore(RHListener listener) {
-        return StartingInterest;
-    }
-    protected virtual List<RHStatement> GetAvailableStatements(RHSpeaker speaker)
-    {
-        return speaker.AvailableStatements;
-    }
-    protected virtual bool isRhetoricBattleOver()
-    {
-        return (ScaledTime.UITimeElapsed > m_nextInterestTimeLimit);
-    }
 
-    protected virtual void processFinish(RHListener listener)
+    private void startActiveBattle()
     {
-        foreach (RHSpeaker s in m_speakers)
-        {
-            Dictionary<RHStat, float> d = listener.GetDifferenceStats(s);
-            foreach (RHStat stat in d.Keys)
-                listener.ModifyStat(s, this, stat, d[stat] * m_statRetainAmount, true);
-            listener.ClearTempStats(s);
-        }
-            
-        if (m_listeners_with_scores[listener] > m_threashould)
-        {
-            OnConversationSuccess(listener);
-        } else
-        {
-            OnConversationFailure(listener);
-        }
-    }
 
-    protected virtual void OnConversationSuccess(RHListener listener) {
-        foreach( RHFinishEffect rfe in m_winEffects)
-        {
-            rfe.ExecuteFinishEffect(m_speakers[0], listener);
-        }
-    }
-    public virtual void OnConversationFailure(RHListener listener) {
-        foreach (RHFinishEffect rfe in m_failEffects)
-        {
-            rfe.ExecuteFinishEffect(m_speakers[0], listener);
-        }
+        ScaledTime.SetPause(false, true);
+
     }
     
-    public void StartRhetoricBattle( List<RHSpeaker> participants, RHSpeaker startingSpeaker)
+    private void onStatementStarted(RHRegisteredStatement st)
     {
-        ScaledTime.SetScale(0f);
-        this.m_listeners_with_scores = new Dictionary<RHListener, float>();
-        this.m_listeners = new List<RHListener>();
-        this.m_speakers = new List<RHSpeaker>();
-        m_speakerColorMaps = new Dictionary<RHSpeaker, Color>();
-        m_lastScaled = ScaledTime.UITimeElapsed;
-
-        if (participants.Count > 0)
+        m_currentStatement = st;
+        st.statement.OnStatementStarted(st.speaker);
+        registerEvents(st.statement.RHEvents, st.speaker, ScaledTime.UITimeElapsed);
+        m_nextStatementEnd = ScaledTime.UITimeElapsed + m_currentStatement.statement.Time;
+    }
+    private void registerEvents(List<RHEvent> eList, RHSpeaker speaker, float startingTime)
+    {
+        foreach (RHEvent e in eList)
         {
-            int colorIndex = 0;
-            foreach(RHSpeaker s in participants)
+            registerEvent(e, speaker, startingTime);
+        }
+    }
+    private void registerEvent(RHEvent e, RHSpeaker speaker, float startingTime)
+    {
+        float eventTime = startingTime + e.TimeOffsetFromStatementStart;
+        m_nextEventTime = Mathf.Min(m_nextEventTime, eventTime);
+        if (!m_registeredEvents.ContainsKey(eventTime))
+            m_registeredEvents[eventTime] = new List<RegisteredEvent>();
+        m_registeredEvents[eventTime].Add(new RegisteredEvent(e, speaker));
+    }
+    private void processEvents()
+    {
+        if (ScaledTime.UITimeElapsed > m_nextEventTime)
+        {
+            foreach (RegisteredEvent e in m_registeredEvents[m_nextEventTime])
             {
-                this.m_speakers.Add(s);
-                this.m_listeners_with_scores.Add(s.GetComponent<RHListener>(), startingScore(s.GetComponent<RHListener>()));
-                this.m_listeners.Add(s.GetComponent<RHListener>());
-                m_statementQueue[s] = new List<RegisteredStatement>();
-                if (s.speakerColor == Color.white)
-                    m_speakerColorMaps[s] = m_defaultColors[colorIndex];
-                else
-                    m_speakerColorMaps[s] = s.speakerColor;
-                colorIndex = (colorIndex + 1) % m_defaultColors.Count;
+                foreach (RHListener l in m_listeners)
+                {
+                    if (e.speaker.gameObject != l.gameObject)
+                        e.m_event.ExecuteEvent(e.speaker, l);
+                }
             }
-        } else {
-            foreach(RHSpeaker s in DefaultParticipants)
+            m_registeredEvents.Remove(m_nextEventTime);
+            if (m_registeredEvents.Count > 0)
             {
-                this.m_speakers.Add(s);
-                this.m_listeners_with_scores.Add(s.GetComponent<RHListener>(), startingScore(s.GetComponent<RHListener>()));
-                this.m_listeners.Add(s.GetComponent<RHListener>());
-            }     
+                m_nextEventTime = Mathf.Min(m_registeredEvents.Keys.ToArray());
+            }
+            else
+            {
+                m_nextEventTime = float.MaxValue;
+            }
+            RefreshStatementMenu(m_startingSpeaker);
         }
-
-        foreach (RHListener l in m_listeners)
-        {
-            if (l.GetComponent<RHSpeaker>() == startingSpeaker)
-                continue;
-            GameObject go = Instantiate(RHManager.PrefabUIListener(), RHManager.ListenersBaseTransform());
-            go.GetComponent<RHUIListener>().InitializeUI(l, this, startingSpeaker, m_speakerColorMaps[l.GetComponent<RHSpeaker>()]);
-            l.GetComponent<AITaskManager>()?.triggerEvent(new AIEVConversationStarted(this));
-        }
-        foreach (RHSpeaker sp in m_speakers)
-        {
-            List<RHStatement> stlist = GetAvailableStatements(sp);
-            sp.OnRhetoricStart(stlist,this, this.m_listeners_with_scores);
-        }
-        m_previousStatements = new List<RHStatement>();
-        RHManager.ClearHistory();
-        RHManager.SetHistoryTextActive(true);
-        RHManager.AddHistoryText(m_introText);
     }
 
-    public void SetDialogueBox(GameObject go) {
-        m_currentDialogueBox = go;
-    }
-    public void ModifyListenerValue(RHListener l, float delta)
+    private void callNextStatement()
     {
-        if (m_listeners.Contains(l))
+        if (m_currentStatement == null)
         {
-            m_listeners_with_scores[l] += delta;
-        }
-        return;
-    }
-    void Start()
-    {
-        if (m_debugExecuteOnStartup)
-            RHManager.StartRhetoricBattle(this, DefaultParticipants, DefaultParticipants[0]);
-    }
-
-    void Update()
-    {
-        if (!m_battleStarted)
+            Debug.LogError("Somehow, the current statement is null.");
             return;
+        }
+        BroadcastStatement(m_currentStatement);
+        m_previousStatements.Add(m_currentStatement.statement);
+    }
+    private void advanceStatements()
+    {
+        RHRegisteredStatement next_statement = m_queue.PopStatement();
+        if (next_statement == null)
+        {
+            QueueStatement(RHManager.DeadAirPrefab.GetComponent<RHStatement>(), m_startingSpeaker, true);
+            advanceStatements();
+        }
+        else
+        {
+            onStatementStarted(next_statement);
+        }
+    }
+    private void BroadcastStatement(RHRegisteredStatement rs)
+    {
+        rs.statement.OnStatementFinished(rs.speaker);
+        foreach (RHListener listener in m_listeners)
+        {
+            if (listener.GetComponent<RHSpeaker>() == rs.speaker)
+                continue;
+            listener.OnReceiveStatement(rs);
+        }
+    }
+
+    private float startingScore(RHListener listener)
+    {
+        return StartingInterest;
+    }
+
+    private void UpdateParticipants()
+    {
         float d = ScaledTime.UITimeElapsed - m_lastScaled;
         foreach (RHSpeaker s in m_speakers)
-            foreach(RHListener l in m_listeners)
+            foreach (RHListener l in m_listeners)
                 if (l.GetComponent<RHSpeaker>() != s)
-                    s.resourceUpdate(this,l, d);
+                    s.resourceUpdate(this, l, d);
         m_lastScaled = ScaledTime.UITimeElapsed;
-        if (ScaledTime.UITimeElapsed >= m_nextStatementEnd)
-        {
-            callNextStatement();
-            AdvanceStatements();
-        }
-        if (isRhetoricBattleOver())
-            OnFinish();
-
-
-        processEvents();
-        if (!m_canSlow)
-            return;
-        processSlowInput();
     }
 }    

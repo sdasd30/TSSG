@@ -14,7 +14,7 @@ public class RHPersonalityTrait : MonoBehaviour
     {
 
     }
-    public virtual void OnSpeakerStart(RHSpeaker speaker, Dictionary<RHListener, float> listeners, RHConversation conversation)
+    public virtual void OnSpeakerStart(RHSpeaker speaker, List<RHListener> listeners, RHConversation conversation)
     {
 
     }

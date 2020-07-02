@@ -32,16 +32,18 @@ public class RHUIListener : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (MoniteringConversation == null || MoniteringConversation.IsFinished)
+            Destroy(gameObject);
         if (Listener == null)
             return;
         float v = MoniteringConversation.Listeners[Listener];
         ProgressObject.transform.Find("Slider").GetComponent<Slider>().value = v / MoniteringConversation.MaxValue;
-        ProgressObject.transform.Find("Label").GetComponent<Text>().text = v + " / " + MoniteringConversation.Threashould;
+        ProgressObject.transform.Find("Label").GetComponent<Text>().text = v.ToString("F1") + " / " + MoniteringConversation.Threashould.ToString("F1");
         VictoryMarker.anchoredPosition = new Vector2((MoniteringConversation.Threashould / MoniteringConversation.MaxValue) * 495, -25);
-        FavorText.text = "Favor: " + Listener.GetFavor(Speaker);
-        AuthorityText.text = "Authority: " + Listener.GetAuthority(Speaker);
-        TrustText.text = "Authority: " + Listener.GetTrust(Speaker);
-        EmotionText.text = "Emotion: " + Listener.GetEmotionalIntensity();
+        FavorText.text =  Listener.GetFavor(Speaker).ToString("F1");
+        AuthorityText.text =  Listener.GetAuthority(Speaker).ToString("F1");
+        TrustText.text = Listener.GetTrust(Speaker).ToString("F1");
+        EmotionText.text =  Listener.GetEmotionalIntensity().ToString("F1");
 
         int n = Listener.Traits.Count;
         if (n != numTraits)

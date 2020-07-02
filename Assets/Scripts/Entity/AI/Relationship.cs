@@ -56,7 +56,8 @@ public class Relationship
         }
         updateImpressionModifiers();
         float value = 0;
-
+        if (!m_impressionEvaluation.ContainsKey(targetI))
+            return 0f;
         foreach (ImpressionModifier dm in m_impressionEvaluation[targetI])
         {
             value += dm.getModValue();
@@ -67,9 +68,12 @@ public class Relationship
     {
         if (!m_typeLookup.ContainsKey(i.GetType()))
         {
+            Debug.Log("Adding: " + i.GetType());
+            m_typeLookup[i.GetType()] = i;
             m_impressionEvaluation[i] = new List<ImpressionModifier>();
         }
-            
+        i = m_typeLookup[i.GetType()];
+        Debug.Log("I is: " + i);
         updateImpressionModifiers();
         foreach (ImpressionModifier dm in m_impressionEvaluation[i])
         {
@@ -81,14 +85,30 @@ public class Relationship
         }
         m_isDirty = true;
         m_impressionEvaluation[i].Add(newDM);
-        m_typeLookup[i.GetType()] = i;
+        Debug.Log("I is: " + i);
+
     }
     public void ClearModifier(Noun i, ImpressionModifier newDM)
     {
         if (!m_typeLookup.ContainsKey(i.GetType()))
+        {
             return;
+        }
+        Debug.Log("Attempting to remove: " + i.GetType());
+        if (m_typeLookup[i.GetType()] == null)
+            m_typeLookup[i.GetType()] = i;
+        i = m_typeLookup[i.GetType()];
+        
+        Debug.Log("Found: " + i);
         updateImpressionModifiers();
+        
         List<ImpressionModifier> newL = new List<ImpressionModifier>();
+        if (!m_impressionEvaluation.ContainsKey(i))
+        {
+            m_impressionEvaluation[i] = newL;
+            return;
+        }
+
         foreach (ImpressionModifier dm in m_impressionEvaluation[i])
         {
             if (dm.ID != newDM.ID)
@@ -96,7 +116,6 @@ public class Relationship
         }
         m_isDirty = true;
         m_impressionEvaluation[i] = newL;
-        m_typeLookup[i.GetType()] = null;
     }
 
 }

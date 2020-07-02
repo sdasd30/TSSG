@@ -24,12 +24,12 @@ public class RHResource
         {
             case RHResourceType.POSITIVE:
                 modValue = scaledDelta * PositiveScaleValue * Mathf.Min(3, m_Amount);
-                conversation.ModifyListenerValue(listener, modValue);
+                conversation.ModifyListenerPersuasion(listener, modValue);
                 break;
             case RHResourceType.NEGATIVE:
                 
                 modValue = scaledDelta * NegativeScaleValue * Mathf.Min(3, m_Amount);
-                conversation.ModifyListenerValue(listener, modValue);
+                conversation.ModifyListenerPersuasion(listener, modValue);
                 break;
             case RHResourceType.QUESTION:
                 modValue = scaledDelta * QuestionInterestScale * Mathf.Min(3, m_Amount);

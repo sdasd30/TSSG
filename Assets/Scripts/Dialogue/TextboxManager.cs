@@ -296,8 +296,15 @@ public class DialogueOptionInitializer
     }
     public void AddIcon(Sprite icon)
     {
+        AddIcon(icon, "", Color.white,Color.white);
+    }
+    public void AddIcon(Sprite icon , string text, Color textColor, Color imageColor)
+    {
         GameObject o = GameObject.Instantiate(TextboxManager.ImagePrefab);
-        o.GetComponent<Image>().sprite = icon;
+        o.GetComponentInChildren<Image>().sprite = icon;
+        o.GetComponentInChildren<Image>().color = imageColor;
+        o.GetComponentInChildren<TextMeshProUGUI>().text = text;
+        o.GetComponentInChildren<TextMeshProUGUI>().faceColor = textColor;
         AdditionalIcons.Add(o);
     }
 

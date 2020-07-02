@@ -8,6 +8,8 @@ public enum RHResourceType { NONE, POSITIVE, NEGATIVE, QUESTION, IDEA, PERSONAL 
 
 public class RHStatement : MonoBehaviour
 {
+    public bool Selectable = true;
+
     [SerializeField]
     private string m_statementName = "Generic Statement";
 
@@ -19,6 +21,7 @@ public class RHStatement : MonoBehaviour
 
     [SerializeField]
     private float m_basePower = 1.0f;
+    public float BasePower { get { return m_basePower; } }
     [SerializeField]
     private List<RHModifier> m_modPower = new List<RHModifier>();
     [SerializeField]
@@ -93,21 +96,28 @@ public class RHStatement : MonoBehaviour
         m.statement = this;
         m_modPower.Add(m);
 
-        for(int n = 0; n < m_resourceConsumedAmounts.Count; n++) {
-            m_requirements.Add(m_resourceConsumedTypes[n], m_resourceConsumedAmounts[n]);
-        }
+        setRequirements();
     }
 
     public virtual void OnStatementQueued(RHSpeaker speaker)
     {
+        setRequirements();
         speaker.ModifyResources(m_requirements, true);
     }
     public virtual void OnStatementCancelled(RHSpeaker speaker)
     {
+        setRequirements();
         speaker.ModifyResources(m_requirements);
     }
-    public virtual void OnStatementExecuted(RHSpeaker speaker)
+    public virtual void OnStatementStarted(RHSpeaker speaker)
     { 
+    }
+    public virtual void OnStatementFinished(RHSpeaker speaker)
+    {
+    }
+    public virtual void OnStatementReceived(RHSpeaker speaker,RHListener listener,RHConversation c, Dictionary<RHStat,float> results)
+    {
+        //RHManager.AddHistoryText(GetResponseString(this, speaker, diff));
     }
     public virtual float GetPower(RHSpeaker speaker, RHListener listener, RHConversation c)
     {
@@ -119,6 +129,22 @@ public class RHStatement : MonoBehaviour
         return value;
     }
 
+    public virtual float GetBasePower(RHStat stateType)
+    {
+        switch (stateType)
+        {
+            case RHStat.AUTHORITY:
+                return m_baseAuthority;
+            case RHStat.EMOTIONS:
+                return m_baseEmotions;
+            case RHStat.FAVOR:
+                return m_baseFavor;
+            case RHStat.TRUST:
+                return m_baseTrust;
+            default:
+                return m_basePower;
+        }
+    }
     public virtual float GetPower(RHSpeaker speaker, RHListener listener, RHConversation c, RHStat stateType = RHStat.CURRENT_PERSUASION_LEVEL)
     {
         float value = 0;
@@ -152,8 +178,9 @@ public class RHStatement : MonoBehaviour
         }
         return value;
     }
-    public virtual bool IsEnabled(RHSpeaker speaker, RHConversation c)
+    public virtual string MeetsRequirements(RHSpeaker speaker, RHConversation c)
     {
+        setRequirements();
         return speaker.meetsRequirements(m_requirements);
     }
     public virtual string GetHoverText(RHConversation conv)
@@ -169,12 +196,13 @@ public class RHStatement : MonoBehaviour
                 t += c.ToString() + " " + r.ToString() + " ";
             }
         }
+        t += '\n';
         if (displayModifierOnHover)
         {
             foreach (RHListener l in conv.Listeners.Keys)
             {
                 t += l.gameObject.name;
-                t += " Base Power: " + GetPower(conv.Speakers[0],l,conv);
+                t += " Base: " + GetPower(conv.Speakers[0],l,conv);
                 foreach (RHModifier m in m_modPower)
                 {
                     t += " " + m.getHoverString(value, conv,l);
@@ -183,7 +211,32 @@ public class RHStatement : MonoBehaviour
                 t += "\n";
             }
         }
-        return m_hoverText;
+        return t;
+    }
+
+    public virtual void AddIcons(DialogueOptionInitializer doi , RHSpeaker speaker, RHConversation conversation)
+    {
+        string timeStr = Time.ToString("F2") + " s";
+        doi.AddTextIcon(timeStr, Color.white);
+        for (int i = 0; i < 5; i++)
+        {
+            RHStat s = (RHStat)i;
+            float sum = 0;
+            int numListeners = 0;
+            foreach (RHListener l in conversation.Listeners.Keys)
+            {
+                if (l == speaker.GetComponent<RHListener>())
+                    continue;
+                float f = GetPower(speaker, l, conversation,s);
+                sum += f;
+                numListeners++;
+            }
+            if (Mathf.Abs(sum) <= 1)
+                continue;
+            Color c = RHManager.ProportionToColor(GetBasePower(s), sum / numListeners);
+            doi.AddIcon(RHManager.GetStatIcon(s),sum.ToString("F1"), c, (sum > 0) ? Color.white : Color.red);
+            
+        }
     }
 
     public virtual RHStatement GenerateResponse( RHListener l)
@@ -194,8 +247,8 @@ public class RHStatement : MonoBehaviour
     
     public virtual float GetListRankingPriority(RHSpeaker speaker, RHConversation c)
     {
-        if (IsEnabled(speaker, c))
-            return m_listRankingPriority + 100f;
+        if (MeetsRequirements(speaker, c) == "Meets Requirements")
+            return m_listRankingPriority - 100f;
         return m_listRankingPriority;
     }
     public virtual RHResponseString GetResponseString(RHListener listener, RHSpeaker speaker, float effectiveness)
@@ -322,5 +375,14 @@ public class RHStatement : MonoBehaviour
     private string standardDamageBreakdown()
     {
         return "";
+    }
+
+    private void setRequirements()
+    {
+        m_requirements = new Dictionary<RHResourceType, int>();
+        for (int n = 0; n < m_resourceConsumedAmounts.Count; n++)
+        {
+            m_requirements.Add(m_resourceConsumedTypes[n], m_resourceConsumedAmounts[n]);
+        }
     }
 }

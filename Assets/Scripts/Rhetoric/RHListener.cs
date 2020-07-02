@@ -25,11 +25,33 @@ public class RHListener : MonoBehaviour
             t.OnListenerStart(this, speaker, conversation);
         }
     }
-    public float ApplyStatementModifiers(float baseValue, RHSpeaker speaker, RHStatement statement, RHConversation conversation, RHStat s)
+    public void OnReceiveStatement(RHRegisteredStatement rs)
+    {
+        RHStatement statement = rs.statement;
+        RHSpeaker speaker = rs.speaker;
+        RHConversation c = rs.conversation;
+
+        GetComponent<AITaskManager>()?.triggerEvent(new AIEVStatementReceived(c, statement, speaker));
+        Dictionary<RHStat, float> results = new Dictionary<RHStat, float>();
+        for (int i = 0; i < 5; i++)
+        {
+            RHStat s = (RHStat)i;
+            float power = statement.GetPower(speaker, this, c, s);
+            float diff = applyStatementModifiers(power, rs, s);
+            if (diff == 0)
+                continue;
+
+            results[s] = diff;
+            ModifyStat(speaker, c, s, diff);
+        }
+        statement.OnStatementReceived(speaker, this,c,  results);
+        RHManager.AddHistoryText(GetResponseString(statement, speaker, results));
+    }
+    private float applyStatementModifiers(float baseValue, RHRegisteredStatement rs, RHStat s)
     {
         foreach (RHPersonalityTrait t in m_traits)
         {
-            baseValue = t.OnStatementUsed(baseValue, statement, this, speaker, conversation,s);
+            baseValue = t.OnStatementUsed(baseValue, rs.statement, this, rs.speaker, rs.conversation,s);
         }
         return baseValue;
     }
@@ -62,12 +84,18 @@ public class RHListener : MonoBehaviour
         
         return ApplyPersonalityTraits(speaker,n, applyPersonalityTraits);
     }
-    public virtual RHResponseString GetResponseString(RHListener listener, RHSpeaker speaker, float effectiveness)
+    public virtual RHResponseString GetResponseString(RHStatement statement, RHSpeaker speaker, Dictionary<RHStat,float> results)
     {
-        return new RHResponseString("");
+        return null;
     }
     public void ModifyStat(RHSpeaker s, RHConversation c, RHStat stat, float value, bool permanent = false)
     {
+        if (stat == RHStat.CURRENT_PERSUASION_LEVEL)
+        {
+            c.ModifyListenerPersuasion(this, value);
+            return;
+        }
+            
         if (stat == RHStat.EMOTIONS)
         {
             m_emotionalIntensity += value;

@@ -31,6 +31,7 @@ public class RHUIHistoryText : MonoBehaviour
         Textbox tbox = go.GetComponent<Textbox>();
         tbox.setText(s);
         t.color = c;
+        t.alpha = 1.0f;
         t.fontSize = fontSize;
         Vector2 oldSize = Content.sizeDelta;
         Content.sizeDelta = new Vector2(oldSize.x, oldSize.y + SIZE_OF_TEXT);

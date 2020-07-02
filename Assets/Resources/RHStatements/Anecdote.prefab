@@ -87,5 +87,40 @@ PrefabInstance:
       propertyPath: m_modPower.Array.data[0].m_scaleModifier
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_statementName
+      value: Anecdote
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_responseString.textValue
+      value: I said a story
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_responseString.fontSize
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_responseString.fontColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_responseString.fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_responseString.fontColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_responseString.fontColor.a
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a39d98f35290ef54fbe378c74bca5f5e, type: 3}

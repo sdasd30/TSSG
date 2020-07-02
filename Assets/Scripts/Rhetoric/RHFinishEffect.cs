@@ -19,8 +19,8 @@ public class RHFinishEffect
         
     }
 
-    public void ExecuteFinishEffect(RHSpeaker s, RHListener listener)
+    public string ExecuteFinishEffect(RHSpeaker s, RHListener listener)
     {
-        
+        return "";
     }
 }

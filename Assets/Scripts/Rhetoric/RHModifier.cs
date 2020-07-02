@@ -110,9 +110,9 @@ public class RHModifier
         }
         return numberInstances;
     }
-    private float calculateScaleValue(float initial, float scaleFactor)
+    private float calculateScaleValue(float initial, float scalevalue)
     {
-        float diff = scaleFactor - scaleZeroPoint;
+        float diff = scalevalue - scaleZeroPoint;
         if (diff < 0 && !invertIfNegative)
             return initial;
         if (m_scaleType == RHScaleType.ADDITION_FLAT)
@@ -121,7 +121,7 @@ public class RHModifier
             return initial + (initial * Mathf.Min(MaxDiff, Mathf.Max(MinDiff, (initialBonusValue + diff * scaleFactor))));
         else
         {
-            return initial * Mathf.Pow(initialBonusValue + diff, scaleFactor);
+            return initial * (initialBonusValue + ( diff * scaleFactor));
         }
     }
 }

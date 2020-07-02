@@ -42,7 +42,6 @@ public class UIHoverText : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void createBox()
     {
         m_hoverBox = Instantiate(TextboxManager.Instance.hoverTextPrefab,transform.GetComponentInParent<Canvas>().transform);
-        Debug.Log("Creating box: " + HoverText);
         m_hoverBox.GetComponent<Textbox>().setText(HoverText);
         m_hoverBox.GetComponent<Textbox>().SetTypeMode(false );
     }
@@ -57,8 +56,16 @@ public class UIHoverText : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (m_hoverBox != null)
         {
             var screenPoint = Input.mousePosition;
+            Vector2 tbSize = m_hoverBox.GetComponent<RectTransform>().sizeDelta;
             //screenPoint.z = 10.0f; //distance of the plane from the camera
-            m_hoverBox.GetComponent<RectTransform>().anchoredPosition = new Vector2(screenPoint.x + 256, screenPoint.y - 80);
+            float x = screenPoint.x + 256;
+            float y = screenPoint.y - 80;
+            
+            if (y + tbSize.y > Screen.height)
+                y = y - tbSize.y;
+            if (x + tbSize.x - 64 > Screen.width)
+                x = x - tbSize.x;
+            m_hoverBox.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
         }
     }
 }

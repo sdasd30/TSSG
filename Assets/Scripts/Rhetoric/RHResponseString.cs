@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[SerializeField]
+[System.Serializable]
 public class RHResponseString
 {
     public RHResponseString(string textValue)

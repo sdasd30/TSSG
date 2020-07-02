@@ -29,13 +29,11 @@ public class RHSpeaker : MonoBehaviour
     {
         foreach (RHResourceType rh in m_modifySpeakerResources.Keys)
         {
-            bool found = false;
             foreach(RHResource r in m_resources)
             {
                 if (r.m_resourceType == rh)
                 {
-                    r.m_Amount += m_modifySpeakerResources[rh];
-                    found = true;
+                    r.m_Amount += (invert) ? -m_modifySpeakerResources[rh] :  m_modifySpeakerResources[rh];
                     m_resourcesDirty = true;
                     break;
                 }
@@ -64,7 +62,7 @@ public class RHSpeaker : MonoBehaviour
         }
         return false;
     }
-    public bool meetsRequirements(Dictionary<RHResourceType, int> m_requirements)
+    public string meetsRequirements(Dictionary<RHResourceType, int> m_requirements)
     {
         foreach (RHResourceType rh in m_requirements.Keys)
         {
@@ -74,20 +72,22 @@ public class RHSpeaker : MonoBehaviour
                 if (r.m_resourceType == rh)
                 {
                     if (r.m_Amount < m_requirements[rh])
-                        return false;
+                        return "Insufficient Resources. This statement requires: " + m_requirements[rh] + " " + rh.ToString() + " You have " + r.m_Amount;
+                    found = true;
                     break;
                 }
             }
             if (!found)
-                return false;
+                return "Insufficient Resources. This statement requires: " + m_requirements[rh] + " " + rh.ToString();
         }
-        return true;
+        return "Meets Requirements";
     }
-    public void OnRhetoricStart( List<RHStatement> availableStatements, RHConversation conversation, Dictionary<RHListener, float> listeners)
+    public void OnRhetoricStart( List<RHStatement> availableStatements, RHConversation conversation, List<RHListener> listeners)
     {
         if (GetComponent<MovementBase>() != null && GetComponent<MovementBase>().IsPlayerControl)
         {
-            RHManager.CreateDialogueOptionList(availableStatements,this, conversation);
+            //RHManager.CreateDialogueOptionList(availableStatements,this, conversation);
+            
             RHManager.SetResourceUIActive(this);
         }
         foreach (RHPersonalityTrait t in m_traits)
@@ -106,7 +106,7 @@ public class RHSpeaker : MonoBehaviour
         foreach (System.Object o in Resources.LoadAll("RHStatements"))
         {
             GameObject instance = o as GameObject;
-            if (instance.GetComponent<RHStatement>() != null)
+            if (instance.GetComponent<RHStatement>() != null && instance.GetComponent<RHStatement>().Selectable)
                 AvailableStatements.Add(instance.GetComponent<RHStatement>());
         }
     }

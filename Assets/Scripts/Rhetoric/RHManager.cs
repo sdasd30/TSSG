@@ -24,7 +24,12 @@ public class RHManager : MonoBehaviour
     private GameObject m_deadAirPrefab;
     public static GameObject DeadAirPrefab { get { return m_instance.m_deadAirPrefab; } private set { m_instance.m_deadAirPrefab = value; } }
     [SerializeField]
+    private GameObject m_FinishBox;
+    public static GameObject FinishBox { get { return m_instance.m_FinishBox; }  }
+    [SerializeField]
     private List<Sprite> m_ResourceIcons = new List<Sprite>();
+    [SerializeField]
+    private List<Sprite> m_RHStatIcons = new List<Sprite>();
     //public static List<Sprite> ResourceIcons { get { return m_instance.m_ResourceIcons; } }
 
     [SerializeField]
@@ -44,21 +49,19 @@ public class RHManager : MonoBehaviour
 
     public static void CreateDialogueOptionList(List<RHStatement> statements, RHSpeaker speaker, RHConversation baseConversation, string prompt = "Select your next statement", float scroll = 0.0f)
     {
-
         DialogueSelectionInitializer dialogue = new DialogueSelectionInitializer(prompt);
         List<RHStatement> sortedStatements = new List<RHStatement>();
         sortedStatements = RHManager.SortedList(statements, speaker, baseConversation);
-        DialogueOptionBox box = null;
+
         foreach (RHStatement s in sortedStatements)
         {
-            DialogueOptionInitializer doi = convertToDialogueOption(s, statements, speaker, baseConversation, box);
+            DialogueOptionInitializer doi = convertToDialogueOption(s, statements, speaker, baseConversation);
             dialogue.AddDialogueOption(doi);
         }
         void Close(DialogueOption selectedOption) { }
         dialogue.AddDialogueOption("Close", Close);
         GameObject go = TextboxManager.StartDialogueOptions(dialogue);
-        box = go.GetComponent<DialogueOptionBox>();
-        box.SetScrollValue(scroll);
+        go.GetComponent<DialogueOptionBox>().SetScrollValue(scroll);
         baseConversation.SetDialogueBox(go);
     }
 
@@ -80,10 +83,9 @@ public class RHManager : MonoBehaviour
             void InitializeSubList(DialogueOption dop2)
             {
                 DialogueSelectionInitializer dialogueSubList = new DialogueSelectionInitializer(prompt);
-                DialogueOptionBox box = null;
                 foreach (RHStatement s in sortedStatements[t])
                 {
-                    DialogueOptionInitializer doi = convertToDialogueOption(s, statements, speaker, baseConversation,box);
+                    DialogueOptionInitializer doi = convertToDialogueOption(s, statements, speaker, baseConversation);
                     dialogueSubList.AddDialogueOption(doi);
                 }
                 void ReturnToBase(DialogueOption selectedOption)
@@ -92,41 +94,48 @@ public class RHManager : MonoBehaviour
                 }
                 dialogueSubList.AddDialogueOption("Back", ReturnToBase);
                 GameObject go = TextboxManager.StartDialogueOptions(dialogueSubList);
-                box = go.GetComponent<DialogueOptionBox>();
                 baseConversation.SetDialogueBox(go);
             }
             dialogue.AddDialogueOption(RHTypeToString(t), InitializeSubList);
         }
-        void Close(DialogueOption selectedOption) { }
+        void Close(DialogueOption selectedOption) { baseConversation.CloseConversation(); }
         dialogue.AddDialogueOption("Close", Close);
         baseConversation.SetDialogueBox(TextboxManager.StartDialogueOptions(dialogue));
     }
 
-    private static DialogueOptionInitializer convertToDialogueOption(RHStatement s, List<RHStatement> allStatements, RHSpeaker speaker, RHConversation baseConversation, DialogueOptionBox oldBox)
+    private static DialogueOptionInitializer convertToDialogueOption(RHStatement s, List<RHStatement> allStatements, RHSpeaker speaker, RHConversation baseConversation)
     {
         DialogueOptionInitializer doi = new DialogueOptionInitializer();
         void SelectionFunction(DialogueOption selectedOption)
         {
             baseConversation.QueueStatement(s, baseConversation.Speakers[0]);
-            RHManager.CreateDialogueOptionList(allStatements, speaker, baseConversation,"Select your next Statement", oldBox.GetScrollValue());
+            RHManager.CreateDialogueOptionList(allStatements, speaker, baseConversation,"Select your next Statement", FindObjectOfType<DialogueOptionBox>().GetScrollValue());
         }
         string name = s.StatementName;
         if (name == null || name == "")
             name = s.gameObject.name;
         doi.SelectionText = name;
-        doi.hoverText = s.GetHoverText(baseConversation);
+        
         doi.OnSelect = SelectionFunction;
 
         doi.CloseDialogueWindow = true;
-        string timeStr = s.Time.ToString() + " s";
-        doi.AddTextIcon(timeStr, Color.white);
-        
-        foreach (RHListener l in baseConversation.Listeners.Keys)
-        {
-            float f = s.GetPower(baseConversation.Speakers[0], l, baseConversation);
-            doi.AddTextIcon(f.ToString(), Color.red);
-            doi.Interactable = s.IsEnabled(baseConversation.Speakers[0],baseConversation);
-        }
+
+        s.AddIcons(doi, speaker, baseConversation);
+        string missingRequirements = baseConversation.MeetsRequirements(s, speaker);
+        doi.Interactable = (missingRequirements == "Meets Requirements");
+        doi.hoverText = (doi.Interactable) ? s.GetHoverText(baseConversation) : missingRequirements;
+        //string timeStr = s.Time.ToString("F2") + " s";
+        //doi.AddTextIcon(timeStr, Color.white);
+
+        //foreach (RHListener l in baseConversation.Listeners.Keys)
+        //{
+        //    if (l == speaker.GetComponent<RHListener>())
+        //        continue;v   
+        //    float f = s.GetPower(baseConversation.Speakers[0], l, baseConversation);
+        //    Color c = proportionToColor(s.BasePower, f);
+        //    doi.AddTextIcon(f.ToString("F2"), c);
+        //    doi.Interactable = s.IsEnabled(baseConversation.Speakers[0],baseConversation);
+        //}
         return doi;
     }
     public static string RHTypeToString(RHType type)
@@ -209,6 +218,10 @@ public class RHManager : MonoBehaviour
     {
         return m_instance.m_ResourceIcons[(int)resourceType];
     }
+    public static Sprite GetStatIcon(RHStat statType)
+    {
+        return m_instance.m_RHStatIcons[(int)statType];
+    }
     void Awake()
     {
         if (m_instance == null)
@@ -220,5 +233,36 @@ public class RHManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+    }
+
+    public static Color ProportionToColor(float baseValue, float actualValue)
+    {
+        Color c = Color.white;
+        float prop = (baseValue < 0) ? baseValue/ actualValue : actualValue / baseValue;
+        if (prop < 1f && prop > 0.75f)
+        {
+            float convertedProp = (prop - 0.75f) * 4f;
+            c = Color.Lerp(Color.white, new Color(255 / 255f, 170 / 255f, 230 / 255f), convertedProp);
+        } else if (prop < 0.75f & prop > 0.5f)
+        {
+            float convertedProp = (prop - 0.5f) * 4f;
+            c = Color.Lerp(new Color(255f/255f, 170 / 255f, 230 / 255f), new Color(255 / 255f, 0, 0), convertedProp);
+        } else if (prop < 0.5f)
+        {
+            c = new Color(200, 0, 0);
+        } else if (prop > 1f && prop < 1.5f)
+        {
+            float convertedProp = (prop - 1f) * 2f;
+            c = Color.Lerp(Color.white, new Color(150 / 255f, 255 / 255f, 150 / 255f), convertedProp);
+        } else if (prop > 1.5f && prop < 2f)
+        {
+            float convertedProp = (prop - 1.5f) * 2f;
+            c = Color.Lerp(new Color(150 / 255f, 255 / 255f, 150 / 255f), new Color(50 / 255f, 200 / 255f, 90 / 255f), convertedProp);
+        } else if (prop > 2f)
+        {
+            c = new Color(0,220 / 255f, 190 / 255f);
+        }
+
+        return c;
     }
 }

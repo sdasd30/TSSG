@@ -103,5 +103,10 @@ PrefabInstance:
       value: Give a direct, military-style command. Effectiveness depends significantly
         on your Authority Level
       objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_baseFavor
+      value: -10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a39d98f35290ef54fbe378c74bca5f5e, type: 3}

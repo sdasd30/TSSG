@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44038964e37700943b403d327991b94b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Selectable: 0
   m_statementName: Dead Air
   m_RhetoricType: 0
   m_Time: 1
@@ -25,7 +26,15 @@ MonoBehaviour:
   m_modAuthority: []
   m_baseEmotions: 1
   m_modEmotions: []
+  m_resourceConsumedTypes: 
+  m_resourceConsumedAmounts: 
   m_hoverText: Dead Air
+  m_listRankingPriority: 1
+  m_responseString:
+    textValue: Nobody says anything
+    fontSize: 12
+    fontColor: {r: 1, g: 1, b: 1, a: 0}
+    isPausing: 0
   apply_decay: 1
   displayModifierOnHover: 1
 --- !u!1001 &7316011223917093386
