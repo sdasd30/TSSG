@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &6972994329452924933
+--- !u!1001 &1219157384829414228
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -9,18 +9,35 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1076628589208619892, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
-      propertyPath: m_basePower
-      value: 15
+      propertyPath: m_statementName
+      value: Answer Question
       objectReference: {fileID: 0}
     - target: {fileID: 1076628589208619892, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_hoverText
-      value: Capitalize on Positive feedback. Consumes 1 Positive Reaction.
+      value: 'Consumes 1 Question.
+
+        Respond to Question directly and logically. '
       objectReference: {fileID: 0}
     - target: {fileID: 1076628589208619892, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
-      propertyPath: m_statementName
-      value: Emphasis
+      propertyPath: m_baseFavor
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1076628589208619892, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
+        type: 3}
+      propertyPath: m_basePower
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1076628589208619892, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
+        type: 3}
+      propertyPath: m_resourceConsumedTypes.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1076628589208619892, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
+        type: 3}
+      propertyPath: m_RhetoricType
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2851069437508027171, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
@@ -80,7 +97,7 @@ PrefabInstance:
     - target: {fileID: 5655010201236470135, guid: 6a5e21eabb932ee4591c5057a3f1cd4e,
         type: 3}
       propertyPath: m_Name
-      value: Emphasis
+      value: Answer Question
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a5e21eabb932ee4591c5057a3f1cd4e, type: 3}

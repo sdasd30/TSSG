@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &5550529463766737888
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 641.927
+      objectReference: {fileID: 0}
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 477.22617
+      objectReference: {fileID: 0}
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2153589456755450814, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3189876241128010767, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_statementName
+      value: Calm
+      objectReference: {fileID: 0}
+    - target: {fileID: 3189876241128010767, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_Time
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3189876241128010767, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_baseEmotions
+      value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3189876241128010767, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_baseFavor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3189876241128010767, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_baseTrust
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3189876241128010767, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_hoverText
+      value: 'Decrease Emotions
+
+        Calm nerves by deescalating the situation.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 3189876241128010767, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_RhetoricType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8361143188867783146, guid: cf928f3e7886ac149a10d284397d940a,
+        type: 3}
+      propertyPath: m_Name
+      value: Calm
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cf928f3e7886ac149a10d284397d940a, type: 3}

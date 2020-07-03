@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2317834043491752053}
   - component: {fileID: 483134267844948961}
   m_Layer: 0
-  m_Name: Complement
+  m_Name: Flattery
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,21 +44,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_statementName: Complement
-  m_RhetoricType: 0
+  m_RhetoricType: 3
   m_Time: 2
   m_basePower: 1
   m_modPower: []
-  m_baseFavor: 1
+  m_baseFavor: 0
   m_modFavor: []
-  m_baseTrust: 1
+  m_baseTrust: 0
   m_modTrust: []
-  m_baseAuthority: 1
+  m_baseAuthority: 0
   m_modAuthority: []
-  m_baseEmotions: 1
+  m_baseEmotions: 0
   m_modEmotions: []
   m_resourceConsumedTypes: 
   m_resourceConsumedAmounts: 
   m_hoverText: Congratulate the opponent in the hopes of getting positive feedback.
+  m_listRankingPriority: 1
   apply_decay: 1
   displayModifierOnHover: 1
   m_mainResource: 1

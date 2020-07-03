@@ -1,5 +1,40 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &4693938181595592613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4779849880117222585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44038964e37700943b403d327991b94b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_statementName: Generic Statement
+  m_RhetoricType: 2
+  m_Time: 1
+  m_basePower: 1
+  m_modPower: []
+  m_baseFavor: -5
+  m_modFavor: []
+  m_baseTrust: 1
+  m_modTrust: []
+  m_baseAuthority: 1
+  m_modAuthority: []
+  m_baseEmotions: 1
+  m_modEmotions: []
+  m_resourceConsumedTypes: 02000000
+  m_resourceConsumedAmounts: 01000000
+  m_hoverText: 'Consumes 1 Negative Reaction.
+
+    Dismiss criticism quickly, allowing
+    you to proceed to your next point without interruption. Effective at getting
+    your words out. Less so for appearing likeable. '
+  m_listRankingPriority: 1
+  apply_decay: 1
+  displayModifierOnHover: 1
 --- !u!1001 &7848327815004337611
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -108,5 +143,12 @@ PrefabInstance:
       propertyPath: m_resourceConsumedTypes.Array.data[0]
       value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7941533457683159921, guid: cded0a7d07162f341bcfccf3b3b5030d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: cded0a7d07162f341bcfccf3b3b5030d, type: 3}
+--- !u!1 &4779849880117222585 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3368600939386775922, guid: cded0a7d07162f341bcfccf3b3b5030d,
+    type: 3}
+  m_PrefabInstance: {fileID: 7848327815004337611}
+  m_PrefabAsset: {fileID: 0}

@@ -75,13 +75,15 @@ PrefabInstance:
     - target: {fileID: 2531105780482188022, guid: 258252842f8b7cf42b5434b3a208ef9d,
         type: 3}
       propertyPath: m_hoverText
-      value: Respond to Positive Feedback Humbly. Consumes 1 Positive Reaction, increases
-        favor.
+      value: 'Consumes 1 Positive Feedback.
+
+        Respond to Positive Feedback
+        with humble thanks. Good to become more likeable.'
       objectReference: {fileID: 0}
     - target: {fileID: 2531105780482188022, guid: 258252842f8b7cf42b5434b3a208ef9d,
         type: 3}
       propertyPath: m_baseFavor
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2531105780482188022, guid: 258252842f8b7cf42b5434b3a208ef9d,
         type: 3}
@@ -96,7 +98,7 @@ PrefabInstance:
     - target: {fileID: 2531105780482188022, guid: 258252842f8b7cf42b5434b3a208ef9d,
         type: 3}
       propertyPath: m_statementName
-      value: Humility
+      value: Express Thanks
       objectReference: {fileID: 0}
     - target: {fileID: 2531105780482188022, guid: 258252842f8b7cf42b5434b3a208ef9d,
         type: 3}
@@ -113,10 +115,25 @@ PrefabInstance:
       propertyPath: m_modPower.Array.data[0].MaxDiff
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2531105780482188022, guid: 258252842f8b7cf42b5434b3a208ef9d,
+        type: 3}
+      propertyPath: m_modPower.Array.data[0].m_nameOfModifier
+      value: Trust
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531105780482188022, guid: 258252842f8b7cf42b5434b3a208ef9d,
+        type: 3}
+      propertyPath: m_modPower.Array.data[0].m_scaleModifier
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531105780482188022, guid: 258252842f8b7cf42b5434b3a208ef9d,
+        type: 3}
+      propertyPath: m_RhetoricType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7181580466199433461, guid: 258252842f8b7cf42b5434b3a208ef9d,
         type: 3}
       propertyPath: m_Name
-      value: Humility
+      value: Express Thanks
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 258252842f8b7cf42b5434b3a208ef9d, type: 3}

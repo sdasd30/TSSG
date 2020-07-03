@@ -102,5 +102,28 @@ PrefabInstance:
       propertyPath: m_statementName
       value: Comeback Speech
       objectReference: {fileID: 0}
+    - target: {fileID: 8672614424466412559, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_hoverText
+      value: 'Consumes 3 Negative Criticism
+
+        Address a mountain of negative
+        criticism through a sudden and powerful comeback speech. '
+      objectReference: {fileID: 0}
+    - target: {fileID: 8672614424466412559, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_resourceConsumedAmounts.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8672614424466412559, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_basePower
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 8672614424466412559, guid: b3960c4e0841aa04181e878359c4702f,
+        type: 3}
+      propertyPath: m_statementName
+      value: Comeback Speech
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3960c4e0841aa04181e878359c4702f, type: 3}

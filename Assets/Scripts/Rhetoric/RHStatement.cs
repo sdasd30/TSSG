@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum RHType { LOGOS, PATHOS,ETHOS, NONE}
+public enum RHType { ARGUMENT, INFLUENCE ,RESPONSE, QUESTION, OTHER}
 
-public enum RHResourceType { NONE, POSITIVE, NEGATIVE, QUESTION, IDEA, PERSONAL  }
+public enum RHResourceType { NONE, POSITIVE, NEGATIVE, QUESTION, BLUNDER, PERSONAL  }
 
 public class RHStatement : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class RHStatement : MonoBehaviour
     private string m_statementName = "Generic Statement";
 
     [SerializeField]
-    private RHType m_RhetoricType = RHType.LOGOS;
+    private RHType m_RhetoricType = RHType.ARGUMENT;
 
     [SerializeField]
     private float m_Time = 1.0f;
@@ -43,6 +43,7 @@ public class RHStatement : MonoBehaviour
     private List<int> m_resourceConsumedAmounts = new List<int>();
 
     [SerializeField]
+    [TextArea]
     private string m_hoverText = "Generic Description";
     [SerializeField]
     private float m_listRankingPriority = 1.0f;
@@ -303,21 +304,6 @@ public class RHStatement : MonoBehaviour
             }
         }
         return rolledStatement;
-    }
-    private float StandardDamageModifiers(float baseValue, RHListener l, RHType rhtype)
-    {
-        if (rhtype == RHType.LOGOS)
-        {
-            return baseValue;
-        } else if (rhtype == RHType.ETHOS)
-        {
-            return baseValue;
-        }
-        else if (rhtype == RHType.PATHOS)
-        {
-            return baseValue;
-        }
-        return baseValue;
     }
     private string standardDamageBreakdown()
     {

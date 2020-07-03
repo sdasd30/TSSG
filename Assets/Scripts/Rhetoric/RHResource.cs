@@ -39,7 +39,7 @@ public class RHResource
                 modValue = scaledDelta * StoryInterestScale * Mathf.Min(3, m_Amount);
                 conversation.ModifyInterestTime(modValue);
                 break;
-            case RHResourceType.IDEA:
+            case RHResourceType.BLUNDER:
                 
                 break;
         }

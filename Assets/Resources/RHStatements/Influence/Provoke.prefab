@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2056201012628786618
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 796181078209333879, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_statementName
+      value: Provoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 796181078209333879, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_baseFavor
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 796181078209333879, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_baseEmotions
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 796181078209333879, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_hoverText
+      value: 'Increase Emotions significantly
+
+        Agitate the participants of
+        the conversation to raise emotional stakes at the cost of favor.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 641.927
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 477.22617
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227538379149270470, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5998955906041030546, guid: cb32f6dc5656374478f1be743a05ee86,
+        type: 3}
+      propertyPath: m_Name
+      value: Establish Credentials Variant 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cb32f6dc5656374478f1be743a05ee86, type: 3}

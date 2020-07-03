@@ -15,7 +15,8 @@ PrefabInstance:
     - target: {fileID: 483134267844948961, guid: fae0e9562f9eda14392273b3877e139f,
         type: 3}
       propertyPath: m_hoverText
-      value: Inquire about any Personal Experiences.
+      value: Inquire about any Personal Experiences. Makes it likely you will receive
+        a personal story as a response.
       objectReference: {fileID: 0}
     - target: {fileID: 483134267844948961, guid: fae0e9562f9eda14392273b3877e139f,
         type: 3}
@@ -25,7 +26,7 @@ PrefabInstance:
     - target: {fileID: 483134267844948961, guid: fae0e9562f9eda14392273b3877e139f,
         type: 3}
       propertyPath: m_Time
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2317834043491752053, guid: fae0e9562f9eda14392273b3877e139f,
         type: 3}
@@ -85,7 +86,7 @@ PrefabInstance:
     - target: {fileID: 5314582451847782945, guid: fae0e9562f9eda14392273b3877e139f,
         type: 3}
       propertyPath: m_Name
-      value: Inquire Variant
+      value: Question
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fae0e9562f9eda14392273b3877e139f, type: 3}
