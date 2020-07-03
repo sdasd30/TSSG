@@ -74,12 +74,6 @@ public class RHModifier
                 return l.GetTrust(c.Speakers[0]); ;
             case RHScaleModifier.CURRENT_PERSUASION_LEVEL:
                 return c.Listeners[l];
-            case RHScaleModifier.INSTANCES_OF_ETHOS:
-                return countOfType(RHType.ETHOS, c.PreviousStatements);
-            case RHScaleModifier.INSTANCES_OF_LOGOS:
-                return countOfType(RHType.LOGOS, c.PreviousStatements);
-            case RHScaleModifier.INSTANCES_OF_PATHOS:
-                return countOfType(RHType.PATHOS, c.PreviousStatements);
             case RHScaleModifier.INSTANCES_OF_SELF:
                 return countType(statement.StatementName, c.PreviousStatements);
         }

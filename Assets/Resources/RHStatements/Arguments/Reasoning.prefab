@@ -64,8 +64,12 @@ MonoBehaviour:
   m_modTrust: []
   m_baseAuthority: 0
   m_modAuthority: []
-  m_baseEmotions: 0
+  m_baseEmotions: -2
   m_modEmotions: []
-  m_hoverText: 'Simple Common Sense. Effectiveness depends on Trust. '
+  m_resourceConsumedTypes: 
+  m_resourceConsumedAmounts: 
+  m_hoverText: "Effectiveness depends on Trust. \nUse simple reasoning and common
+    sense to explain your point. "
+  m_listRankingPriority: 1
   apply_decay: 1
   displayModifierOnHover: 1

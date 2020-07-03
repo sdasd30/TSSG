@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 3318670897087358136, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
       propertyPath: m_Name
-      value: TechnicalExplanation Variant
+      value: TechnicalExplanation
       objectReference: {fileID: 0}
     - target: {fileID: 5180794079618457324, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
@@ -75,7 +75,7 @@ PrefabInstance:
     - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
       propertyPath: m_hoverText
-      value: 'A long, in-depth explanation. Effectiveness depends on Trust. '
+      value: "Effectiveness depends on Trust. \nA long, in-depth explanation. "
       objectReference: {fileID: 0}
     - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}

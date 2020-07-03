@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &5594685677928330317
+--- !u!1001 &7441499162578192679
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 3318670897087358136, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
       propertyPath: m_Name
-      value: AssertAuthority
+      value: Implore
       objectReference: {fileID: 0}
     - target: {fileID: 5180794079618457324, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
@@ -70,43 +70,24 @@ PrefabInstance:
     - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
       propertyPath: m_basePower
-      value: 6
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
-      propertyPath: m_modPower.Array.data[0].m_nameOfModifier
-      value: Authority
-      objectReference: {fileID: 0}
-    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
-        type: 3}
-      propertyPath: m_statementName
-      value: Assert Authority
-      objectReference: {fileID: 0}
-    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
-        type: 3}
-      propertyPath: m_modPower.Array.data[0].m_scaleModifier
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
-        type: 3}
-      propertyPath: m_modPower.Array.data[0].scaleFactor
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
-        type: 3}
-      propertyPath: m_modPower.Array.data[0].MaxDiff
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
-        type: 3}
-      propertyPath: m_hoverText
-      value: Give a direct, military-style command. Effectiveness depends significantly
-        on your Authority Level
+      propertyPath: m_baseEmotions
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
         type: 3}
       propertyPath: m_baseFavor
-      value: -10
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963520515643414203, guid: a39d98f35290ef54fbe378c74bca5f5e,
+        type: 3}
+      propertyPath: m_hoverText
+      value: "Effectiveness depends on Trust. \nArgue your point by begging for support
+        and hoping their goodwill takes you through. Effective if your targets actually
+        like and trust you."
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a39d98f35290ef54fbe378c74bca5f5e, type: 3}

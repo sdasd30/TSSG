@@ -140,12 +140,14 @@ public class RHManager : MonoBehaviour
     }
     public static string RHTypeToString(RHType type)
     {
-        if (type == RHType.ETHOS)
-            return "Ethos";
-        else if (type == RHType.LOGOS)
-            return "Logos";
-        else if (type == RHType.PATHOS)
-            return "Pathos";
+        if (type == RHType.ARGUMENT)
+            return "Argument";
+        else if (type == RHType.INFLUENCE)
+            return "Influence";
+        else if (type == RHType.RESPONSE)
+            return "Response";
+        else if (type == RHType.QUESTION)
+            return "Question";
         else
             return "Other";
     }

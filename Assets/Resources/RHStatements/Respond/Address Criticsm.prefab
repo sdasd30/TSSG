@@ -1,5 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &8672614424466412559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2312413942518872554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88eadcb830b722418820083bd16bc51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_statementName: 'Address Criticism '
+  m_RhetoricType: 2
+  m_Time: 5
+  m_basePower: 6
+  m_modPower:
+  - m_nameOfModifier: Trust
+    m_scaleType: 2
+    m_scaleModifier: 3
+    initialBonusValue: 1
+    scaleZeroPoint: 0
+    scaleFactor: 0.02
+    invertIfNegative: 1
+    MaxDiff: 3
+    MinDiff: 0
+    statement: {fileID: 0}
+  m_baseFavor: 5
+  m_modFavor: []
+  m_baseTrust: 1
+  m_modTrust: []
+  m_baseAuthority: 1
+  m_modAuthority: []
+  m_baseEmotions: 1
+  m_modEmotions: []
+  m_resourceConsumedTypes: 02000000
+  m_resourceConsumedAmounts: 01000000
+  m_hoverText: 'Consumes 1 Negative Criticism
+
+    Address a negative reaction in
+    a calm and logical manner. Can be an effective counter-argument, assuming that
+    you are trusted.'
+  m_listRankingPriority: 1
+  apply_decay: 1
+  displayModifierOnHover: 1
 --- !u!1001 &7080265675799520595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -131,7 +176,14 @@ PrefabInstance:
     - target: {fileID: 4779849880117222585, guid: d769f11e1f5a96240895bf2387400bad,
         type: 3}
       propertyPath: m_Name
-      value: IdentifyFault
+      value: Address Criticsm
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4693938181595592613, guid: d769f11e1f5a96240895bf2387400bad, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d769f11e1f5a96240895bf2387400bad, type: 3}
+--- !u!1 &2312413942518872554 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4779849880117222585, guid: d769f11e1f5a96240895bf2387400bad,
+    type: 3}
+  m_PrefabInstance: {fileID: 7080265675799520595}
+  m_PrefabAsset: {fileID: 0}
