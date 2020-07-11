@@ -38,6 +38,7 @@ public class RHUIHistoryText : MonoBehaviour
         ScrollSlider.value = 0.0f;
         if (checkTextboxFinished)
         {
+            RHManager.SetPause(true);
             m_checkTextboxFinished = true;
             m_textboxToCheckFinished = tbox;
         }

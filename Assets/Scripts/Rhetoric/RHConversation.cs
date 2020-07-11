@@ -303,7 +303,7 @@ public class RHConversation : MonoBehaviour
     {
         foreach (RHResponseString s in m_registeredResponses)
         {
-            if (s.IsConditionTrue(st, speaker, listener, diff))
+            if (s.IsConditionTrue(st, m_previousStatements, speaker, listener, diff,m_startingSpeaker))
                 RHManager.AddHistoryText(s);
         }
     }
@@ -331,7 +331,7 @@ public class RHConversation : MonoBehaviour
             Destroy(m_currentDialogueBox);
         if (m_destroyAfterFinish)
             Destroy(gameObject);
-
+        ScaledTime.SetPause(false, true);
         ScaledTime.SetScale(1f);
     }
     private void OnFinish()
@@ -345,6 +345,7 @@ public class RHConversation : MonoBehaviour
             success = success && processFinish(listener,finWin);
         }
         finWin.SetConversation(this, success);
+        ScaledTime.SetPause(true, true);
         
     }
     private void processSlowInput()

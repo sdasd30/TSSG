@@ -31,6 +31,7 @@ public class RHManager : MonoBehaviour
     [SerializeField]
     private List<Sprite> m_RHStatIcons = new List<Sprite>();
     //public static List<Sprite> ResourceIcons { get { return m_instance.m_ResourceIcons; } }
+    private Dictionary<string, float> m_responseRefreshTimes = new Dictionary<string, float>();
 
     [SerializeField]
     private GameObject m_generateResourcesPrefab;
@@ -169,8 +170,12 @@ public class RHManager : MonoBehaviour
     {
         if (response == null || response.textValue.Length == 0)
             return;
-        if (response.isPausing)
-            SetPause(true);
+        if (response.m_refreshTime > 0) {
+            if (m_instance.m_responseRefreshTimes.ContainsKey(response.textValue) &&
+                ScaledTime.UITimeElapsed < m_instance.m_responseRefreshTimes[response.textValue])
+                return;
+            m_instance.m_responseRefreshTimes[response.textValue] = ScaledTime.UITimeElapsed + response.m_refreshTime;
+        } 
         AddHistoryText(response.textValue, response.fontColor, response.fontSize,response.isPausing);
     }
     public static void AddHistoryText(string s)
@@ -179,6 +184,7 @@ public class RHManager : MonoBehaviour
     }
     public static void AddHistoryText(string s, Color c, int fontSize = 12,bool isPausing = false)
     {
+        if ()
         m_instance.m_HistoryTextUI.AddLine(s, c, fontSize,isPausing);
     }
     public static void ClearHistory()

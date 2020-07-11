@@ -40,10 +40,10 @@ public class RHUIListener : MonoBehaviour
         ProgressObject.transform.Find("Slider").GetComponent<Slider>().value = v / MoniteringConversation.MaxValue;
         ProgressObject.transform.Find("Label").GetComponent<Text>().text = v.ToString("F1") + " / " + MoniteringConversation.Threashould.ToString("F1");
         VictoryMarker.anchoredPosition = new Vector2((MoniteringConversation.Threashould / MoniteringConversation.MaxValue) * 495, -25);
-        FavorText.text =  Listener.GetFavor(Speaker).ToString("F1");
-        AuthorityText.text =  Listener.GetAuthority(Speaker).ToString("F1");
-        TrustText.text = Listener.GetTrust(Speaker).ToString("F1");
-        EmotionText.text =  Listener.GetEmotionalIntensity().ToString("F1");
+        FavorText.text =  Listener.IsStatHidden(RHStat.FAVOR) ? "??" : Listener.GetFavor(Speaker).ToString("F1");
+        AuthorityText.text = Listener.IsStatHidden(RHStat.AUTHORITY) ? "??" : Listener.GetAuthority(Speaker).ToString("F1");
+        TrustText.text = Listener.IsStatHidden(RHStat.TRUST) ? "??" : Listener.GetTrust(Speaker).ToString("F1");
+        EmotionText.text = Listener.IsStatHidden(RHStat.EMOTIONS) ? "??" : Listener.GetEmotionalIntensity().ToString("F1");
 
         int n = Listener.Traits.Count;
         if (n != numTraits)

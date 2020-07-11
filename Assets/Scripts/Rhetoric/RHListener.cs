@@ -13,6 +13,8 @@ public class RHListener : MonoBehaviour
     private Dictionary<RHPersonalityTrait, ModifyValueFunction> statementModifiers = new Dictionary<RHPersonalityTrait, ModifyValueFunction>();
     private Dictionary<RHPersonalityTrait, BaseValueFunction> baseValueModifiers = new Dictionary<RHPersonalityTrait, BaseValueFunction>();
     private Dictionary<RHStat, List<ImpressionModifier>> m_temporaryModifiers = new Dictionary<RHStat, List<ImpressionModifier>>();
+    private Dictionary<RHStat, bool> m_hiddenNumbers = new Dictionary<RHStat, bool>();
+
     private void Start()
     {
         RHPersonalityTrait[] traits = GetComponentsInChildren<RHPersonalityTrait>();
@@ -46,6 +48,16 @@ public class RHListener : MonoBehaviour
         }
         statement.OnStatementReceived(speaker, this,c,  results);
         RHManager.AddHistoryText(GetResponseString(statement, speaker, results));
+    }
+    public bool IsStatHidden(RHStat stat)
+    {
+        if (!m_hiddenNumbers.ContainsKey(stat))
+            return false;
+        return m_hiddenNumbers[stat];
+    }
+    public void SetHiddenStats(RHStat stat, bool hidden)
+    {
+        m_hiddenNumbers[stat] = hidden;
     }
     private float applyStatementModifiers(float baseValue, RHRegisteredStatement rs, RHStat s)
     {
