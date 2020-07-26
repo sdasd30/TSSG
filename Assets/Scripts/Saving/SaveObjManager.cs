@@ -144,7 +144,7 @@ public class SaveObjManager : MonoBehaviour{
 		return ids;
 	}
 	public void onRoomLoad(Scene scene, LoadSceneMode mode) {
-		//curRoomInfo = getRoom(roomName);
+        //curRoomInfo = getRoom(roomName);
 		curRoom = SceneManager.GetActiveScene ().name;;
 		sceneTriggers = GameObject.FindObjectsOfType<SceneTrigger> ();
 		recreateItems (curRoom);

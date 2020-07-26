@@ -184,7 +184,7 @@ public class RHManager : MonoBehaviour
     }
     public static void AddHistoryText(string s, Color c, int fontSize = 12,bool isPausing = false)
     {
-        if ()
+        
         m_instance.m_HistoryTextUI.AddLine(s, c, fontSize,isPausing);
     }
     public static void ClearHistory()

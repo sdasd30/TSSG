@@ -1,1 +1,1 @@
-{"LastRoomName":"Concepts","Level":1,"NextLevel":200,"RegisteredIDs":[]}
+{"LastRoomName":"","Level":1,"NextLevel":200,"RegisteredIDs":[]}

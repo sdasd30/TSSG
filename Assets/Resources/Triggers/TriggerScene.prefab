@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4799805831415926}
-  - component: {fileID: 114097888728172450}
   - component: {fileID: 8103259288322852380}
+  - component: {fileID: 526614517487700878}
   m_Layer: 2
   m_Name: TriggerScene
   m_TagString: Untagged
@@ -32,35 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114097888728172450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1821193908600480}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c40d43d8b9f9cfc4fb9caaee4ec6def0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Actor: {fileID: 0}
-  InteractionPrompt: to Interact
-  Priority: 1
-  autoTrigger: 1
-  TriggerRefresh: 2
-  oneTime: 0
-  TriggerUsed: 0
-  HoldTrigger: 0
-  PressTrigger: 0
-  TestScene:
-    m_Handle: 0
-  onContact: 1
-  sceneName: 
-  newPos: {x: 0, y: 0, z: 0}
-  TriggerID: none
-  TargetTriggerID: none
-  dir: 0
 --- !u!65 &8103259288322852380
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -74,3 +45,30 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &526614517487700878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821193908600480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c40d43d8b9f9cfc4fb9caaee4ec6def0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactableObjectInfo:
+    InteractionPrompt: to Interact
+    Priority: 1
+    autoTrigger: 1
+    TriggerRefresh: 2
+    oneTime: 1
+  TriggerUsed: 0
+  HoldTrigger: 0
+  PressTrigger: 0
+  onContact: 1
+  NextSceneName: 
+  newPos: {x: 0, y: 0, z: 0}
+  TriggerID: none
+  TargetTriggerID: none
+  dir: 0

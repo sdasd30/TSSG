@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestScenes/Test_Room_Left.unity
     guid: 910a34d476925cf4fac5d2d6e4317998
+  - enabled: 1
+    path: Assets/Scenes/TestScenes/AssetStream/Room2.unity
+    guid: 428ffaaf9f50c5c458108a8ca4cf93bf
   m_configObjects: {}

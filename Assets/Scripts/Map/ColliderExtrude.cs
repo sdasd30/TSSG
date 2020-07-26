@@ -97,6 +97,7 @@ public class ColliderExtrude : MonoBehaviour
             WallObj.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
             Vector3 pos = WallObj.transform.position;
             WallObj.transform.position = new Vector3(pos.x, pos.y + 10f, pos.z);
+            WallObj.transform.localScale = new Vector3(1f, 1f, 1f);
         }
         m_wallsCreated = true;
     }

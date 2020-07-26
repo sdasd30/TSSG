@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae979fabfb40cfc4f869d50fcc83f774, type: 3}
   m_Name: New Terrain Auto Rule Tile 1
   m_EditorClassIdentifier: 
-  TileMap: {fileID: 0}
+  TileMap: {fileID: 2800000, guid: 1c018d9a6d932c14f84f6fc7016065ec, type: 3}
   RuleTileTemplate: {fileID: 11400000, guid: 3601fcb32eb778d4dbbfa84a43d01d27, type: 2}

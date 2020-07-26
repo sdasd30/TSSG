@@ -23,6 +23,8 @@ public class RHUITime : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (conversation == null)
+            return;
         float adjustedCurrentX = adjustedTimeXpos(ScaledTime.UITimeElapsed);
         Vector2 pos = Scroller.GetComponent<RectTransform>().anchoredPosition;
         Scroller.GetComponent<RectTransform>().anchoredPosition = new Vector2(-adjustedCurrentX, pos.y);
